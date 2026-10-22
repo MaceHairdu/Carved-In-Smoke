@@ -29,7 +29,7 @@ function load(d={}){document.querySelectorAll('[data-field]').forEach(e=>e.value
 function msg(t){$('message').textContent=t}
 let saveTimer=null,saveQueue=Promise.resolve(),loadingCharacter=false;
 function setSaveStatus(t){$('saveStatus').textContent=t==='Changes save automatically'||t==='Saved automatically'?'':t}
-async function persistCharacter(id,snapshot){if(!user||!id)return;const record=records.find(r=>String(r.id)===String(id));if(record)record.sheet=snapshot;const result=await sb.from('cs_characters').update({sheet:snapshot}).eq('id',id);if(result.error)throw result.error}
+async function persistCharacter(id,snapshot){if(!user||!id)return;const record=records.find(r=>String(r.id)===String(id));const result=await sb.from('cs_characters').update({sheet:snapshot}).eq('id',id).select('id').single();if(result.error)throw result.error;if(!result.data?.id)throw new Error('Character save was not confirmed');if(record)record.sheet=snapshot}
 function scheduleSave(){if(loadingCharacter||!active||!user)return;clearTimeout(saveTimer);setSaveStatus('Unsaved changes…');saveTimer=setTimeout(()=>{saveTimer=null;queueSave()},700)}
 function queueSave(){if(!active||!user)return saveQueue;const id=active,snapshot=data();setSaveStatus('Saving…');saveQueue=saveQueue.catch(()=>{}).then(async()=>{await persistCharacter(id,snapshot);if(String(active)===String(id))setSaveStatus('Saved automatically')}).catch(e=>{setSaveStatus('Save failed — retry');msg('Autosave failed: '+e.message)});return saveQueue}
 async function flushSave(){if(saveTimer){clearTimeout(saveTimer);saveTimer=null;queueSave()}await saveQueue}
