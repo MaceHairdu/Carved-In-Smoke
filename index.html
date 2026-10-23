@@ -127,17 +127,20 @@ body[data-theme]:not([data-theme="charcoal"]):not([data-theme="ember"]) header b
 #cisClassArt img[src$="Huntsman-F.webp"]{height:195px}
 }
 
-/* On phones the artwork moves to Skills, above and behind the Total column. */
+#cisMobileClassArt{display:none}
+/* Mobile-only art is independent of the desktop Character Notes artwork. */
 @media(max-width:750px){
+#sheet .card #cisClassArt{display:none}
+#sheet .card.class-art-skills>#cisMobileClassArt{display:block}
 #sheet .card.class-art-skills{position:relative;isolation:isolate;overflow:hidden}
 #sheet .card.class-art-skills>h2{position:relative;z-index:2}
-#sheet .card.class-art-skills>#cisClassArt{position:absolute;top:4px;right:-39px;left:auto;width:57%;height:var(--cis-mobile-art-height,260px);z-index:0;pointer-events:none}
-#sheet .card.class-art-skills>#cisClassArt img{position:absolute;bottom:0;top:auto;height:100%;width:auto;max-width:none;opacity:1}
-#sheet .card.class-art-skills>#cisClassArt img:first-child{left:4%;right:auto}
-#sheet .card.class-art-skills>#cisClassArt img:last-child:not(:first-child){right:0;left:auto}
-#sheet .card.class-art-skills>#cisClassArt img:only-child{right:5%;left:auto}
-#sheet .card.class-art-skills>#cisClassArt img[src$="Huntsman-M.webp"]{height:100%}
-#sheet .card.class-art-skills>#cisClassArt img[src$="Huntsman-F.webp"]{height:78%}
+#sheet .card.class-art-skills>#cisMobileClassArt{position:absolute;top:4px;right:-39px;left:auto;width:57%;height:var(--cis-mobile-art-height,260px);z-index:0;pointer-events:none}
+#sheet .card.class-art-skills>#cisMobileClassArt img{position:absolute;bottom:0;top:auto;height:100%;width:auto;max-width:none;opacity:1}
+#sheet .card.class-art-skills>#cisMobileClassArt img:first-child{left:4%;right:auto}
+#sheet .card.class-art-skills>#cisMobileClassArt img:last-child:not(:first-child){right:0;left:auto}
+#sheet .card.class-art-skills>#cisMobileClassArt img:only-child{right:5%;left:auto}
+#sheet .card.class-art-skills>#cisMobileClassArt img[src$="Huntsman-M.webp"]{height:100%}
+#sheet .card.class-art-skills>#cisMobileClassArt img[src$="Huntsman-F.webp"]{height:78%}
 #sheet .card.class-art-skills>.stat,#sheet .card.class-art-skills>#skills,#sheet .card.class-art-skills>.note{position:relative;z-index:1}
 #sheet .card.class-art-skills>.stat-head span:last-child{text-shadow:0 0 3px #000,0 0 7px #000,0 0 12px #000,2px 2px 5px #000,-2px -2px 5px #000;font-weight:700;position:relative;z-index:3}
 #sheet .card.class-art-skills #skills .stat .skill-total{position:relative;z-index:2}
@@ -145,7 +148,7 @@ body[data-theme]:not([data-theme="charcoal"]):not([data-theme="ember"]) header b
 </style></head><body><header><h1>CARVED IN SMOKE</h1><button id="openProfile" class="secondary hidden profile-trigger" type="button" aria-label="Open settings" title="Settings"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2.5h4l.6 2.3a7.5 7.5 0 0 1 1.7 1l2.3-.7 2 3.5-1.7 1.6a8 8 0 0 1 0 2l1.7 1.6-2 3.5-2.3-.7a7.5 7.5 0 0 1-1.7 1L14 20h-4l-.6-2.4a7.5 7.5 0 0 1-1.7-1l-2.3.7-2-3.5 1.7-1.6a8 8 0 0 1 0-2L3.4 8.6l2-3.5 2.3.7a7.5 7.5 0 0 1 1.7-1L10 2.5Z" transform="translate(0 0.75)"/><circle cx="12" cy="11.75" r="3"/></svg></button></header><main>
 <section id="login" class="card"><h2>Character Records</h2><p class="note">Sign in to create and save your characters. The same Supabase account can be used for both websites.</p><label>Email</label><input id="email" type="email" autocomplete="email"><label>Password</label><span class="password-wrap"><input id="password" type="password" autocomplete="current-password"><button type="button" class="password-eye" data-password-toggle="password" aria-label="Show password" aria-pressed="false" title="Show password"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></span><div class="auth-actions"><button id="signin">Sign in</button><button id="signup" class="secondary">Create account</button><button id="forgotPassword" type="button" class="secondary">Forgot password?</button></div><p id="authmsg" class="note" aria-live="polite"></p></section>
 <div id="sheet"><div class="card character-details"><h2>Character</h2><div class="character-toolbar"><div class="character-picker"><label for="characters">Character</label><select id="characters" aria-label="Choose character"><option value="">Select character</option></select></div><div class="character-toolbar-buttons"><span id="saveStatus" class="note" aria-live="polite"></span></div><p id="message"></p></div><div class="fields character-fields"><div class="character-stat-row"><div class="character-class"><label>Class</label><select data-field="class"><option value="">Choose class</option><option>Knight</option><option>Huntsman</option><option>Magister</option><option>Noble</option><option>Merchant</option><option>Rogue</option><option>Pirate</option></select></div><div class="character-level"><label>Level</label><input data-field="level" type="number" min="1" value="1"></div><div class="character-coin"><label>Coins</label><input data-field="coin" type="number" min="0" step="1" inputmode="numeric" value="0"></div></div></div></div>
-<div class="cols"><div><section class="card"><h2>Skills</h2><div class="stat stat-head"><span>Skill</span><span>Base</span><span>Temp.</span><span>Total</span></div><div id="skills"></div><p class="note">A Skill roll uses that many d12s; keep the highest. At zero Skill, roll 2d12 and keep the lower. Bonuses and penalties change the number of dice, not the result.</p></section><section class="card"><h2>Vitals</h2><div class="vitals"><div class="vital"><small>Max Health</small><strong id="maxhealth">12</strong></div><div class="vital"><small>Evasion</small><strong id="evasion">2</strong></div><div class="vital vital-ap"><small>Action Points</small><input data-field="actionPoints" type="number" min="0" step="1" value="2" aria-label="Action Points"></div></div><div class="fields vitals-fields" style="margin-top:14px"><div><label>Health adjustment</label><input data-field="healthAdjust" type="number" value="0"></div><div><label>Evasion adjustment</label><input data-field="evasionAdjust" type="number" value="0"></div><div class="wide"><label>Current Health</label><div class="health-control"><button type="button" data-health-delta="-1" aria-label="Take 1 damage"><span>−1</span><span class="health-arrow">‹</span></button><input data-field="currentHealth" type="number" min="0" inputmode="numeric" aria-label="Current Health"><button type="button" data-health-delta="1" aria-label="Heal 1 health"><span>+1</span><span class="health-arrow">›</span></button></div></div></div><div class="condition-launch"><button type="button" id="openConditions" class="secondary">Conditions</button><div id="activeConditions" aria-live="polite"></div></div></section></div>
+<div class="cols"><div><section class="card"><div id="cisMobileClassArt" aria-hidden="true"></div><h2>Skills</h2><div class="stat stat-head"><span>Skill</span><span>Base</span><span>Temp.</span><span>Total</span></div><div id="skills"></div><p class="note">A Skill roll uses that many d12s; keep the highest. At zero Skill, roll 2d12 and keep the lower. Bonuses and penalties change the number of dice, not the result.</p></section><section class="card"><h2>Vitals</h2><div class="vitals"><div class="vital"><small>Max Health</small><strong id="maxhealth">12</strong></div><div class="vital"><small>Evasion</small><strong id="evasion">2</strong></div><div class="vital vital-ap"><small>Action Points</small><input data-field="actionPoints" type="number" min="0" step="1" value="2" aria-label="Action Points"></div></div><div class="fields vitals-fields" style="margin-top:14px"><div><label>Health adjustment</label><input data-field="healthAdjust" type="number" value="0"></div><div><label>Evasion adjustment</label><input data-field="evasionAdjust" type="number" value="0"></div><div class="wide"><label>Current Health</label><div class="health-control"><button type="button" data-health-delta="-1" aria-label="Take 1 damage"><span>−1</span><span class="health-arrow">‹</span></button><input data-field="currentHealth" type="number" min="0" inputmode="numeric" aria-label="Current Health"><button type="button" data-health-delta="1" aria-label="Heal 1 health"><span>+1</span><span class="health-arrow">›</span></button></div></div></div><div class="condition-launch"><button type="button" id="openConditions" class="secondary">Conditions</button><div id="activeConditions" aria-live="polite"></div></div></section></div>
 <div><section class="card"><h2>Character Traits</h2><div class="fields"><div><label>Edge</label><textarea data-field="edge"></textarea></div><div><label>Burden</label><textarea data-field="burden"></textarea></div><div><label>Desire</label><textarea data-field="desire"></textarea></div><div><label>Impulse</label><textarea data-field="impulse"></textarea></div><div class="wide"><label>Scars</label><div id="scarEntries"></div><button type="button" id="addScar" class="secondary">+ Add scar</button><input type="hidden" data-field="scars"></div></div></section><section class="card"><div id="cisClassArt" aria-hidden="true"></div><h2>Character Notes</h2><label>Appearance</label><textarea data-field="appearance"></textarea><label>Background</label><textarea data-field="background"></textarea><label>Class abilities</label><div id="classAbilities" class="class-abilities note" aria-live="polite">Select a class to see its abilities.</div></section></div></div>
 <section class="card"><h2>Inventory</h2><label>Weapons</label><div class="inventory-list" data-list="weapons"></div><textarea data-field="weapons" class="hidden"></textarea><label style="margin-top:18px">Potions</label><div class="inventory-list" data-list="potions"></div><textarea data-field="potions" class="hidden"></textarea><label style="margin-top:18px">Miscellaneous</label><div class="inventory-list" data-list="inventory"></div><textarea data-field="inventory" class="hidden"></textarea></section><section class="card"><h2>Notes</h2><textarea data-field="notes" style="min-height:140px"></textarea></section>
 <div class="delete-character-footer"><button id="delete" type="button" class="secondary">Delete character</button></div></div></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><div id="conditionsOverlay" class="conditions-overlay" hidden></div><aside id="conditionsDrawer" class="conditions-drawer" role="dialog" aria-label="Conditions" aria-modal="true" aria-hidden="true"><div class="drawer-heading"><h2>Conditions</h2><button type="button" id="closeConditions" class="secondary">Done ›</button></div><div id="conditions" class="checks"></div><div id="drunk-context" class="hidden"><label>Drunk: Charm interaction<select id="drunkModifier"><option value="0">Not applicable</option><option value="1">Friendly (+1 Charm)</option><option value="-1">Unfriendly (−1 Charm)</option></select></label></div><p class="note">Condition penalties automatically update Skills and Evasion. Periodic Health loss and movement restrictions are GM-managed.</p></aside><div id="conditionInfoOverlay" class="condition-info-overlay" hidden><div class="condition-info-box" role="dialog" aria-modal="true" aria-labelledby="conditionInfoTitle"><div class="drawer-heading"><h2 id="conditionInfoTitle"></h2><button type="button" id="closeConditionInfo" class="secondary">Close</button></div><p id="conditionInfoText"></p></div></div><div id="profileOverlay" class="conditions-overlay" hidden></div><aside id="profileDrawer" class="conditions-drawer" role="dialog" aria-label="Profile" aria-modal="true" aria-hidden="true"><div class="drawer-heading"><h2>Profile</h2><button type="button" id="closeProfile" class="secondary">Done ›</button></div><label style="margin-top:24px">Email</label><p id="who" class="profile-email"></p><div class="handbook-setting"><a href="./handbook.html" class="secondary" style="display:block;text-align:center;padding:12px 16px;border:1px solid #b87d67;border-radius:7px;color:#f2e4d5;text-decoration:none;margin-top:18px">Open Handbook</a></div><div class="theme-settings"><h3>Appearance</h3><button type="button" class="appearance-picker" data-open-appearance="theme"><span>Theme</span><strong id="currentThemeLabel">Charcoal</strong><span aria-hidden="true">›</span></button></div><div id="appearanceDrawer" class="appearance-drawer" aria-hidden="true" hidden><div class="drawer-heading"><h2 id="appearanceDrawerTitle">Choose Theme</h2><button id="closeAppearanceDrawer" type="button" class="secondary">Done ›</button></div><div id="appearanceChoices" class="appearance-choices"></div></div><button id="changePassword" type="button" class="secondary" style="width:100%;margin-top:18px">Change password</button><button id="signout" class="secondary profile-signout">Sign out</button></aside><div id="passwordResetOverlay" hidden role="presentation"><section id="passwordResetPanel" role="dialog" aria-modal="true" aria-labelledby="resetTitle"><h2 id="resetTitle">Reset password</h2><p class="note" id="resetHelp">Enter your account email to receive a password reset link.</p><div id="resetRequest"><label for="resetEmail">Email</label><input id="resetEmail" type="email" autocomplete="email"><button type="button" id="sendResetEmail">Send reset link</button></div><div id="resetNewPassword" hidden><label for="newPassword">New password</label><input id="newPassword" type="password" autocomplete="new-password" minlength="6"><label for="confirmNewPassword">Confirm new password</label><input id="confirmNewPassword" type="password" autocomplete="new-password" minlength="6"><button type="button" id="saveNewPassword">Save new password</button></div><p id="resetMessage" class="note" role="status"></p><button type="button" class="secondary" id="closePasswordReset">Cancel</button></section></div><script>
@@ -165,35 +168,35 @@ function updateClassBackground(){
  const current=field('class')?.value||'';
  if(current===lastClassArt){positionClassArtForViewport();return;}
  lastClassArt=current;
- const holder=document.getElementById('cisClassArt');
- if(!holder)return;
- holder.replaceChildren();
- for(const file of classArtFiles[current]||[]){
+ const desktopArt=document.getElementById('cisClassArt');
+ const mobileArt=document.getElementById('cisMobileClassArt');
+ if(!desktopArt||!mobileArt)return;
+ for(const holder of [desktopArt,mobileArt]){
+  holder.replaceChildren();
+  for(const file of classArtFiles[current]||[]){
    const img=document.createElement('img');
    img.alt='';img.decoding='async';img.src='class-art/'+file;
    img.onerror=()=>img.remove();
    holder.appendChild(img);
+  }
  }
  positionClassArtForViewport();
 }
 document.querySelector('[data-field="class"]')?.addEventListener('change',updateClassBackground);
 function positionClassArtForViewport(){
- const art=document.getElementById('cisClassArt');
- const notes=document.querySelector('#sheet .card:has(> [data-field="appearance"])');
+ const mobileArt=document.getElementById('cisMobileClassArt');
  const skills=document.querySelector('#sheet .card:has(> #skills)');
- if(!art||!notes||!skills)return;
+ if(!mobileArt||!skills)return;
  const mobile=window.matchMedia('(max-width:750px)').matches;
- const destination=mobile?skills:notes;
- if(art.parentElement!==destination)destination.insertBefore(art,destination.firstChild);
- skills.classList.toggle('class-art-skills',mobile && art.children.length>0);
+ skills.classList.toggle('class-art-skills',mobile && mobileArt.children.length>0);
  if(mobile){
   const finesse=[...skills.querySelectorAll('#skills .stat > strong')].find(el=>el.textContent.trim()==='Finesse');
   if(finesse){
    const top=skills.getBoundingClientRect().top;
    const feet=finesse.getBoundingClientRect().top-top+finesse.getBoundingClientRect().height;
-   art.style.setProperty('--cis-mobile-art-height',Math.max(130,Math.round(feet-12))+'px');
+   mobileArt.style.setProperty('--cis-mobile-art-height',Math.max(130,Math.round(feet-12))+'px');
   }
- }else{art.style.removeProperty('--cis-mobile-art-height');}
+ }
 }
 window.addEventListener('resize',positionClassArtForViewport);
 
