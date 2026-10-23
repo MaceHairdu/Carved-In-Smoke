@@ -107,27 +107,22 @@ body[data-theme]:not([data-theme="charcoal"]):not([data-theme="ember"]) header b
  #sheet .character-details .character-level .number-stepper input,#sheet .character-details .character-coin .number-stepper input{min-height:49px}
 }
 </style><style id="auth-symmetric-buttons">#login .auth-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:18px}#login .auth-actions button{width:100%;min-width:0;min-height:46px;margin:0;padding:10px 12px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.25}#login .auth-actions #forgotPassword{grid-column:1/-1}@media(max-width:420px){#login .auth-actions{gap:9px}#login .auth-actions button{padding:10px 7px;font-size:14px}}</style><style id="class-background-art-styles">
-/* Full-color class portraits share the right side of Character Notes. */
+/* Desktop: portraits form a measured, centered group beside the fields. */
 #sheet .card:has(> #cisClassArt){position:relative;isolation:isolate;overflow:hidden}
-#cisClassArt{position:absolute;top:28px;right:36px;width:43%;height:270px;overflow:visible;pointer-events:none;z-index:0}
-#cisClassArt img{position:absolute;bottom:0;top:auto;height:278px;width:auto;max-width:none;object-fit:contain;object-position:bottom center;opacity:1;filter:none}
-#cisClassArt img:first-child{left:0;right:auto;transform:none}
-#cisClassArt img:last-child:not(:first-child){right:-3%;left:auto;transform:scaleX(-1)}
-#cisClassArt img:only-child{right:50%;left:auto;transform:translateX(50%) scaleX(-1)}
-/* The kneeling Huntsman is intentionally smaller; her bow may overlap the male figure. */
-#cisClassArt img[src$="Huntsman-M.webp"]{height:290px;left:0}
-#cisClassArt img[src$="Huntsman-F.webp"]{height:215px;right:0;z-index:1}
+#cisClassArt{position:absolute;top:18px;right:18px;width:max-content;height:290px;display:flex;align-items:flex-end;justify-content:center;pointer-events:none;z-index:0;gap:0}
+#cisClassArt img{position:relative;top:auto;left:auto;right:auto;bottom:auto;height:278px;width:auto;max-width:none;flex:none;object-fit:contain;opacity:1;filter:none;transform:none}
+#cisClassArt img:last-child:not(:first-child){transform:scaleX(-1)}
+#cisClassArt img:only-child{transform:scaleX(-1)}
+#cisClassArt img[src$="Huntsman-M.webp"]{height:290px}
+#cisClassArt img[src$="Huntsman-F.webp"]{height:215px;margin-left:-24px;z-index:1}
 #sheet .card:has(> #cisClassArt)>:not(#cisClassArt){position:relative;z-index:1}
 #sheet .card:has(> #cisClassArt)>textarea[data-field="appearance"],
-#sheet .card:has(> #cisClassArt)>textarea[data-field="background"]{display:block;width:65%;min-width:0;background:#171d20;resize:vertical}
-/* Classes without illustrations get the full-width editing fields. */
+#sheet .card:has(> #cisClassArt)>textarea[data-field="background"]{display:block;width:calc(100% - var(--cis-portrait-width, 35%) - 12px);min-width:0;background:#171d20;resize:vertical}
 #sheet .card:has(> #cisClassArt:empty)>textarea[data-field="appearance"],
 #sheet .card:has(> #cisClassArt:empty)>textarea[data-field="background"]{width:100%}
 @media(max-width:750px){
-#cisClassArt{width:43%;right:8px;height:255px;top:35px}
-#cisClassArt img{height:260px}
-#cisClassArt img[src$="Huntsman-M.webp"]{height:270px}
-#cisClassArt img[src$="Huntsman-F.webp"]{height:195px}
+#sheet .card:has(> #cisClassArt)>textarea[data-field="appearance"],
+#sheet .card:has(> #cisClassArt)>textarea[data-field="background"]{width:100%}
 }
 
 #cisMobileClassArt{display:none}
@@ -167,6 +162,14 @@ function data(){for(const k of ['weapons','potions','inventory'])syncItems(k);le
 
 const classArtFiles={Knight:['Knight-M.webp','Knight-F.webp'],Huntsman:['Huntsman-M.webp','Huntsman-F.webp'],Magister:['Magister-F.webp'],Noble:['Noble-M.webp'],Merchant:['Merchant-M.webp']};
 let lastClassArt='';
+function sizeDesktopClassArt(){
+ const art=document.getElementById('cisClassArt');
+ const card=art?.parentElement;
+ if(!art||!card)return;
+ const width=art.children.length?Math.ceil(art.getBoundingClientRect().width):0;
+ card.style.setProperty('--cis-portrait-width',width+'px');
+}
+window.addEventListener('resize',sizeDesktopClassArt);
 function updateClassBackground(){
  const current=field('class')?.value||'';
  if(current===lastClassArt){positionClassArtForViewport();return;}
@@ -179,11 +182,13 @@ function updateClassBackground(){
   for(const file of classArtFiles[current]||[]){
    const img=document.createElement('img');
    img.alt='';img.decoding='async';img.src='class-art/'+file;
-   img.onerror=()=>img.remove();
+   img.onerror=()=>{img.remove();sizeDesktopClassArt()};
+   img.onload=sizeDesktopClassArt;
    holder.appendChild(img);
   }
  }
  positionClassArtForViewport();
+ sizeDesktopClassArt();
 }
 document.querySelector('[data-field="class"]')?.addEventListener('change',updateClassBackground);
 function positionClassArtForViewport(){
