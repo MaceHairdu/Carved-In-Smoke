@@ -272,9 +272,8 @@ function addPotionItem(value='',focus=false){
  function update(){
   const homebrew=select.value==='__other__';customName.hidden=!homebrew;customDesc.hidden=!homebrew;
   info.disabled=!select.value;
-  syncItems('potions');scheduleSave();
  }
- select.onchange=()=>{if(select.value==='__other__')customName.focus();update()};
+ select.onchange=()=>{update();syncItems('potions');scheduleSave();if(select.value==='__other__')customName.focus()};
  customName.oninput=customDesc.oninput=()=>{syncItems('potions');scheduleSave()};
  info.onclick=()=>{const homebrew=select.value==='__other__';showPotionInfo(homebrew?customName.value:select.value,homebrew?customDesc.value:handbookPotions[select.value])};
  del.onclick=()=>{row.remove();syncItems('potions');scheduleSave()};
