@@ -207,10 +207,14 @@ function sizeDesktopClassArt(){
    const ctx=canvas.getContext('2d',{willReadFrequently:true});
    ctx.drawImage(img,0,0);
    const data=ctx.getImageData(0,0,canvas.width,canvas.height).data;
-   let minX=canvas.width,maxX=-1;
+   const columnCounts=new Uint32Array(canvas.width);
    for(let yy=0;yy<canvas.height;yy++)for(let xx=0;xx<canvas.width;xx++){
-    if(data[(yy*canvas.width+xx)*4+3]>24){minX=Math.min(minX,xx);maxX=Math.max(maxX,xx)}
+    if(data[(yy*canvas.width+xx)*4+3]>48)columnCounts[xx]++;
    }
+   // Ignore isolated stray pixels when determining the character's visible edges.
+   const threshold=Math.max(3,Math.ceil(canvas.height*.012));
+   let minX=canvas.width,maxX=-1;
+   for(let xx=0;xx<canvas.width;xx++)if(columnCounts[xx]>=threshold){minX=Math.min(minX,xx);maxX=xx}
    if(maxX>=0)box={left:minX,right:maxX+1};
   }catch(e){/* fallback to full image width */}
   const scale=img.getBoundingClientRect().height/img.naturalHeight;
@@ -224,7 +228,11 @@ function sizeDesktopClassArt(){
   cursor+=item.width+between;
  }
  art.style.right='5%';
- const available=cardWidth-padding*2-rightGap-total-leftGap;
+ // Field edge and artwork edge use the same card coordinate system.
+ // The art's right edge is exactly rightGap from the card's right edge.
+ const visibleArtLeft=cardWidth-rightGap-total;
+ const fieldRight=visibleArtLeft-leftGap;
+ const available=fieldRight-padding;
  card.style.setProperty('--cis-notes-width',(images.length?Math.max(100,available):cardWidth-padding*2)+'px');
  card.style.setProperty('--cis-portrait-width',total+'px');
 }
