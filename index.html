@@ -193,100 +193,54 @@ function data(){for(const k of ['weapons','potions','inventory'])syncItems(k);le
 
 const classArtFiles={Knight:['Knight-M.webp','Knight-F.webp'],Huntsman:['Huntsman-M.webp','Huntsman-F.webp'],Magister:['Magister-M.webp','Magister-F.webp'],Noble:['Noble-M.webp'],Merchant:['Merchant-M.webp'],Rogue:['Rogue-M.webp']};
 let lastClassArt='';
+// DESKTOP ART PIXEL CONTROLS — edit each character independently.
+// height: image height in CSS pixels; x: horizontal shift; y: vertical shift.
+// Positive x moves right; positive y moves down. No automatic shrinking.
+const classArtPixels={
+ 'Knight-M.webp':{height:390,x:0,y:0}, 'Knight-F.webp':{height:390,x:0,y:0},
+ 'Huntsman-M.webp':{height:402,x:0,y:0}, 'Huntsman-F.webp':{height:300,x:0,y:0},
+ 'Magister-M.webp':{height:390,x:0,y:0}, 'Magister-F.webp':{height:425,x:0,y:0},
+ 'Noble-M.webp':{height:390,x:0,y:0}, 'Merchant-M.webp':{height:390,x:0,y:0},
+ 'Rogue-M.webp':{height:390,x:0,y:0}
+};
 function sizeDesktopClassArt(){
- const art=document.getElementById('cisClassArt');
- const card=art?.parentElement;
- if(!art||!card)return;
- const cardWidth=card.getBoundingClientRect().width;
+ const art=document.getElementById('cisClassArt'),card=art?.parentElement;
+ if(!art||!card||window.matchMedia('(max-width:750px)').matches)return;
  const images=[...art.querySelectorAll('img')].filter(img=>img.complete&&img.naturalWidth);
- const tightRight=images.some(img=>img.src.endsWith('Huntsman-F.webp')||img.src.endsWith('Noble-M.webp'));
- const rightGap=cardWidth*(tightRight?.0001:.05), leftGap=cardWidth*.05;
- const huntsmanPair=images.length===2&&images.every(img=>img.src.includes('Huntsman-'));
- const between=cardWidth*(huntsmanPair?-.01:.005);
- const padding=parseFloat(getComputedStyle(card).paddingLeft)||18;
- if(window.matchMedia('(max-width:750px)').matches)return;
- const bounds=images.map(img=>{
-  let box={left:0,right:img.naturalWidth,top:0,bottom:img.naturalHeight};
-  try{
-   const canvas=document.createElement('canvas');
-   canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
-   const ctx=canvas.getContext('2d',{willReadFrequently:true});
-   ctx.drawImage(img,0,0);
-   const data=ctx.getImageData(0,0,canvas.width,canvas.height).data;
-   const columnCounts=new Uint32Array(canvas.width);
-   const rowCounts=new Uint32Array(canvas.height);
-   for(let yy=0;yy<canvas.height;yy++)for(let xx=0;xx<canvas.width;xx++){
-    if(data[(yy*canvas.width+xx)*4+3]>48){columnCounts[xx]++;rowCounts[yy]++;}
-   }
-   // Ignore isolated stray pixels when determining the character's visible edges.
-   const threshold=Math.max(3,Math.ceil(canvas.height*.012));
-   let minX=canvas.width,maxX=-1;
-   for(let xx=0;xx<canvas.width;xx++)if(columnCounts[xx]>=threshold){minX=Math.min(minX,xx);maxX=xx}
-   let minY=canvas.height,maxY=-1;
-   const rowThreshold=Math.max(3,Math.ceil(canvas.width*.012));
-   for(let yy=0;yy<canvas.height;yy++)if(rowCounts[yy]>=rowThreshold){minY=Math.min(minY,yy);maxY=yy}
-   if(maxX>=0)box={left:minX,right:maxX+1,top:minY<canvas.height?minY:0,bottom:maxY>=0?maxY+1:canvas.height};
-  }catch(e){/* fallback to full image width */}
-  const scale=img.getBoundingClientRect().height/img.naturalHeight;
-  return {img,left:box.left*scale,width:(box.right-box.left)*scale,top:box.top*scale,bottom:box.bottom*scale};
+ if(!images.length){card.style.removeProperty('--cis-notes-width');return;}
+ const cardWidth=card.getBoundingClientRect().width;
+ const gap=8,items=images.map(img=>{
+  const file=img.src.split('/').pop(),settings=classArtPixels[file]||{height:390,x:0,y:0};
+  const height=settings.height,width=img.naturalWidth*height/img.naturalHeight;
+  return {img,height,width,x:settings.x||0,y:settings.y||0};
  });
- const total=bounds.reduce((sum,item)=>sum+item.width,0)+Math.max(0,bounds.length-1)*between;
+ const total=items.reduce((n,item)=>n+item.width,0)+gap*(items.length-1);
+ const rightGap=cardWidth*.025;
  art.style.width=total+'px';
+ art.style.height='440px';
+ art.style.right=rightGap+'px';
+ art.style.top='8px';
+ art.style.display='block';
  let cursor=0;
- for(const item of bounds){
-  item.img.style.left=(cursor-item.left)+'px';
-  cursor+=item.width+between;
+ for(const item of items){
+  const img=item.img;
+  img.style.position='absolute';
+  img.style.setProperty('height',item.height+'px','important');
+  img.style.setProperty('width',item.width+'px','important');
+  img.style.setProperty('max-width','none','important');
+  img.style.setProperty('max-height','none','important');
+  img.style.setProperty('transform','none','important');
+  img.style.setProperty('margin','0','important');
+  img.style.setProperty('top','auto','important');
+  img.style.setProperty('bottom',(0-item.y)+'px','important');
+  img.style.setProperty('left',(cursor+item.x)+'px','important');
+  img.style.right='auto';
+  cursor+=item.width+gap;
  }
- art.style.right=tightRight?'0.01%':'5%';
- // Field edge and artwork edge use the same card coordinate system.
- // The art's right edge is exactly rightGap from the card's right edge.
- const visibleArtLeft=cardWidth-rightGap-total;
- const fieldRight=visibleArtLeft-leftGap;
- const available=fieldRight-padding;
- card.style.setProperty('--cis-notes-width',(images.length?Math.max(100,available):cardWidth-padding*2)+'px');
+ const padding=parseFloat(getComputedStyle(card).paddingLeft)||18;
+ const available=Math.max(100,cardWidth-rightGap-total-cardWidth*.04-padding);
+ card.style.setProperty('--cis-notes-width',available+'px');
  card.style.setProperty('--cis-portrait-width',total+'px');
- // Center the VISIBLE pixels vertically between the heading and Class Abilities.
- // Do not use transparent image edges to determine headroom or footroom.
- if(images.length){
-  art.style.top='8px';
-  const cardRect=card.getBoundingClientRect();
-  const heading=card.querySelector('h2');
-  const abilities=card.querySelector('#classAbilities');
-  if(heading&&abilities){
-   const areaTop=heading.getBoundingClientRect().bottom-cardRect.top+8;
-   const label=abilities.previousElementSibling;
-   const areaBottom=(label||abilities).getBoundingClientRect().top-cardRect.top-8;
-   let visibleTop=Infinity,visibleBottom=-Infinity;
-   for(const item of bounds){
-    const rect=item.img.getBoundingClientRect();
-    visibleTop=Math.min(visibleTop,rect.top-cardRect.top+item.top);
-    visibleBottom=Math.max(visibleBottom,rect.top-cardRect.top+item.bottom);
-   }
-   if(Number.isFinite(visibleTop)&&areaBottom>areaTop){
-    const offset=(areaTop+areaBottom-visibleTop-visibleBottom)/2;
-    art.style.top=(8+offset)+'px';
-    // The Magister's spell smoke may reach the top of the card, while her
-    // feet retain the same safe clearance above the next field.
-    const female=bounds.find(item=>item.img.src.endsWith('Magister-F.webp'));
-    if(female){
-     const desiredTop=2;
-     const currentTop=visibleTop+offset;
-     female.img.style.bottom='auto';
-     female.img.style.top=(desiredTop-(8+offset)-female.top)+'px';
-     // If the spell would otherwise extend below the available space,
-     // keep the bottom safe by shrinking only this portrait proportionally.
-     const bottomAfter=desiredTop+(female.bottom-female.top);
-     const safeBottom=areaBottom-10;
-     if(bottomAfter>safeBottom){
-      const currentHeight=female.img.getBoundingClientRect().height;
-      const ratio=(safeBottom-desiredTop)/(female.bottom-female.top);
-      female.img.style.height=Math.max(1,currentHeight*ratio)+'px';
-      female.img.style.top=(desiredTop-(8+offset)-female.top*ratio)+'px';
-     }
-    }
-   }
-  }
- }
 }
 window.addEventListener('resize',sizeDesktopClassArt);
 function updateClassBackground(){
