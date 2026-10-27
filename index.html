@@ -169,7 +169,9 @@ body[data-theme]:not([data-theme="charcoal"]):not([data-theme="ember"]) header b
 .trait-label-row{display:flex;align-items:center;gap:7px;margin-bottom:5px}
 .trait-label-row label{margin:0}
 .trait-info{width:18px;height:18px;min-width:18px;padding:0;border:1px solid #aab4b9;border-radius:50%;background:transparent;color:#cbd3d7;font:bold 12px Georgia,serif;cursor:pointer;line-height:1}
-.trait-info-panel{font-size:12px;line-height:1.45;color:#e4e5e2;background:#192025;border:1px solid #65727a;border-radius:6px;padding:10px;margin:3px 0 8px}
+.trait-info-panel{position:fixed;z-index:9999;max-width:min(350px,calc(100vw - 24px));font-size:13px;line-height:1.5;color:#e4e5e2;background:#192025;border:1px solid #87939a;border-radius:9px;padding:16px 34px 16px 15px;box-shadow:0 8px 28px #0009}
+.trait-info-panel[hidden]{display:none!important}
+.trait-info-close{position:absolute;top:5px;right:6px;min-width:24px;height:24px;padding:0;border:0;background:transparent;color:#e4e5e2;font-size:19px;line-height:1;cursor:pointer}
 textarea[data-field="edge"]::placeholder,textarea[data-field="burden"]::placeholder,textarea[data-field="desire"]::placeholder,textarea[data-field="impulse"]::placeholder{color:#909da5;opacity:1;font-size:13px;line-height:1.35}
 </style></head><body><header><h1>CARVED IN SMOKE</h1><button id="openProfile" class="secondary hidden profile-trigger" type="button" aria-label="Open settings" title="Settings"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2.5h4l.6 2.3a7.5 7.5 0 0 1 1.7 1l2.3-.7 2 3.5-1.7 1.6a8 8 0 0 1 0 2l1.7 1.6-2 3.5-2.3-.7a7.5 7.5 0 0 1-1.7 1L14 20h-4l-.6-2.4a7.5 7.5 0 0 1-1.7-1l-2.3.7-2-3.5 1.7-1.6a8 8 0 0 1 0-2L3.4 8.6l2-3.5 2.3.7a7.5 7.5 0 0 1 1.7-1L10 2.5Z" transform="translate(0 0.75)"/><circle cx="12" cy="11.75" r="3"/></svg></button></header><main>
 <section id="login" class="card"><h2>Character Records</h2><p class="note">Sign in to create and save your characters. The same Supabase account can be used for both websites.</p><label>Email</label><input id="email" type="email" autocomplete="email"><label>Password</label><span class="password-wrap"><input id="password" type="password" autocomplete="current-password"><button type="button" class="password-eye" data-password-toggle="password" aria-label="Show password" aria-pressed="false" title="Show password"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></span><div class="auth-actions"><button id="signin">Sign in</button><button id="signup" class="secondary">Create account</button><button id="forgotPassword" type="button" class="secondary">Forgot password?</button></div><p id="authmsg" class="note" aria-live="polite"></p></section>
@@ -197,7 +199,9 @@ function sizeDesktopClassArt(){
  const cardWidth=card.getBoundingClientRect().width;
  const images=[...art.querySelectorAll('img')].filter(img=>img.complete&&img.naturalWidth);
  const tightRight=images.some(img=>img.src.endsWith('Huntsman-F.webp')||img.src.endsWith('Noble-M.webp'));
- const rightGap=cardWidth*(tightRight?.0001:.05), leftGap=cardWidth*.05, between=cardWidth*.005;
+ const rightGap=cardWidth*(tightRight?.0001:.05), leftGap=cardWidth*.05;
+ const huntsmanPair=images.length===2&&images.every(img=>img.src.includes('Huntsman-'));
+ const between=cardWidth*(huntsmanPair?-.01:.005);
  const padding=parseFloat(getComputedStyle(card).paddingLeft)||18;
  if(window.matchMedia('(max-width:750px)').matches)return;
  const bounds=images.map(img=>{
@@ -417,13 +421,41 @@ document.addEventListener('input',e=>{const input=e.target;if(!(input instanceof
 document.addEventListener('animationend',e=>{if(e.target.classList?.contains('number-changed'))e.target.classList.remove('number-changed')});
 })();
 </script><script id="trait-info-help-script">
-document.addEventListener('click',function(e){
- const btn=e.target.closest('.trait-info');
- if(!btn)return;
- const panel=btn.parentElement.nextElementSibling;
- const open=panel.hidden;
- document.querySelectorAll('.trait-info-panel').forEach(el=>el.hidden=true);
- document.querySelectorAll('.trait-info').forEach(el=>el.setAttribute('aria-expanded','false'));
- panel.hidden=!open;btn.setAttribute('aria-expanded',String(open));
-});
+(function(){
+ function closeTraitInfo(){
+  document.querySelectorAll('.trait-info-panel').forEach(el=>{el.hidden=true;el.style.removeProperty('left');el.style.removeProperty('top')});
+  document.querySelectorAll('.trait-info').forEach(el=>el.setAttribute('aria-expanded','false'));
+ }
+ document.querySelectorAll('.trait-info-panel').forEach(panel=>{
+  panel.setAttribute('role','dialog');
+  panel.setAttribute('aria-label','Trait explanation');
+  const close=document.createElement('button');
+  close.type='button';close.className='trait-info-close';close.textContent='×';close.setAttribute('aria-label','Close explanation');
+  panel.appendChild(close);
+ });
+ document.addEventListener('click',function(e){
+  if(e.target.closest('.trait-info-close')){closeTraitInfo();return}
+  const btn=e.target.closest('.trait-info');
+  if(btn){
+   const panel=btn.parentElement.nextElementSibling;
+   const wasOpen=!panel.hidden;
+   closeTraitInfo();
+   if(!wasOpen){
+    panel.hidden=false;btn.setAttribute('aria-expanded','true');
+    const rect=btn.getBoundingClientRect();
+    const width=panel.getBoundingClientRect().width;
+    const height=panel.getBoundingClientRect().height;
+    const left=Math.max(12,Math.min(rect.left,window.innerWidth-width-12));
+    let top=rect.bottom+8;
+    if(top+height>window.innerHeight-12)top=Math.max(12,rect.top-height-8);
+    panel.style.left=left+'px';panel.style.top=top+'px';
+   }
+   return;
+  }
+  if(!e.target.closest('.trait-info-panel'))closeTraitInfo();
+ });
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeTraitInfo()});
+ window.addEventListener('scroll',closeTraitInfo,true);
+ window.addEventListener('resize',closeTraitInfo);
+})();
 </script></body></html>
