@@ -14,153 +14,309 @@ body[data-theme] header{background:var(--book-panel)!important;border-color:var(
 body[data-theme] header :is(a,strong){color:var(--book-ink)!important}
 body[data-theme] .toc-entry:active,body[data-theme] .toc-entry:focus-visible{background:var(--book-bg)!important}
 </style></head><body><header><a href="./" id="sheetLink">← Character Sheet</a><strong>HANDBOOK</strong><span class="header-end" aria-hidden="true"></span></header><main><div class="book"><button id="tocButton" class="floating-contents" hidden type="button">← Table of Contents</button><div id="toc"><h1 class="book-title">CARVED IN SMOKE</h1><p class="book-subtitle">Player Handbook · Table of Contents</p><section class="toc-group"><h2>Rules</h2><div class="toc-list"><button class="toc-entry" type="button" data-go="0"><span class="toc-index">01</span><span>Character Skills</span><span class="arrow">›</span></button><button class="toc-entry" type="button" data-go="1"><span class="toc-index">02</span><span>Combat</span><span class="arrow">›</span></button><button class="toc-entry" type="button" data-go="2"><span class="toc-index">03</span><span>Evasion</span><span class="arrow">›</span></button><button class="toc-entry" type="button" data-go="3"><span class="toc-index">04</span><span>Health and Rests</span><span class="arrow">›</span></button><button class="toc-entry" type="button" data-go="12"><span class="toc-index">13</span><span>Statuses</span><span class="arrow">›</span></button><button class="toc-entry" type="button" data-go="13"><span class="toc-index">14</span><span>Death</span><span class="arrow">›</span></button><button class="toc-entry" type="button" data-go="16"><span class="toc-index">17</span><span>Scars</span><span class="arrow">›</span></button><button class="toc-entry" type="button" data-go="17"><span class="toc-index">18</span><span>Character Creation</span><span class="arrow">›</span></button><button class="toc-entry" type="button" data-go="18"><span class="toc-index">19</span><span>Character Traits</span><span class="arrow">›</span></button></div></section><section class="toc-group"><h2>Character Classes</h2><div class="toc-list"><button class="toc-entry" type="button" data-go="4"><span class="toc-index">05</span><span>Classes</span><span class="arrow">›</span></button><button class="toc-entry" type="button" data-go="5"><span class="toc-index">06</span><span>Knight</span><span class="arrow">›</span></button><button class="toc-entry" type="button" data-go="6"><span class="toc-index">07</span><span>Huntsman</span><span class="arrow">›</span></button><button class="toc-entry" type="button" data-go="7"><span class="toc-index">08</span><span>Magister</span><span class="arrow">›</span></button><button class="toc-entry" type="button" data-go="8"><span class="toc-index">09</span><span>Noble</span><span class="arrow">›</span></button><button class="toc-entry" type="button" data-go="9"><span class="toc-index">10</span><span>Merchant</span><span class="arrow">›</span></button><button class="toc-entry" type="button" data-go="10"><span class="toc-index">11</span><span>Rogue</span><span class="arrow">›</span></button><button class="toc-entry" type="button" data-go="11"><span class="toc-index">12</span><span>Pirate</span><span class="arrow">›</span></button></div></section><section class="toc-group"><h2>Equipment</h2><div class="toc-list"><button class="toc-entry" type="button" data-go="14"><span class="toc-index">15</span><span>Weapons</span><span class="arrow">›</span></button><button class="toc-entry" type="button" data-go="15"><span class="toc-index">16</span><span>Potions</span><span class="arrow">›</span></button></div></section><section class="toc-group"><h2>Game Master</h2><div class="toc-list"><button class="toc-entry" type="button" data-go="19"><span class="toc-index">20</span><span>GM NOTES</span><span class="arrow">›</span></button><button class="toc-entry" type="button" data-go="20"><span class="toc-index">21</span><span>Leveling Up</span><span class="arrow">›</span></button><button class="toc-entry" type="button" data-go="21"><span class="toc-index">22</span><span>Potions and Magic</span><span class="arrow">›</span></button></div></section></div><article class="chapter" id="chapter-0" data-chapter="0" hidden><div class="eyebrow">Rules <span>· 1 / 22</span></div><h1>Character Skills</h1><div class="chapter-body">
-
-<ul class="rule-list skill-list"><li><strong>Grit</strong> — Strength and physical power</li><li><strong>Finesse</strong> — Dexterity and fine motor skills</li><li><strong>Charm</strong> — Charisma in social situations</li><li><strong>Focus</strong> — Mental fortitude</li><li><strong>Luck</strong> — Just how lucky you are</li></ul>
-<p>When making an action roll, whether in combat or outside of combat, the player will “Roll (Skill)” such as “Roll Grit,” or “Roll Charm.” To do this, the player will take a number of d12s equal to their skill points in that particular skill, and roll all of those dice at once. Then the player will take the highest number they rolled as the result. There’s no math— simply roll the amount of dice equal to your skill stat and take the highest result. If the Skill you’re rolling has 0 points, Roll 2d12 and take the lower result.</p>
+<p>Grit - Strength and physical power</p>
+<p>Finesse - Dexterity and fine motor skills</p>
+<p>Charm - Charisma in social situations</p>
+<p>Focus - Mental fortitude</p>
+<p>Luck - Just how lucky you are</p>
+<p>When making an action roll, whether in combat or outside of combat, the player will “Roll (Skill)” such as “Roll Grit,” or “Roll Charm.”</p>
+<p>To do this, the player will take a number of d12s equal to their skill points in that particular skill, and roll all of those dice at once. Then the player will take the highest number they rolled as the result. There’s no math— simply roll the amount of dice equal to your skill stat and take the highest result. If the Skill you’re rolling has 0 points, Roll 2d12 and take the lower result.</p>
 <p>For example, the player declares they want to climb a fence. To climb, you need strength, so the GM tells the player to “Roll Grit.” The player's Grit skill has 3 points, so the player will roll 3d12. The results are 6, 8, and 10. 10 is the highest result, so the player tells the GM “I rolled a 10,” and the GM will tell the player whether or not they were able to climb the fence based on if the 10 met or exceeded the secret Difficulty number the GM set prior to the roll.</p>
 <p>Whenever a character levels up, they may add 1 point to any skill.</p>
 <p>Receiving a Scar, item, or status effect may reduce or increase points for skills permanently or temporarily.</p>
 </div></article>
 <article class="chapter" id="chapter-1" data-chapter="1" hidden><div class="eyebrow">Rules <span>· 2 / 22</span></div><h1>Combat</h1><div class="chapter-body">
 <p>Combat turn order is whatever makes the most narrative sense. The GM should prompt players to take a turn when they haven’t made any moves in a while, and have the enemy NPCs jump in when it makes sense.</p>
-<ul class="rule-list"><li>On a player's turn, the player has 2 Action Points they can spend. Attacking and moving are the two most common actions, though the GM can determine if what a player wants to do will take an Action Point.</li><li>Players may not attack twice in the same turn.</li></ul>
-<ul class="rule-list"><li>Using a magic item usually requires an Action Point.</li><li>Speaking does not cost an Action Point, unless the character is attempting to bargain with or intimidate another character. If a character’s speech triggers a roll of some kind, it costs an action point.</li></ul>
+<p>On a player's turn, the player has 2 Action Points they can spend. Attacking and moving are the two most common actions, though the GM can determine if what a player wants to do will take an Action Point.</p>
+<p>Players may not attack twice in the same turn.</p>
+<p>Using a magic item usually requires an Action Point.</p>
+<p>Speaking does not cost an Action Point, unless the character is attempting to bargain with or intimidate another character. If a character’s speech triggers a roll of some kind, it costs an action point.</p>
 </div></article>
 <article class="chapter" id="chapter-2" data-chapter="2" hidden><div class="eyebrow">Rules <span>· 3 / 22</span></div><h1>Evasion</h1><div class="chapter-body">
 <p>Every character has an Evasion score determined by their Finesse + Luck+ 2. Evasion is a character’s ability to avoid incoming attacks and is represented by a number that the attacker must beat on their attack roll.</p>
 <p>Some items may temporarily raise a character’s Evasion against certain kinds of attacks. If an item, potion, etc., raises a character’s Finesse or Luck, the character’s Evasion remains unchanged.</p>
 <p>Wearing armor may raise Evasion. Even though armor would make a character slower depending on how heavy it is, it adds protection and is in and of itself a way to “evade” damage. If a character is wearing armor and is attacked, if the attacker’s roll doesn’t match or beat the armor-wearer’s Evasion score, the GM may flavor this attack as having simply bounced off the armor as opposed to having missed entirely. For this reason, wearing armor can raise Evasion.</p>
 <p>Parry: If the attacking player’s highest roll matches the defending character's Evasion, the defending player may make an attack against the attacking player. This does not count as the defending players turn and does not cost an Action Point.</p>
-<p>Attacking</p>
-<p>When a character makes an attack, they roll the Skill that makes the most sense for that kind of attack. - If the result of the attack roll beats the defending character’s Evasion, the defending player takes damage equal to the weapon’s Damage Rating. Every weapon has a Damage Rating. If you are using an improvised weapon such as a rock or plank of wood, consult with the GM to determine which attack stat you would roll and its damage number. - If the attacking character’s roll is less than the defending character’s Evasion, the attacking character “missed.” - If the attack roll matches the defending character’s Evasion, the attack deals no damage and the defending character gets an opportunity to Parry.</p>
-<p>For example: Player A attacks Enemy B with a hammer. Because it’s a hammer, the GM would direct Player A to Roll Grit. Player A has 2 Grit, so they roll 2d12 and get a 4 and an 8. Because 8 is higher, we take that as the result. Then the GM compares Player A’s 8 against Enemy B’s</p>
-<p>Evasion. Enemy B’s Evasion is 5, and 8 is greater than 5, so the attack hits. The hammer has a Damage Number of 4, so Enemy B takes 4 damage.</p>
+<h2>Attacking</h2>
+<p>When a character makes an attack, they roll the Skill that makes the most sense for that kind of attack.</p>
+<p>If the result of the attack roll beats the defending character’s Evasion, the defending player takes damage equal to the weapon’s Damage Rating. Every weapon has a Damage Rating. If you are using an improvised weapon such as a rock or plank of wood, consult with the GM to determine which attack stat you would roll and its damage number.</p>
+<p>If the attacking character’s roll is less than the defending character’s Evasion, the attacking character “missed.”</p>
+<p>If the attack roll matches the defending character’s Evasion, the attack deals no damage and the defending character gets an opportunity to Parry.</p>
+<p>For example: Player A attacks Enemy B with a hammer. Because it’s a hammer, the GM would direct Player A to Roll Grit. Player A has 2 Grit, so they roll 2d12 and get a 4 and an 8. Because 8 is higher, we take that as the result. Then the GM compares Player A’s 8 against Enemy B’s Evasion. Enemy B’s Evasion is 5, and 8 is greater than 5, so the attack hits. The hammer has a Damage Number of 4, so Enemy B takes 4 damage.</p>
 </div></article>
 <article class="chapter" id="chapter-3" data-chapter="3" hidden><div class="eyebrow">Rules <span>· 4 / 22</span></div><h1>Health and Rests</h1><div class="chapter-body">
-<ul class="rule-list"><li>A character’s maximum number of Health Points is determined by their Grit + Character Level + 10.</li><li>If a player is able to boost their particular Skill score using temporary means such as potions, spells, or items, do not re-calculate Maximum Health. The only time Health should be recalculated is when a character's Skill score is changed due to leveling up or scars.</li><li>Each rest, characters roll Focus and gain Health Points back equal to the highest result.</li><li>Character’s cannot have a number of Health Points that exceeds their Maximum Health Score.</li></ul>
+<p>A character’s maximum number of Health Points is determined by their Grit + Character Level + 10.</p>
+<p>If a player is able to boost their particular Skill score using temporary means such as potions, spells, or items, do not re-calculate Maximum Health. The only time Health should be recalculated is when a character's Skill score is changed due to leveling up or scars.</p>
+<p>Each rest, characters roll Focus and gain Health Points back equal to the highest result.</p>
+<p>Character’s cannot have a number of Health Points that exceeds their Maximum Health Score.</p>
 </div></article>
 <article class="chapter" id="chapter-4" data-chapter="4" hidden><div class="eyebrow">Character Classes <span>· 5 / 22</span></div><h1>Classes</h1><div class="chapter-body">
 <p>Below are the classes you can choose to play as. Though some may imply a job, you do not have to play it that way. Work with the GM to determine how you might play a certain class without fitting into the stereotypical mold of that class. For example: you may choose the knight class, but you don’t have to wear armor, ride horses, and stick to a code of chivalry. You can use the knight class but look like a caveman, if you wanted— enjoying the perks of the knight class without ever calling yourself a “knight” within the narrative.</p>
 <p>As you level up, you will unlock more abilities. When you unlock more abilities this way, you still get to use the old abilities. It’s important to note that there are some abilities that are upgraded as your character levels up. These do not stack— the higher level ability simply replaces the lower level ability of the same name.</p>
 </div></article>
 <article class="chapter" id="chapter-5" data-chapter="5" hidden><div class="eyebrow">Character Classes <span>· 6 / 22</span></div><h1>Knight</h1><div class="chapter-body">
-<h4 class="level-title">Character Level 1:</h4>
-<ul class="rule-list"><li>Armored: +2 Maximum Health</li><li>Chivalry Training: You have extensive knowledge of weapons, armor, and combat techniques. Consult your GM to determine if your character would know about one of these particular topics in a given circumstance.</li><li>Riposte: When you Parry against an attacker, do not roll— it’s an automatic hit.</li></ul>
-<p>- Strike Rhythm: Every time you land a successful attack against an enemy, gain 1 Strike Point. If you have 3 Strike Points, your next attack deals +1 Damage.</p>
-<h4 class="level-title">Character Level 4:</h4>
-<ul class="rule-list"><li>Sure Strike: When you attack a character, they have -2 Evasion.</li><li>Armored 2: +4 Maximum Health</li><li>Strike Rhythm 2: Every time you land a successful attack against an enemy, gain 1 Strike Point. If you have 3 Strike Points, your next attack deals +2 Damage.</li></ul>
-<h4 class="level-title">Character Level 7:</h4>
-<p>- Strike Rhythm 3: Every time you land a successful attack against an enemy, gain 1 Strike Point. If you have 3 Strike Points, your next attack deals double damage.</p>
+<h2>Character Level 1:</h2>
+<p>Armored: +2 Maximum Health</p>
+<p>Chivalry Training: You have extensive knowledge of weapons, armor, and combat techniques. Consult your GM to determine if your character would know about one of these particular topics in a given circumstance.</p>
+<p>Riposte: When you Parry against an attacker, do not roll— it’s an automatic hit.</p>
+<p>Strike Rhythm: Every time you land a successful attack against an enemy, gain 1 Strike Point. If you have 3 Strike Points, your next attack deals +1 Damage.</p>
+<h2>Character Level 4:</h2>
+<p>Sure Strike: When you attack a character, they have -2 Evasion.</p>
+<p>Armored 2: +4 Maximum Health</p>
+<p>Strike Rhythm 2: Every time you land a successful attack against an enemy, gain 1 Strike Point. If you have 3 Strike Points, your next attack deals +2 Damage.</p>
+<h2>Character Level 7:</h2>
+<p>Strike Rhythm 3: Every time you land a successful attack against an enemy, gain 1 Strike Point. If you have 3 Strike Points, your next attack deals double damage.</p>
 </div></article>
 <article class="chapter" id="chapter-6" data-chapter="6" hidden><div class="eyebrow">Character Classes <span>· 7 / 22</span></div><h1>Huntsman</h1><div class="chapter-body">
-<h4 class="level-title">Character Level 1:</h4>
-<ul class="rule-list"><li>Marksman: You receive +1 Focus when using ranged weapons, and tracking/searching for a living target.</li><li>Hunting Experience: You receive +1d12 when you make an attack against an animal.</li><li>Natural Communication: You can read animals’ body language. Once per rest, you may ask an animal a simple question. The GM will respond with an answer but the number of words in their answer is limited by your character level. For example, if your character level is 3, then the GM can respond as the animal with 3 words. If the animal is hostile toward you, it may not answer.</li><li>Hunting Trip: Consult the GM to determine if there is any game to be hunted in the area. During a rest, you may choose to hunt for food. If you do, Roll Focus. On a 1-4, you get nothing. On a 5-8, you catch small game. On a 9-12, you kill large game. One small game is enough for 1 person to eat. Large game is enough for the whole party to eat. If you go hunting, you do not roll Focus to gain health.</li></ul>
-<h4 class="level-title">Character Level 4:</h4>
-<ul class="rule-list"><li>Hunting Experience 2: You receive +1d12 when making an attack against an animal and +1 Evasion when being attacked by an Animal.</li><li>Hunting Trip 2: Consult the GM to determine if there is any game to be hunted in the area. During a rest, you may choose to hunt for food. If you do, Roll Focus. On a 1-4, you catch small game. On a 5-8, you catch 2 small game. On a 9-12, you kill large game. One small game is enough for 1 person to eat. Large game is enough for the whole party to eat. If you go hunting, you do not roll Focus to gain health.</li></ul>
-<h4 class="level-title">Character Level 6:</h4>
-<p>- Hunting Experience 3: You receive +1d12 when making an attack against an animal, +1 Evasion when being attacked by an animal, and animals cannot make Parry attacks against you.</p>
+<h2>Character Level 1:</h2>
+<p>Marksman: You receive +1 Focus when using ranged weapons, and tracking/searching for a living target.</p>
+<p>Hunting Experience: You receive +1d12 when you make an attack against an animal.</p>
+<p>Natural Communication: You can read animals’ body language. Once per rest, you may ask an animal a simple question. The GM will respond with an answer but the number of words in their answer is limited by your character level. For example, if your character level is 3, then the GM can respond as the animal with 3 words. If the animal is hostile toward you, it may not answer.</p>
+<p>Hunting Trip: Consult the GM to determine if there is any game to be hunted in the area. During a rest, you may choose to hunt for food. If you do, Roll Focus. On a 1-4, you get nothing. On a 5-8, you catch small game. On a 9-12, you kill large game. One small game is enough for 1 person to eat. Large game is enough for the whole party to eat. If you go hunting, you do not roll Focus to gain health.</p>
+<h2>Character Level 4:</h2>
+<p>Hunting Experience 2: You receive +1d12 when making an attack against an animal and +1 Evasion when being attacked by an Animal.</p>
+<p>Hunting Trip 2: Consult the GM to determine if there is any game to be hunted in the area. During a rest, you may choose to hunt for food. If you do, Roll Focus. On a 1-4, you catch small game. On a 5-8, you catch 2 small game. On a 9-12, you kill large game. One small game is enough for 1 person to eat. Large game is enough for the whole party to eat. If you go hunting, you do not roll Focus to gain health.</p>
+<h2>Character Level 6:</h2>
+<p>Hunting Experience 3: You receive +1d12 when making an attack against an animal, +1 Evasion when being attacked by an animal, and animals cannot make Parry attacks against you.</p>
 </div></article>
 <article class="chapter" id="chapter-7" data-chapter="7" hidden><div class="eyebrow">Character Classes <span>· 8 / 22</span></div><h1>Magister</h1><div class="chapter-body">
-<h4 class="level-title">Character Creation:</h4>
-<p>- Choose 3 potions from the Potions Table. You begin the game with these potions. - Choose 3 potion recipes. These do not have to be the same as the 3 potions you start the game with. You begin the game with these recipes in your inventory and can brew these potions during Rests if you have the ingredients. See the Brewmaster ability for more information. As you go on your journey, you may look for more potion recipes to add to your collection. You also begin the game with the ingredients for these 3 recipes.</p>
-<h4 class="level-title">Character Level 1:</h4>
-<ul class="rule-list"><li>Brewmaster: Once per rest, you can choose to either 1) brew 1 potion of your choice that you have the recipe and ingredients for, or 2) look for potion ingredients to refill your stock. If you brew a potion, you no longer have the ingredients to brew that specific potion again until you find more ingredients. If you want to look for ingredients, name the potion you want to find ingredients for and Roll Luck to determine if you find them. On a success, you find the ingredients. If you choose to brew a potion or look for ingredients, you do not gain Health from the Rest.</li><li>Magister’s Guild: +1 Charm when speaking with other Magisters. The GM may revoke this if the other Magister is hostile toward you.</li></ul>
-<h4 class="level-title">Character Level 3:</h4>
-<p>- Potion-Throwing Experience: You get +1 Focus when throwing potions.</p>
-<h4 class="level-title">Character Level 5:</h4>
-<p>- Brewmaster 2: Once per rest, you can choose to either 1) brew 2 potions of your choice that you have the recipe and ingredients for, or 2) look for potion ingredients to refill your stock. If you brew a potion, you no longer have the ingredients to brew that specific potion again until you find more ingredients. If you want to look for ingredients, name the two potions you want to find ingredients for and Roll Luck to determine if you find them. On a success, you find the ingredients. If you choose to brew potions or look for ingredients, you do not gain Health from the Rest.</p>
-<h4 class="level-title">Character Level 6:</h4>
-<p>- Master Potion Designer: You’ve developed a way to craft potion bottles that block the potion in a certain direction. When you activate a potion by throwing it, you may declare one target in the potions range of effect that is not affected.</p>
-<h4 class="level-title">Character Level 8:</h4>
-<p>- Brewmaster 3: Once per rest, you can choose to either 1) brew 3 potions of your choice that you have the recipe and ingredients for, or 2) look for potion ingredients to refill your stock. If you brew a potion, you no longer have the ingredients to brew that specific potion again until you find more ingredients. If you want to look for ingredients, name the three potions you want to find ingredients for and Roll Luck to determine if you find them. On a success, you find the ingredients. If you choose to brew 3 potions or look for 3 sets of ingredients, you do not gain Health from the Rest, but if you only brew 1 potion or look for ingredients for 1 potion, you may still gain Health from the Rest.</p>
+<h2>Character Creation:</h2>
+<p>Choose 3 potions from the Potions Table. You begin the game with these potions.</p>
+<p>Choose 3 potion recipes. These do not have to be the same as the 3 potions you start the game with. You begin the game with these recipes in your inventory and can brew these potions during Rests if you have the ingredients. See the Brewmaster ability for more information. As you go on your journey, you may look for more potion recipes to add to your collection. You also begin the game with the ingredients for these 3 recipes.</p>
+<h2>Character Level 1:</h2>
+<p>Brewmaster: Once per rest, you can choose to either 1) brew 1 potion of your choice that you have the recipe and ingredients for, or 2) look for potion ingredients to refill your stock. If you brew a potion, you no longer have the ingredients to brew that specific potion again until you find more ingredients. If you want to look for ingredients, name the potion you want to find ingredients for and Roll Luck to determine if you find them. On a success, you find the ingredients. If you choose to brew a potion or look for ingredients, you do not gain Health from the Rest.</p>
+<p>Magister’s Guild: +1 Charm when speaking with other Magisters. The GM may revoke this if the other Magister is hostile toward you.</p>
+<h2>Character Level 3:</h2>
+<p>Potion-Throwing Experience: You get +1 Focus when throwing potions.</p>
+<h2>Character Level 5:</h2>
+<p>Brewmaster 2: Once per rest, you can choose to either 1) brew 2 potions of your choice that you have the recipe and ingredients for, or 2) look for potion ingredients to refill your stock. If you brew a potion, you no longer have the ingredients to brew that specific potion again until you find more ingredients. If you want to look for ingredients, name the two potions you want to find ingredients for and Roll Luck to determine if you find them. On a success, you find the ingredients. If you choose to brew potions or look for ingredients, you do not gain Health from the Rest.</p>
+<h2>Character Level 6:</h2>
+<p>Master Potion Designer: You’ve developed a way to craft potion bottles that block the potion in a certain direction. When you activate a potion by throwing it, you may declare one target in the potions range of effect that is not affected.</p>
+<h2>Character Level 8:</h2>
+<p>Brewmaster 3: Once per rest, you can choose to either 1) brew 3 potions of your choice that you have the recipe and ingredients for, or 2) look for potion ingredients to refill your stock. If you brew a potion, you no longer have the ingredients to brew that specific potion again until you find more ingredients. If you want to look for ingredients, name the three potions you want to find ingredients for and Roll Luck to determine if you find them. On a success, you find the ingredients. If you choose to brew 3 potions or look for 3 sets of ingredients, you do not gain Health from the Rest, but if you only brew 1 potion or look for ingredients for 1 potion, you may still gain Health from the Rest.</p>
 </div></article>
 <article class="chapter" id="chapter-8" data-chapter="8" hidden><div class="eyebrow">Character Classes <span>· 9 / 22</span></div><h1>Noble</h1><div class="chapter-body">
-<h2 class="section-title" id="section-character-creation-6">Character Creation</h2>
-<p>- Consult with the GM to determine if you begin the game with more money.</p>
-<h4 class="level-title">Character Level 1:</h4>
-<ul class="rule-list"><li>The One Percent: You are highly respected, if someone knows who you are. You get +1 Charm when speaking to someone who recognizes you, or if you can prove who you are and they know of you.</li><li>Friends in High Places: You can almost always find a nice place to stay in any populated city or town.</li><li>Nobility Armor: Some enemies may be reluctant to hurt you, due to the fear of more severe repercussions if they are caught later.</li><li>Graceful Recovery: Once between Rests, if an enemy deals 5 or more damage to you, you may reduce the damage by your Charm Score.</li></ul>
-<h4 class="level-title">Character Level 5:</h4>
-<p>- Expensive Training: If an enemy attacks you and rolls a 4 or lower, you may Parry.</p>
+<h2>Character Creation</h2>
+<p>Consult with the GM to determine if you begin the game with more money.</p>
+<h2>Character Level 1:</h2>
+<p>The One Percent: You are highly respected, if someone knows who you are. You get +1 Charm when speaking to someone who recognizes you, or if you can prove who you are and they know of you.</p>
+<p>Friends in High Places: You can almost always find a nice place to stay in any populated city or town.</p>
+<p>Nobility Armor: Some enemies may be reluctant to hurt you, due to the fear of more severe repercussions if they are caught later.</p>
+<p>Graceful Recovery: Once between Rests, if an enemy deals 5 or more damage to you, you may reduce the damage by your Charm Score.</p>
+<h2>Character Level 5:</h2>
+<p>Expensive Training: If an enemy attacks you and rolls a 4 or lower, you may Parry.</p>
 </div></article>
 <article class="chapter" id="chapter-9" data-chapter="9" hidden><div class="eyebrow">Character Classes <span>· 10 / 22</span></div><h1>Merchant</h1><div class="chapter-body">
-<h4 class="level-title">Character Creation:</h4>
-<p>- At character creation, choose an item that you peddle. Consult your GM to determine how much of this item you have. Whenever you’re in a populated area, you may try to sell your wares and make extra coin.</p>
-<h4 class="level-title">Character Level 1:</h4>
-<ul class="rule-list"><li>Master of Bargaining: You have +1 Charm when making deals, whether it’s a deal to buy or sell something, or when you’re bargaining with an enemy.</li><li>Connections: You almost always know a guy when in any town or city. Consult with your GM to determine if you know anyone.</li><li>Insider Trading: After a long rest, Roll Focus. Take the result and record it. Until your next long rest, you may choose to use that result for any of your rolls. You must choose to use it before rolling.</li></ul>
-<h4 class="level-title">Character Level 3:</h4>
-<p>- Cover the Cost: Once per rest, when you fail a roll by 1, you may add 1 to the result, making it a success. (An attack roll that matches a target’s Evasion is considered a failed roll.)</p>
-<h4 class="level-title">Character Level 4:</h4>
-<p>- Insider Trading 2: After a long rest, Roll Focus. Take the result and record it. Until your next long rest, you may choose to use that result for any roll made by you or an ally. You must choose to use it before the roll.</p>
-<h4 class="level-title">Character Level 6:</h4>
-<p>- Cover the Cost 2: Once per rest, when you or an ally fail a roll by 1, you may add 1 to the result, making it a success. (An attack roll that matches a target’s Evasion is considered a failed roll.)</p>
-<h4 class="level-title">Character Level 8:</h4>
-<p>- Insider Trading 3: After a long rest, roll Focus. Take the result and record it. Until your next long rest, you may choose to use that result for any roll. You may choose to replace a roll after it’s already been rolled.</p>
+<h2>Character Creation:</h2>
+<p>At character creation, choose an item that you peddle. Consult your GM to determine how much of this item you have. Whenever you’re in a populated area, you may try to sell your wares and make extra coin.</p>
+<h2>Character Level 1:</h2>
+<p>Master of Bargaining: You have +1 Charm when making deals, whether it’s a deal to buy or sell something, or when you’re bargaining with an enemy.</p>
+<p>Connections: You almost always know a guy when in any town or city. Consult with your GM to determine if you know anyone.</p>
+<p>Insider Trading: After a long rest, Roll Focus. Take the result and record it. Until your next long rest, you may choose to use that result for any of your rolls. You must choose to use it before rolling.</p>
+<h2>Character Level 3:</h2>
+<p>Cover the Cost: Once per rest, when you fail a roll by 1, you may add 1 to the result, making it a success. (An attack roll that matches a target’s Evasion is considered a failed roll.)</p>
+<h2>Character Level 4:</h2>
+<p>Insider Trading 2: After a long rest, Roll Focus. Take the result and record it. Until your next long rest, you may choose to use that result for any roll made by you or an ally. You must choose to use it before the roll.</p>
+<h2>Character Level 6:</h2>
+<p>Cover the Cost 2: Once per rest, when you or an ally fail a roll by 1, you may add 1 to the result, making it a success. (An attack roll that matches a target’s Evasion is considered a failed roll.)</p>
+<h2>Character Level 8:</h2>
+<p>Insider Trading 3: After a long rest, roll Focus. Take the result and record it. Until your next long rest, you may choose to use that result for any roll. You may choose to replace a roll after it’s already been rolled.</p>
 </div></article>
 <article class="chapter" id="chapter-10" data-chapter="10" hidden><div class="eyebrow">Character Classes <span>· 11 / 22</span></div><h1>Rogue</h1><div class="chapter-body">
-<h4 class="level-title">Character Level 1:</h4>
-<p>- Thieving Experience: +1 Finesse when picking locks and stealing.</p>
-<ul class="rule-list"><li>Nimble: +1 Evasion.</li><li>Shadow Figure: You are easily forgotten. If you keep an interaction brief, the NPC will forget they ever spoke with you. Consult your GM to determine how this would play out.</li><li>Assassin Training: Attacks you make using Finesse have +1 Damage.</li></ul>
-<h4 class="level-title">Character Level 3:</h4>
-<p>- Lie Detector: Roll Focus. On a success, the GM will tell you if the person you’re speaking to is lying, though the GM isn’t required to specify what the person is lying about.</p>
-<h4 class="level-title">Character Level 4:</h4>
-<p>- Second Stab: Once per rest, when you miss an attack, you may attack again (this is a free action).</p>
-<h4 class="level-title">Character Level 5:</h4>
-<ul class="rule-list"><li>Thieving Experience 2: +2 Finesse when picking locks and stealing.</li><li>Assassin Training 2: Attacks you make using Finesse have +2 Damage</li></ul>
+<h2>Character Level 1:</h2>
+<p>Thieving Experience: +1 Finesse when picking locks and stealing.</p>
+<p>Nimble: +1 Evasion.</p>
+<p>Shadow Figure: You are easily forgotten. If you keep an interaction brief, the NPC will forget they ever spoke with you. Consult your GM to determine how this would play out.</p>
+<p>Assassin Training: Attacks you make using Finesse have +1 Damage.</p>
+<h2>Character Level 3:</h2>
+<p>Lie Detector: Roll Focus. On a success, the GM will tell you if the person you’re speaking to is lying, though the GM isn’t required to specify what the person is lying about.</p>
+<h2>Character Level 4:</h2>
+<p>Second Stab: Once per rest, when you miss an attack, you may attack again (this is a free action).</p>
+<h2>Character Level 5:</h2>
+<p>Thieving Experience 2: +2 Finesse when picking locks and stealing.</p>
+<p>Assassin Training 2: Attacks you make using Finesse have +2 Damage</p>
 </div></article>
 <article class="chapter" id="chapter-11" data-chapter="11" hidden><div class="eyebrow">Character Classes <span>· 12 / 22</span></div><h1>Pirate</h1><div class="chapter-body">
-<h4 class="level-title">Character Level 1:</h4>
-<ul class="rule-list"><li>Captain of the Crew: Once per rest, you can inspire someone with your leadership skills. The target gets +1 to any skill they choose until their next rest.</li><li>Seafarer: When on a watercraft, on water, you receive +1 Finesse, and +1 Focus</li><li>Gambler: +1 Luck when playing gambling games</li></ul>
-<h4 class="level-title">Character Level 2:</h4>
-<p>- Sea Shanty: Just before a rest, you can sing a song to give your allies +1 Focus on their roll to gain health.</p>
-<h4 class="level-title">Character Level 3:</h4>
-<p>- Drunken Master: If you have the drunk status, you get +2 Damage when attacking with Grit</p>
-<h4 class="level-title">Character Level 5:</h4>
-<ul class="rule-list"><li>Disarm: When you make a successful melee attack against an enemy, you may roll Finesse. If your Finesse roll meets or beats their Evasion, you disarm their weapon.</li><li>Drunken Master 2: If you have the drunk status, you get +2 Damage when attacking with Grit or Finesse</li></ul>
+<h2>Character Level 1:</h2>
+<p>Captain of the Crew: Once per rest, you can inspire someone with your leadership skills. The target gets +1 to any skill they choose until their next rest.</p>
+<p>Seafarer: When on a watercraft, on water, you receive +1 Finesse, and +1 Focus</p>
+<p>Gambler: +1 Luck when playing gambling games</p>
+<h2>Character Level 2:</h2>
+<p>Sea Shanty: Just before a rest, you can sing a song to give your allies +1 Focus on their roll to gain health.</p>
+<h2>Character Level 3:</h2>
+<p>Drunken Master: If you have the drunk status, you get +2 Damage when attacking with Grit</p>
+<h2>Character Level 5:</h2>
+<p>Disarm: When you make a successful melee attack against an enemy, you may roll Finesse. If your Finesse roll meets or beats their Evasion, you disarm their weapon.</p>
+<p>Drunken Master 2: If you have the drunk status, you get +2 Damage when attacking with Grit or Finesse</p>
 </div></article>
 <article class="chapter" id="chapter-12" data-chapter="12" hidden><div class="eyebrow">Rules <span>· 13 / 22</span></div><h1>Statuses</h1><div class="chapter-body">
-<h3 class="subsection-title">Paralyzed</h3>
-<p>- The character cannot move on their own. - The character's Evasion is set to their Luck score.</p>
-<h3 class="subsection-title">Beaten</h3>
-<p>- If the character’s health reaches 0, they die instantly.</p>
-<h3 class="subsection-title">Poisoned</h3>
-<p>- The character is sick and loses Health periodically. Consult the GM to determine how often and how much Health is lost. -1 Focus</p>
-<h3 class="subsection-title">Drunk</h3>
-<p>- The character has +1 Charm when dealing with friendly people, and -1 Charm when dealing with those who wouldn’t take kindly to a drunkard. Consult the GM to determine whether or not you receive +1 or -1 Charm, depending on the NPC you’re speaking to.</p>
-<h3 class="subsection-title">Exhausted</h3>
-<p>- -1 Grit, -1 Finesse, -1 Focus - Usually cured by a rest.</p>
-<h3 class="subsection-title">Distracted</h3>
-<p>- -2 Focus</p>
-<h3 class="subsection-title">Freezing</h3>
-<p>- -2 Finesse, -1 Focus - Cured by finding warmth by a fire or in a building.</p>
-<h3 class="subsection-title">Starving</h3>
-<p>- -1 Grit, -1 Focus. - Lose 1 Health periodically. Consult the GM to determine how often you lose Health.</p>
-<h3 class="subsection-title">Pinned</h3>
-<p>- You cannot move. You may roll Grit to see if you break free. Consult the GM to determine when you can roll Grit this way.</p>
+<p>Paralyzed</p>
+<p>The character cannot move on their own.</p>
+<p>The character's Evasion is set to their Luck score.</p>
+<p>Beaten</p>
+<p>If the character’s health reaches 0, they die instantly.</p>
+<p>Poisoned</p>
+<p>The character is sick and loses Health periodically. Consult the GM to determine how often and how much Health is lost. -1 Focus</p>
+<p>Drunk</p>
+<p>The character has +1 Charm when dealing with friendly people, and -1 Charm when dealing with those who wouldn’t take kindly to a drunkard. Consult the GM to determine whether or not you receive +1 or -1 Charm, depending on the NPC you’re speaking to.</p>
+<p>-1 Finesse</p>
+<p>Exhausted</p>
+<p>-1 Grit, -1 Finesse, -1 Focus</p>
+<p>Usually cured by a rest.</p>
+<p>Distracted</p>
+<p>-2 Focus</p>
+<p>Freezing</p>
+<p>-2 Finesse, -1 Focus</p>
+<p>Cured by finding warmth by a fire or in a building.</p>
+<p>Starving</p>
+<p>-1 Grit, -1 Focus.</p>
+<p>Lose 1 Health periodically. Consult the GM to determine how often you lose Health.</p>
+<p>Pinned</p>
+<p>You cannot move. You may roll Grit to see if you break free. Consult the GM to determine when you can roll Grit this way.</p>
 </div></article>
 <article class="chapter" id="chapter-13" data-chapter="13" hidden><div class="eyebrow">Rules <span>· 14 / 22</span></div><h1>Death</h1><div class="chapter-body">
-<p>When a character’s health is reduced to zero or below, they are knocked unconscious. If in combat, on their next turn, they roll Luck. - If the result is 9-12, the character awakens with 5 health, the “Beaten” and “Exhausted” statuses, and takes a scar. - If the result is 5-8, the character awakens with 1 Health, the “Beaten,” and “Paralyzed” statuses, and takes a scar. - If the result is 1-4, the character dies.</p>
+<p>When a character’s health is reduced to zero or below, they are knocked unconscious. If in combat, on their next turn, they roll Luck.</p>
+<p>If the result is 9-12, the character awakens with 5 health, the “Beaten” and “Exhausted” statuses, and takes a scar.</p>
+<p>If the result is 5-8, the character awakens with 1 Health, the “Beaten,” and “Paralyzed” statuses, and takes a scar.</p>
+<p>If the result is 1-4, the character dies.</p>
 </div></article>
 <article class="chapter" id="chapter-14" data-chapter="14" hidden><div class="eyebrow">Equipment <span>· 15 / 22</span></div><h1>Weapons</h1><div class="chapter-body">
-<p>- Melee</p>
-<ul class="rule-list"><li>Grit</li><li>Damage: 1 - Brass Knuckles</li><li>Grit:</li><li>Damage: Your total Grit score - Broad Sword - Grit</li><li>Damage: 5 - Long Sword - Grit</li><li>Damage: 4 - Sabre - Finesse</li><li>Damage: 3</li><li>Dual Wield Damage: 5 - Spear/Polearm/Halberd - Finesse</li><li>Damage: 4 - At the beginning of your turn, choose a target. You point the spear at them. If that target moves within range of your spear, you get to make a free attack. - Hammer - Grit</li><li>Damage: 4 - Dagger - Finesse</li><li>Damage: 2</li><li>Dual Wielding damage: 4 - Mace - Grit</li><li>Damage: 6 - Evasion -1 - Flail - Finesse</li><li>Damage: 3 - Short Bow - Focus</li><li>Damage: 2 - Long Bow - Focus</li><li>Damage: 3 - Slingshot - Focus</li><li>Damage: 1 - Whip</li></ul>
-<ul class="rule-list"><li>Finesse</li><li>Damage: 2 - Axe - Grit</li><li>Damage: 4 -</li></ul>
+<h2>Melee</h2>
+<p>Grit</p>
+<p>Damage: 1</p>
+<p>Brass Knuckles</p>
+<p>Grit:</p>
+<p>Damage: Your total Grit score</p>
+<p>Broad Sword</p>
+<p>Grit</p>
+<p>Damage: 5</p>
+<p>Long Sword</p>
+<p>Grit</p>
+<p>Damage: 4</p>
+<p>Sabre</p>
+<p>Finesse</p>
+<p>Damage: 3</p>
+<p>Dual Wield Damage: 5</p>
+<p>Spear/Polearm/Halberd</p>
+<p>Finesse</p>
+<p>Damage: 4</p>
+<p>At the beginning of your turn, choose a target. You point the spear at them. If that target moves within range of your spear, you get to make a free attack.</p>
+<p>Hammer</p>
+<p>Grit</p>
+<p>Damage: 4</p>
+<p>Dagger</p>
+<p>Finesse</p>
+<p>Damage: 2</p>
+<p>Dual Wielding damage: 4</p>
+<p>Mace</p>
+<p>Grit</p>
+<p>Damage: 6</p>
+<p>Evasion -1</p>
+<p>Flail</p>
+<p>Finesse</p>
+<p>Damage: 3</p>
+<p>Short Bow</p>
+<p>Focus</p>
+<p>Damage: 2</p>
+<p>Long Bow</p>
+<p>Focus</p>
+<p>Damage: 3</p>
+<p>Slingshot</p>
+<p>Focus</p>
+<p>Damage: 1</p>
+<p>Whip</p>
+<p>Finesse</p>
+<p>Damage: 2</p>
+<p>Axe</p>
+<p>Grit</p>
+<p>Damage: 4</p>
 </div></article>
 <article class="chapter" id="chapter-15" data-chapter="15" hidden><div class="eyebrow">Equipment <span>· 16 / 22</span></div><h1>Potions</h1><div class="chapter-body">
 <p>Every Potion has a recipe and ingredients that are needed before the potion can be brewed (created). The recipe and ingredients are designed to be vague/amorphous so there’s no need to come up with or know specifics like “3 Oak Leaves, one frog eyeball, etc.,” or “boil for 6 minutes.” You simply need to know you have the recipe and the ingredients. Magisters are the only people with the brewing know-how, so if you aren’t a magister, you’ll need to find one to have potions created. Or you can simply find potions in the world or buy them in shops. You can sell recipes and ingredients if you can’t find a magister to utilize them.</p>
-<h3 class="subsection-title">Healing Potion</h3>
-<ul class="rule-list"><li>Can be activated by being drunk or poured on a wound. - Roll Focus and take the lowest result. Gain that much health. Frost Potion - Wherever the liquid touches, shards of ice appear and expand out, like an explosion of ice. - Throw this at a target. If you beat the target’s Evasion by 1-3, the target receives the “Freezing” status. If you beat it by 4 or more, they are also trapped by ice shards and receive the “Pinned” status. Light Potion - Shake the bottle to activate. - Light illuminates from the bottle like a torch, but without the danger of a flame. Fire Potion - Usually thrown at enemies, wherever this potion shatters, a ball of flame erupts.</li><li>Damage: 5 Softening Potion - Whatever this liquid touches is softened. Try it on locks to easily break them, or on a dragon’s scales to more easily pierce through. Consult the GM to determine its effectiveness. Cobweb Potion - Whatever this liquid touches is trapped in a sticky cobweb, and receives the “Pinned” Status. It can be poured out or thrown. Flare Potion - Set this off by smashing it on the ground. When you do, a flare is fired off 200ft. into the sky. Customize the color by changing the color ingredient. Concussive Potion</li></ul>
-<p>- Set this off by smashing it. When activated, an invisible blast of force is sent out in all directions. Anything that can move will be pushed back 10ft, often knocking people down. All affected entities must beat 8 on a Finesse roll to remain standing. Invisibility Potion - Drink this or pour it on an item. The affected entity will become invisible for 60 seconds. Consult the GM to determine if you receive a bonus to Finesse while invisible. Power Potion - Drink to activate. - +1 Grit, +1 Focus, and +1 Finesse for 3 hours. Pheromone Potion - Drink to activate. - +3 Charm for a day. Water Breathing Potion - Drink to activate. - You receive the ability to breathe underwater for 30 minutes. Fire Protection Potion - Pour or smash to activate. - The affected entity receives a barrier of protection against fire. The protection lasts 1 hour. Rage Potion - Drink to activate. - You receive +2 Grit, +1 Evasion, +1 Finesse when attacking, +3 Health, and +3 Maximum Health for 20 minutes. - After this potion's effects wear off, lose 8 Health Points. Bait Potion - Smash to activate. - All animals, beasts, and monsters within a 20 mile radius are attracted to the potion and will begin making their way toward it. Lightning Potion - Smash to activate. - All entities within a 20ft range are shocked for 3 damage. Weightless Potion - Activate by drinking. - You are completely weightless for 3 minutes. Stun Potion - Activate by smashing. - The target receives the “Paralyzed” status for 3 minutes (or 2 turns of combat).</p>
+<p>Minor Healing Potion</p>
+<p>Can be activated by being drunk or poured on a wound.</p>
+<p>Restore 3 Health.</p>
+<p>Major Healing Potion</p>
+<p>Can be activated by being drunk or poured on a wound.</p>
+<p>Restore 6 Health.</p>
+<p>Ice Potion</p>
+<p>Wherever the liquid touches, shards of ice appear and expand out, like an explosion of ice.</p>
+<p>If slowly poured out, whatever the liquid touches slowly freezes solid and becomes brittle.</p>
+<p>When thrown at a target, if you beat the target’s Evasion by 1-3, the target receives the “Freezing” status. If you beat it by 4 or more, they are also trapped by ice shards and receive the “Pinned” status.</p>
+<p>Light Potion</p>
+<p>Shake the bottle to activate.</p>
+<p>Light illuminates from the bottle like a torch, but without the danger of a flame.</p>
+<p>Throwing and shattering the bottle creates a flash of light, bright enough to blind anyone who sees it for about 10 seconds.</p>
+<p>Fire Potion</p>
+<p>Usually thrown at enemies, wherever this potion shatters, a ball of flame erupts.</p>
+<p>Damage: 5</p>
+<p>Softening Potion</p>
+<p>Whatever this liquid touches is softened. Try it on locks to easily break them, or on a dragon’s scales to more easily pierce through. Consult the GM to determine its effectiveness.</p>
+<p>Cobweb Potion</p>
+<p>Whatever this liquid touches is trapped in a sticky cobweb, and receives the “Pinned” Status. It can be poured out or thrown.</p>
+<p>Flare Potion</p>
+<p>Set this off by smashing it on the ground. When you do, a flare is fired off 200ft. into the sky. Customize the color by changing the ingredients.</p>
+<p>Concussive Potion</p>
+<p>When thrown and smashed, an invisible blast of force is sent out in all directions from the broken bottle. Anything that can move will be pushed back 10ft, often knocking people down. All affected entities must beat 8 on a Finesse roll to remain standing.</p>
+<p>Invisibility Potion</p>
+<p>Drink this or pour it on an item. The affected entity will become invisible for 60 seconds. Consult the GM to determine if you receive a bonus to Finesse while invisible.</p>
+<p>Power Potion</p>
+<p>Drink to activate.</p>
+<p>+1 Grit, +1 Focus, and +1 Finesse for 3 hours.</p>
+<p>Pheromone Potion</p>
+<p>Drink to activate.</p>
+<p>+3 Charm for a day.</p>
+<p>Water Breathing Potion</p>
+<p>Drink to activate.</p>
+<p>You receive the ability to breathe underwater for 30 minutes.</p>
+<p>Fire Protection Potion</p>
+<p>Pour onto an object or person to activate.</p>
+<p>The affected entity receives an invisible barrier of protection against fire. The protection lasts 1 hour.</p>
+<p>Rage Potion</p>
+<p>Drink to activate.</p>
+<p>You receive +2 Grit, +1 Evasion, +1 Finesse, +3 Health, and +3 Maximum Health for 20 minutes.</p>
+<p>After this potion's effects wear off, lose 8 Health Points.</p>
+<p>Bait Potion</p>
+<p>Smash to activate.</p>
+<p>All animals, beasts, and monsters within a 20 mile radius are attracted to the potion and will begin making their way toward it.</p>
+<p>Lightning Potion</p>
+<p>Smash to activate.</p>
+<p>All entities within a 10ft range of the bottle are shocked for 3 damage.</p>
+<p>Weightless Potion</p>
+<p>Activate by drinking.</p>
+<p>You are completely weightless for 3 minutes.</p>
+<p>Paralysis Potion</p>
+<p>Activate by smashing or drinking.</p>
+<p>The target receives the “Paralyzed” status for 3 minutes (or 2 turns of combat).</p>
 </div></article>
 <article class="chapter" id="chapter-16" data-chapter="16" hidden><div class="eyebrow">Rules <span>· 17 / 22</span></div><h1>Scars</h1><div class="chapter-body">
 <p>When a character wakes up after having their health reduced to zero, the player will roll 1d12 and receive a Scar from the table below. Scars can be physical or mental.</p>
-<p>1. You’re haunted by Death and it doesn’t leave your mind. -1 Charm. 2. Now knowing the fragility of life, you value it in yourself and others. +1 Charm. 3. Your injury causes a limp or bum shoulder (or whatever body part was affected). -1 Grit. 4. What doesn’t kill you makes you stronger. +1 Grit. 5. It hurts to lift your arms above your head. -1 Finesse. 6. Life’s too short. Let’s get moving. +1 Finesse 7. That was a sign your Luck has begun to run out. -1 Luck. 8. You should’ve died. You’re pretty lucky. +1 Luck. 9. The pain is distracting. -1 Focus. 10. You won’t let that happen again. +1 Focus 11. You might never fully recover. -3 Maximum Health. 12. You feel better than ever. +3 Maximum Health</p>
+<p>You’re haunted by Death and it doesn’t leave your mind. -1 Charm.</p>
+<p>Now knowing the fragility of life, you value it in yourself and others. +1 Charm.</p>
+<p>Your injury causes a limp or bum shoulder (or whatever body part was affected). -1 Grit.</p>
+<p>What doesn’t kill you makes you stronger. +1 Grit.</p>
+<p>It hurts to lift your arms above your head. -1 Finesse.</p>
+<p>Life’s too short. Let’s get moving. +1 Finesse</p>
+<p>That was a sign your Luck has begun to run out. -1 Luck.</p>
+<p>You should’ve died. You’re pretty lucky. +1 Luck.</p>
+<p>The pain is distracting. -1 Focus.</p>
+<p>You won’t let that happen again. +1 Focus</p>
+<p>You might never fully recover. -3 Maximum Health.</p>
+<p>You feel better than ever. +3 Maximum Health</p>
 <p>Remember to recalculate Health and/or Evasion when Permanent Stat points change. You should record what Scar you received in case you forget why you have 1 less Finesse, or 3 extra Health points.</p>
 </div></article>
-<article class="chapter" id="chapter-17" data-chapter="17" hidden><div class="eyebrow">Rules <span>· 18 / 22</span></div><h1>Character Creation</h1><div class="chapter-body"><ol class="rule-list"><li>Choose your class</li><li>Take 3 Skill Points and assign them to Grit, Finesse, Charm, Focus, and/or Luck as you wish.</li><li>Record your Evasion.</li><li>Evasion = Finesse + Luck + 2.</li><li>Record your Health.</li><li>Health = Grit + Character Level + 10. Your character starts at Level 1.</li><li>Consult your GM to determine if you begin with any weapons, and/or potions. It’s recommended to start with one of each and some money.</li><li>Choose your character’s Traits. See Character Traits below for more details.</li></ol></div></article>
+<article class="chapter" id="chapter-17" data-chapter="17" hidden><div class="eyebrow">Rules <span>· 18 / 22</span></div><h1>Character Creation</h1><div class="chapter-body">
+<p>Choose your class</p>
+<p>Take 3 Skill Points and assign them to Grit, Finesse, Charm, Focus, and/or Luck as you wish.</p>
+<p>Record your Evasion.</p>
+<p>Evasion = Finesse + Luck + 2.</p>
+<p>Record your Health.</p>
+<p>Health = Grit + Character Level + 10. Your character starts at Level 1.</p>
+<p>Consult your GM to determine if you begin with any weapons, and/or potions. It’s recommended to start with one of each and some money.</p>
+<p>Choose your character’s Traits. See Character Traits below for more details.</p>
+</div></article>
 <article class="chapter" id="chapter-18" data-chapter="18" hidden><div class="eyebrow">Rules <span>· 19 / 22</span></div><h1>Character Traits</h1><div class="chapter-body">
-<ul class="rule-list">
-<li>Every character has four Traits: Edge, Burden, Desire, and Impulse. These Traits represent a character’s strengths, weaknesses, ambitions, and temptations. They give players opportunities to develop their characters through roleplay while providing mechanical benefits and consequences.</li>
-</ul>
+<p>Every character has four Traits: Edge, Burden, Desire, and Impulse. These Traits represent a character’s strengths, weaknesses, ambitions, and temptations. They give players opportunities to develop their characters through roleplay while providing mechanical benefits and consequences.</p>
 <p>During character creation, develop a backstory for your character. This backstory should inform your characters Edge and Burden, and potentially their Desire and Impulse. Once a backstory is created, consult the GM to determine how the backstory can inform the Traits.</p>
 <p>For example: A character was raised on a farm until his father was brutally attacked by a thief with daggers. Now the character wants to track down the person who attacked his father.</p>
 <p>This informs the Edge, Burden, and Desire. The Edge could be “+1 when using farm equipment” because he was raised on a farm. The Burden could be “-2 Evasion when being attacked with daggers” due to the trauma of seeing his father be attacked with daggers. And the Desire is clearly “Hunt down the person who hurt my father and get revenge.” Notice the backstory didn’t inform an Impulse, so the player is free to select any Impulse they want for their character such as “Glutton” or “Being Sarcastic”.</p>
@@ -172,61 +328,57 @@ body[data-theme] .toc-entry:active,body[data-theme] .toc-entry:focus-visible{bac
 <p>For example, a character with the Edge “+1 when using farm equipment” might also argue that their experience tying ropes around livestock should provide the bonus when restraining an enemy with rope. If the GM agrees, they could say “ok add +1 to your finesse roll to see if you successfully tie the person up.” Alternatively, the GM could deny the request by saying something like “you specified that you grew up on a crop farm, not an animal farm, remember? So you wouldn’t know how to tie up an animal, and therefore you do not get this bonus.”</p>
 <p>Edges should be specific enough to encourage creative problem-solving without applying to nearly every action.</p>
 <h3>Examples</h3>
-<ul class="rule-list">
-<li>Farmhand: You grew up working on a farm, raising livestock, repairing fences, and maintaining equipment. +1 when using farm equipment.</li>
-<li>Street Rat: You grew up on the streets, learning to survive through petty theft, scavenging, and avoiding trouble. +1 when attempting things you did while living on the streets.</li>
-<li>Animal Whisperer: You spent much of your childhood around animals and learned to recognize their behavior and needs. +1 when handling or calming animals.</li>
-<li>Bookworm: You spent years reading anything you could find, developing an unusually broad knowledge of the world. +1 when recalling information from books.</li>
-<li>Traveler: You were raised on the road. +1 when steering a boat, wagon, or riding a horse.</li>
-<li>Blacksmith's Apprentice: You spent years assisting a blacksmith, learning how metal behaves under heat and pressure. +1 when forging or repairing metal equipment and +1 Charm when speaking with other blacksmiths or about weapons/armor.</li>
-<li>Silver Tongue: You grew up negotiating your way out of trouble and learned how to make people see things your way. +1 Charm when persuading strangers.</li>
-<li>Natural Climber: You grew up climbing trees, cliffs, and rooftops, developing excellent balance and climbing technique. +1 Finesse when climbing.</li>
-<li>Tavern Regular: You spent countless evenings in taverns, learning to read people and gather information through casual conversation. +1 Charm in taverns.</li>
-<li>Battlefield Medic: You spent years treating wounded soldiers and learned to work quickly under pressure. +1 when treating injuries during combat.</li>
-<li>Escape Artist: You spent years performing tricks involving ropes, knots, and restraints, and cages. +1 Finesse when escaping physical restraints or cages.</li>
-<li>Historian: You studied historical records, battles, and civilizations under an experienced scholar. +1 Focus when recalling historical events.</li>
-<li>Woodworker: You apprenticed under a carpenter, learning to construct and repair wooden structures. +1 when building or repairing wooden objects.</li>
-<li>Performer: You traveled with entertainers, learning to captivate audiences through music, acting, or storytelling. +1 when performing for an audience.</li>
-<li>Survivalist: You spent years living in the wilderness, learning to find shelter, food, and safe drinking water. +1 when finding resources in the wilderness.</li>
-</ul>
+<p>Farmhand: You grew up working on a farm, raising livestock, repairing fences, and maintaining equipment. +1 when using farm equipment.</p>
+<p>Street Rat: You grew up on the streets, learning to survive through petty theft, scavenging, and avoiding trouble. +1 when attempting things you did while living on the streets.</p>
+<p>Animal Whisperer: You spent much of your childhood around animals and learned to recognize their behavior and needs. +1 when handling or calming animals.</p>
+<p>Bookworm: You spent years reading anything you could find, developing an unusually broad knowledge of the world. +1 when recalling information from books.</p>
+<p>Traveler: You were raised on the road. +1 when steering a boat, wagon, or riding a horse.</p>
+<p>Blacksmith's Apprentice: You spent years assisting a blacksmith, learning how metal behaves under heat and pressure. +1 when forging or repairing metal equipment and +1 Charm when speaking with other blacksmiths or about weapons/armor.</p>
+<p>Silver Tongue: You grew up negotiating your way out of trouble and learned how to make people see things your way. +1 Charm when persuading strangers.</p>
+<p>Natural Climber: You grew up climbing trees, cliffs, and rooftops, developing excellent balance and climbing technique. +1 Finesse when climbing.</p>
+<p>Tavern Regular: You spent countless evenings in taverns, learning to read people and gather information through casual conversation. +1 Charm in taverns.</p>
+<p>Battlefield Medic: You spent years treating wounded soldiers and learned to work quickly under pressure. +1 when treating injuries during combat.</p>
+<p>Escape Artist: You spent years performing tricks involving ropes, knots, and restraints, and cages. +1 Finesse when escaping physical restraints or cages.</p>
+<p>Historian: You studied historical records, battles, and civilizations under an experienced scholar. +1 Focus when recalling historical events.</p>
+<p>Woodworker: You apprenticed under a carpenter, learning to construct and repair wooden structures. +1 when building or repairing wooden objects.</p>
+<p>Performer: You traveled with entertainers, learning to captivate audiences through music, acting, or storytelling. +1 when performing for an audience.</p>
+<p>Survivalist: You spent years living in the wilderness, learning to find shelter, food, and safe drinking water. +1 when finding resources in the wilderness.</p>
 <h2>Burden</h2>
 <p>A Burden represents a character’s weakness, fear, limitation, or disadvantage.</p>
 <p>When a Burden applies to a roll, the character receives a penalty of some kind. The GM determines when the penalty applies based on the character’s circumstances.</p>
 <p>For example, a character whose father was permanently injured by a dagger might have the Burden Dagger Trauma, receiving −2 Evasion when defending against attacks that use daggers.</p>
 <p>Burdens do not need to originate from traumatic experiences. They may represent physical limitations, personality flaws, fears, or simple inexperience.</p>
 <p>Players should choose Burdens that are likely to affect their characters during gameplay. A Burden is intended to create meaningful challenges, not merely provide additional backstory.</p>
-<ul class="rule-list">
-<li>Weapon Trauma: You or someone you loved was seriously injured or killed by a &lt;weapon&gt;, leaving you with a lasting fear. −1 when defending against attacks using that weapon.</li>
-<li>Fear of Fire: You survived a terrible fire or witnessed someone perish in the flames. Ever since, you've struggled to remain calm around fire. −1 when defending against fire attacks or when in danger of being burned.</li>
-<li>Fear of Heights: You once suffered a terrible fall, or perhaps you've always been uncomfortable with heights. −1 when performing actions at dangerous heights.</li>
-<li>Claustrophobia: You were once trapped in a confined space, or you've simply never been comfortable in enclosed environments. −1 on checks while in cramped or confined spaces.</li>
-<li>Stage Fright: You once embarrassed yourself in front of a crowd, leaving you terrified of public attention. −1 when speaking or performing before large audiences.</li>
-<li>Poor Swimmer: You grew up far from rivers, lakes, and oceans, never learning to swim properly. −1 when swimming.</li>
-<li>Bad Knee: An old injury never healed correctly, leaving you with recurring pain and limited mobility. −1 when running or jumping.</li>
-<li>Unsteady Hands: Your hands have always trembled slightly, making precise movements difficult. −1 when performing tasks requiring delicate hand movements.</li>
-<li>Weak Stomach: You've always been unusually sensitive to spoiled food, unpleasant smells, and disturbing sights. −1 when resisting nausea or sickness.</li>
-<li>Fear of the Dark: Something frightening happened to you in darkness, or perhaps you've always feared what might be hiding beyond your sight. −1 on checks performed in darkness.</li>
-<li>Easily Distracted: You've always struggled to concentrate when surrounded by noise, movement, or conversation. −1 when attempting tasks that require concentration amid distractions.</li>
-<li>Gullible: You grew up trusting everyone around you and never learned to recognize when someone is taking advantage of you. −1 when attempting to detect deception.</li>
-<li>Seasick: You rarely travel by water, and even the gentlest waves leave you feeling miserable. −1 on checks aboard rocking ships or boats.</li>
-<li>Fear of Blood: You witnessed a gruesome injury or simply cannot tolerate the sight of blood. −1 when treating serious injuries.</li>
-<li>Short Temper: You grew up in an environment where anger was the usual response to conflict, and you've struggled to control your own temper. −1 when attempting peaceful negotiations while angry.</li>
-<li>Loner: You've spent most of your life avoiding other people, either by choice or circumstance. Working closely with others makes you uncomfortable. −1 when cooperating with unfamiliar people on social tasks.</li>
-<li>Poor Memory: You've always struggled to remember names, directions, and small details, sometimes forgetting important information moments after hearing it. −1 when recalling information learned through conversation.</li>
-<li>Sheltered: You grew up in a protected environment where others handled danger and difficult decisions for you. −1 when identifying common dangers in unfamiliar environments.</li>
-<li>Overconfident: Years of success have convinced you that your instincts are rarely wrong. You often overlook details because you assume you already understand the situation. −1 when searching for hidden dangers.</li>
-<li>Soft-Spoken: You were raised to avoid confrontation and rarely speak above a quiet voice. −1 when attempting to intimidate others.</li>
-<li>Clumsy: You've always been prone to knocking things over, tripping, or fumbling objects at inconvenient moments. −1 when performing tasks requiring careful balance.</li>
-<li>Poor Eyesight: Your vision has never been particularly sharp, making it difficult to distinguish details at a distance. −1 when attempting to identify distant objects or people.</li>
-<li>Hard of Hearing: Years spent working around loud machinery, explosions, or battlefield noise have damaged your hearing. −1 when attempting to detect faint sounds.</li>
-<li>Fear of Animals: You were attacked by an animal as a child and have struggled to trust unfamiliar creatures ever since. −1 when handling or calming animals.</li>
-<li>Uneducated: You grew up without access to formal education, learning practical skills instead of reading and studying. −1 when interpreting written documents.</li>
-<li>Superstitious: You were raised to believe that certain objects, places, or actions invite terrible misfortune. These beliefs make it difficult to remain composed when confronted with supposed omens. −1 when performing checks in places you believe are cursed.</li>
-<li>Impatient: You've never been comfortable waiting or working slowly, preferring immediate results even when patience would serve you better. −1 when performing tasks that require prolonged, careful attention.</li>
-<li>Fear of Authority: You grew up under harsh rulers or suffered mistreatment from people in positions of power. You become nervous when confronted by authority figures. −1 when negotiating with nobles, officials, or other authority figures.</li>
-<li>Chronic Pain: An old injury or persistent condition causes recurring discomfort, particularly after strenuous activity. −1 when performing physically demanding tasks after prolonged exertion.</li>
-<li>Inexperienced Fighter: You've spent your life avoiding violence and have never received proper combat training. −1 when defending against melee attacks.</li>
-</ul>
+<p>Weapon Trauma: You or someone you loved was seriously injured or killed by a &lt;weapon&gt;, leaving you with a lasting fear. −1 when defending against attacks using that weapon.</p>
+<p>Fear of Fire: You survived a terrible fire or witnessed someone perish in the flames. Ever since, you've struggled to remain calm around fire. −1 when defending against fire attacks or when in danger of being burned.</p>
+<p>Fear of Heights: You once suffered a terrible fall, or perhaps you've always been uncomfortable with heights. −1 when performing actions at dangerous heights.</p>
+<p>Claustrophobia: You were once trapped in a confined space, or you've simply never been comfortable in enclosed environments. −1 on checks while in cramped or confined spaces.</p>
+<p>Stage Fright: You once embarrassed yourself in front of a crowd, leaving you terrified of public attention. −1 when speaking or performing before large audiences.</p>
+<p>Poor Swimmer: You grew up far from rivers, lakes, and oceans, never learning to swim properly. −1 when swimming.</p>
+<p>Bad Knee: An old injury never healed correctly, leaving you with recurring pain and limited mobility. −1 when running or jumping.</p>
+<p>Unsteady Hands: Your hands have always trembled slightly, making precise movements difficult. −1 when performing tasks requiring delicate hand movements.</p>
+<p>Weak Stomach: You've always been unusually sensitive to spoiled food, unpleasant smells, and disturbing sights. −1 when resisting nausea or sickness.</p>
+<p>Fear of the Dark: Something frightening happened to you in darkness, or perhaps you've always feared what might be hiding beyond your sight. −1 on checks performed in darkness.</p>
+<p>Easily Distracted: You've always struggled to concentrate when surrounded by noise, movement, or conversation. −1 when attempting tasks that require concentration amid distractions.</p>
+<p>Gullible: You grew up trusting everyone around you and never learned to recognize when someone is taking advantage of you. −1 when attempting to detect deception.</p>
+<p>Seasick: You rarely travel by water, and even the gentlest waves leave you feeling miserable. −1 on checks aboard rocking ships or boats.</p>
+<p>Fear of Blood: You witnessed a gruesome injury or simply cannot tolerate the sight of blood. −1 when treating serious injuries.</p>
+<p>Short Temper: You grew up in an environment where anger was the usual response to conflict, and you've struggled to control your own temper. −1 when attempting peaceful negotiations while angry.</p>
+<p>Loner: You've spent most of your life avoiding other people, either by choice or circumstance. Working closely with others makes you uncomfortable. −1 when cooperating with unfamiliar people on social tasks.</p>
+<p>Poor Memory: You've always struggled to remember names, directions, and small details, sometimes forgetting important information moments after hearing it. −1 when recalling information learned through conversation.</p>
+<p>Sheltered: You grew up in a protected environment where others handled danger and difficult decisions for you. −1 when identifying common dangers in unfamiliar environments.</p>
+<p>Overconfident: Years of success have convinced you that your instincts are rarely wrong. You often overlook details because you assume you already understand the situation. −1 when searching for hidden dangers.</p>
+<p>Soft-Spoken: You were raised to avoid confrontation and rarely speak above a quiet voice. −1 when attempting to intimidate others.</p>
+<p>Clumsy: You've always been prone to knocking things over, tripping, or fumbling objects at inconvenient moments. −1 when performing tasks requiring careful balance.</p>
+<p>Poor Eyesight: Your vision has never been particularly sharp, making it difficult to distinguish details at a distance. −1 when attempting to identify distant objects or people.</p>
+<p>Hard of Hearing: Years spent working around loud machinery, explosions, or battlefield noise have damaged your hearing. −1 when attempting to detect faint sounds.</p>
+<p>Fear of Animals: You were attacked by an animal as a child and have struggled to trust unfamiliar creatures ever since. −1 when handling or calming animals.</p>
+<p>Uneducated: You grew up without access to formal education, learning practical skills instead of reading and studying. −1 when interpreting written documents.</p>
+<p>Superstitious: You were raised to believe that certain objects, places, or actions invite terrible misfortune. These beliefs make it difficult to remain composed when confronted with supposed omens. −1 when performing checks in places you believe are cursed.</p>
+<p>Impatient: You've never been comfortable waiting or working slowly, preferring immediate results even when patience would serve you better. −1 when performing tasks that require prolonged, careful attention.</p>
+<p>Fear of Authority: You grew up under harsh rulers or suffered mistreatment from people in positions of power. You become nervous when confronted by authority figures. −1 when negotiating with nobles, officials, or other authority figures.</p>
+<p>Chronic Pain: An old injury or persistent condition causes recurring discomfort, particularly after strenuous activity. −1 when performing physically demanding tasks after prolonged exertion.</p>
+<p>Inexperienced Fighter: You've spent your life avoiding violence and have never received proper combat training. −1 when defending against melee attacks.</p>
 <h2>Desire</h2>
 <p>A Desire represents a character’s long-term ambition or personal goal. It might be to earn knighthood, find a missing family member, become wealthy, or restore a damaged reputation.</p>
 <p>Desires encourage players to make decisions based on what their characters want to accomplish.</p>
@@ -235,38 +387,36 @@ body[data-theme] .toc-entry:active,body[data-theme] .toc-entry:focus-visible{bac
 <p>If they qualify, the player earns one reward to use the following day.</p>
 <p>Once a Desire is fulfilled, abandoned, or no longer meaningful to the character, the player should choose a new one with GM approval.</p>
 <h3>Examples</h3>
-<ul class="rule-list">
-<li>Lost Loved One: Someone you care about has disappeared. Perhaps it's a missing family member, an old friend, or someone you once loved. You don't know whether they're alive, but you're determined to find them.</li>
-<li>For Glory: You want to be remembered as one of the greatest to ever live. Perhaps you dream of becoming a legendary Knight, an unmatched marksman, or the wealthiest merchant in the kingdom. Whatever your profession, you want your name remembered for generations.</li>
-<li>Inventor: You believe you have the potential to change the world through innovation. Perhaps you dream of inventing a revolutionary weapon, discovering a new potion, or creating a machine that makes everyday life easier.</li>
-<li>Romantic: You dream of finding your soulmate. Perhaps you've never experienced true love, or maybe you lost someone special and hope to find love again. You're searching for someone with whom you can build a future.</li>
-<li>Writer: You want to write a story that people will remember for centuries. Perhaps you're documenting your adventures, collecting stories from strangers, or searching for inspiration for the greatest book ever written.</li>
-<li>Heirloom: You possess an item of great personal significance that you're determined to protect. Perhaps it's a family heirloom passed down through generations, or a lost possession you promised to return to its rightful owner.</li>
-<li>Studious: You're determined to master your chosen profession. Perhaps you're an aspiring Knight, Magister, Merchant, or craftsman. You seek knowledge, experience, and mentorship wherever you can find them.</li>
-<li>Wealth and Fortune: You grew up with very little and never want to experience poverty again. You dream of accumulating enough wealth to live comfortably, support your loved ones, or purchase anything your heart desires.</li>
-<li>Revenge: Someone wronged you or someone you love, and you've dedicated yourself to making them pay. Perhaps they destroyed your home, betrayed your trust, or murdered someone close to you. You won't rest until justice, as you understand it, has been served.</li>
-<li>Redemption: You made a terrible mistake in your past and have spent years regretting it. Perhaps you betrayed a friend, abandoned someone in need, or committed an unforgivable act. You're determined to make amends and become someone worthy of forgiveness.</li>
-<li>Family Legacy: Your family was once respected, wealthy, or powerful, but something caused its downfall. You want to restore your family's reputation and reclaim what was lost.</li>
-<li>Protector: You've witnessed what happens when innocent people have nobody to defend them. You've dedicated your life to protecting the vulnerable, whether that means defending your hometown, guarding travelers, or standing against injustice.</li>
-<li>A Place to Call Home: You've spent much of your life wandering, fleeing danger, or living without a permanent home. You dream of finding somewhere you belong and building a peaceful life there.</li>
-<li>Master Craftsman: You've always admired those who create extraordinary things with their hands. You want to become the finest blacksmith, carpenter, tailor, or artisan in the land, producing work that others will treasure for generations.</li>
-<li>Discover the Unknown: You believe the world holds countless mysteries waiting to be uncovered. Perhaps you dream of discovering a forgotten civilization, exploring an uncharted land, or uncovering secrets buried for thousands of years.</li>
-<li>Find a Cure: Someone you love suffers from an illness or condition that nobody knows how to treat. You're determined to find a cure, no matter how far you must travel or what knowledge you must uncover.</li>
-<li>Overthrow a Tyrant: You lived under the rule of someone cruel or corrupt and witnessed the suffering they caused. You want to bring an end to their reign and help establish something better in their place.</li>
-<li>Become a Leader: You've always believed you could make a difference if given the opportunity to lead. Perhaps you dream of commanding an army, becoming the head of a guild, or ruling a settlement of your own.</li>
-<li>Earn Respect: You've spent your life being underestimated, dismissed, or treated as inferior. You want to prove your worth to those who doubted you and earn the respect you believe you deserve.</li>
-<li>Reunite the Family: Your family has been separated by war, poverty, betrayal, or circumstance. You're determined to bring everyone together again and repair whatever relationships have been damaged.</li>
-<li>Fulfill a Promise: You made a promise that you've never forgotten. Perhaps it was to a dying friend, a beloved parent, or someone who once saved your life. No matter how difficult the task becomes, you intend to keep your word.</li>
-<li>Become Famous: You want people everywhere to recognize your name. Whether through heroic deeds, spectacular performances, remarkable discoveries, or extraordinary accomplishments, you dream of becoming a household name.</li>
-<li>Religious Devotion: Your faith is central to your identity, and you believe you have a greater purpose to fulfill. Perhaps you want to undertake a pilgrimage, recover a sacred artifact, spread your beliefs, or complete a task you believe your deity has entrusted to you.</li>
-<li>Freedom: You've spent much of your life under someone else's control. Perhaps you were enslaved, imprisoned, or bound by obligations you never chose. You want to secure your independence and ensure nobody can take it away again.</li>
-<li>Uncover the Truth: Something about your past doesn't make sense. Perhaps your parents concealed your origins, your hometown was destroyed under mysterious circumstances, or someone you trusted disappeared without explanation. You're determined to discover what really happened.</li>
-<li>Peace at Last: You've experienced enough violence and hardship for one lifetime. You dream of ending a conflict, settling old rivalries, or creating a future where you and those you love can finally live without fear.</li>
-<li>Build Something Great: You want to leave behind something that will outlive you. Perhaps it's a thriving town, a successful business, a school, a guild, or a magnificent structure that future generations will remember.</li>
-<li>Prove Your Innocence: You've been accused of a crime you didn't commit. Your reputation has been destroyed, and perhaps you've even been forced into exile. You want to uncover the truth, expose whoever is responsible, and clear your name.</li>
-<li>Find Your Purpose: You've spent much of your life feeling directionless. You don't yet know what you're meant to accomplish, but you believe that somewhere in the world there's a cause, calling, or responsibility worth dedicating your life to.</li>
-<li>Surpass Your Mentor: Someone taught you everything you know, and you've always admired their abilities. You want to become even better than they are, whether to honor their teachings, earn their approval, or finally prove yourself their equal.</li>
-</ul>
+<p>Lost Loved One: Someone you care about has disappeared. Perhaps it's a missing family member, an old friend, or someone you once loved. You don't know whether they're alive, but you're determined to find them.</p>
+<p>For Glory: You want to be remembered as one of the greatest to ever live. Perhaps you dream of becoming a legendary Knight, an unmatched marksman, or the wealthiest merchant in the kingdom. Whatever your profession, you want your name remembered for generations.</p>
+<p>Inventor: You believe you have the potential to change the world through innovation. Perhaps you dream of inventing a revolutionary weapon, discovering a new potion, or creating a machine that makes everyday life easier.</p>
+<p>Romantic: You dream of finding your soulmate. Perhaps you've never experienced true love, or maybe you lost someone special and hope to find love again. You're searching for someone with whom you can build a future.</p>
+<p>Writer: You want to write a story that people will remember for centuries. Perhaps you're documenting your adventures, collecting stories from strangers, or searching for inspiration for the greatest book ever written.</p>
+<p>Heirloom: You possess an item of great personal significance that you're determined to protect. Perhaps it's a family heirloom passed down through generations, or a lost possession you promised to return to its rightful owner.</p>
+<p>Studious: You're determined to master your chosen profession. Perhaps you're an aspiring Knight, Magister, Merchant, or craftsman. You seek knowledge, experience, and mentorship wherever you can find them.</p>
+<p>Wealth and Fortune: You grew up with very little and never want to experience poverty again. You dream of accumulating enough wealth to live comfortably, support your loved ones, or purchase anything your heart desires.</p>
+<p>Revenge: Someone wronged you or someone you love, and you've dedicated yourself to making them pay. Perhaps they destroyed your home, betrayed your trust, or murdered someone close to you. You won't rest until justice, as you understand it, has been served.</p>
+<p>Redemption: You made a terrible mistake in your past and have spent years regretting it. Perhaps you betrayed a friend, abandoned someone in need, or committed an unforgivable act. You're determined to make amends and become someone worthy of forgiveness.</p>
+<p>Family Legacy: Your family was once respected, wealthy, or powerful, but something caused its downfall. You want to restore your family's reputation and reclaim what was lost.</p>
+<p>Protector: You've witnessed what happens when innocent people have nobody to defend them. You've dedicated your life to protecting the vulnerable, whether that means defending your hometown, guarding travelers, or standing against injustice.</p>
+<p>A Place to Call Home: You've spent much of your life wandering, fleeing danger, or living without a permanent home. You dream of finding somewhere you belong and building a peaceful life there.</p>
+<p>Master Craftsman: You've always admired those who create extraordinary things with their hands. You want to become the finest blacksmith, carpenter, tailor, or artisan in the land, producing work that others will treasure for generations.</p>
+<p>Discover the Unknown: You believe the world holds countless mysteries waiting to be uncovered. Perhaps you dream of discovering a forgotten civilization, exploring an uncharted land, or uncovering secrets buried for thousands of years.</p>
+<p>Find a Cure: Someone you love suffers from an illness or condition that nobody knows how to treat. You're determined to find a cure, no matter how far you must travel or what knowledge you must uncover.</p>
+<p>Overthrow a Tyrant: You lived under the rule of someone cruel or corrupt and witnessed the suffering they caused. You want to bring an end to their reign and help establish something better in their place.</p>
+<p>Become a Leader: You've always believed you could make a difference if given the opportunity to lead. Perhaps you dream of commanding an army, becoming the head of a guild, or ruling a settlement of your own.</p>
+<p>Earn Respect: You've spent your life being underestimated, dismissed, or treated as inferior. You want to prove your worth to those who doubted you and earn the respect you believe you deserve.</p>
+<p>Reunite the Family: Your family has been separated by war, poverty, betrayal, or circumstance. You're determined to bring everyone together again and repair whatever relationships have been damaged.</p>
+<p>Fulfill a Promise: You made a promise that you've never forgotten. Perhaps it was to a dying friend, a beloved parent, or someone who once saved your life. No matter how difficult the task becomes, you intend to keep your word.</p>
+<p>Become Famous: You want people everywhere to recognize your name. Whether through heroic deeds, spectacular performances, remarkable discoveries, or extraordinary accomplishments, you dream of becoming a household name.</p>
+<p>Religious Devotion: Your faith is central to your identity, and you believe you have a greater purpose to fulfill. Perhaps you want to undertake a pilgrimage, recover a sacred artifact, spread your beliefs, or complete a task you believe your deity has entrusted to you.</p>
+<p>Freedom: You've spent much of your life under someone else's control. Perhaps you were enslaved, imprisoned, or bound by obligations you never chose. You want to secure your independence and ensure nobody can take it away again.</p>
+<p>Uncover the Truth: Something about your past doesn't make sense. Perhaps your parents concealed your origins, your hometown was destroyed under mysterious circumstances, or someone you trusted disappeared without explanation. You're determined to discover what really happened.</p>
+<p>Peace at Last: You've experienced enough violence and hardship for one lifetime. You dream of ending a conflict, settling old rivalries, or creating a future where you and those you love can finally live without fear.</p>
+<p>Build Something Great: You want to leave behind something that will outlive you. Perhaps it's a thriving town, a successful business, a school, a guild, or a magnificent structure that future generations will remember.</p>
+<p>Prove Your Innocence: You've been accused of a crime you didn't commit. Your reputation has been destroyed, and perhaps you've even been forced into exile. You want to uncover the truth, expose whoever is responsible, and clear your name.</p>
+<p>Find Your Purpose: You've spent much of your life feeling directionless. You don't yet know what you're meant to accomplish, but you believe that somewhere in the world there's a cause, calling, or responsibility worth dedicating your life to.</p>
+<p>Surpass Your Mentor: Someone taught you everything you know, and you've always admired their abilities. You want to become even better than they are, whether to honor their teachings, earn their approval, or finally prove yourself their equal.</p>
 <h2>Impulse</h2>
 <p>An Impulse represents a recurring temptation, habit, weakness of self-control, or compulsion that influences a character’s behavior.</p>
 <p>Examples include an irresistible love of food, gambling, curiosity, showing off, gossiping, stealing, or accepting dangerous challenges.</p>
@@ -278,38 +428,36 @@ body[data-theme] .toc-entry:active,body[data-theme] .toc-entry:focus-visible{bac
 <p>For example, a character with the Impulse Glutton might sneak into a noble’s kitchen to steal a freshly baked pie, risking discovery and jeopardizing the party’s mission. This could qualify for a reward, whereas simply eating breakfast would not.</p>
 <p>Impulses may change as characters develop new habits, overcome old compulsions, or experience events that reshape their personalities.</p>
 <h3>Examples</h3>
-<ul class="rule-list">
-<li>Hungry: You're always looking for something to eat. Whether it's a freshly baked loaf of bread, a stranger's unattended meal, or a feast you weren't invited to, you have a hard time resisting food, even when satisfying your appetite gets you into trouble.</li>
-<li>Kleptomaniac: You can't help but steal things, even when you have no use for them. Perhaps it's the thrill of getting away with it, or maybe you simply enjoy possessing things that don't belong to you.</li>
-<li>Thrill-Seeker: You crave excitement and danger. Perhaps you want to ride a wild bear, leap from a towering cliff into the ocean, or explore a cave everyone else is too frightened to enter. If something sounds dangerous and exciting, you're probably interested.</li>
-<li>Love-Maker: You're constantly looking for your next romantic or sexual encounter. You enjoy flirting, pursuing attractive strangers, and testing your charm, even when doing so creates complications.</li>
-<li>Gambler: You find it difficult to resist a wager. Whether it's a game of cards, a contest of strength, or a bet on something completely ridiculous, you're always willing to risk something for the chance to win.</li>
-<li>Show-Off: You love to impress people and rarely pass up an opportunity to demonstrate your abilities. You might attempt a dangerous stunt, exaggerate your accomplishments, or volunteer for a challenge simply because someone is watching.</li>
-<li>Gossip: You love knowing everyone's secrets, and keeping them to yourself is nearly impossible. You might share information you were told in confidence or pry into someone's personal affairs simply because you're curious.</li>
-<li>Hothead: Your emotions often get the better of you. When someone insults you, challenges your beliefs, or mistreats a friend, you struggle to walk away without confronting them.</li>
-<li>Curious: You have an overwhelming desire to discover what's behind every locked door, inside every mysterious chest, or at the end of every unexplored passage. Even when warned against investigating, you struggle to leave a mystery alone.</li>
-<li>Compulsive Liar: You lie even when telling the truth would be easier. Perhaps you enjoy inventing stories, exaggerating your accomplishments, or pretending to be someone you're not.</li>
-<li>Generous to a Fault: You have difficulty refusing anyone who asks for help. You might give away your last coins, share supplies your party desperately needs, or promise assistance you cannot reasonably provide.</li>
-<li>Collector: You have an obsession with collecting certain objects, whether they're rare coins, unusual stones, old books, or weapons. You struggle to pass up an opportunity to add something interesting to your collection.</li>
-<li>Hopeless Flirt: You flirt with nearly everyone you find attractive, regardless of whether the situation is appropriate. Even during serious negotiations or dangerous encounters, you struggle to resist making a charming remark.</li>
-<li>Superstitious: You believe certain rituals, objects, or actions influence your luck. You might refuse to enter a building without performing a ritual, avoid particular numbers, or insist on carrying a lucky charm even when doing so is inconvenient.</li>
-<li>Attention-Seeker: You hate being ignored. Whether you're interrupting conversations, telling exaggerated stories, or making dramatic entrances, you constantly look for ways to become the center of attention.</li>
-<li>Competitive: You can't stand the thought of losing or being considered second-best. Even a harmless game or casual remark can turn into a competition you feel compelled to win.</li>
-<li>Animal Lover: You have a soft spot for animals and struggle to ignore one in distress. You might stop an important journey to rescue an injured creature or attempt to befriend an animal that everyone else considers dangerous.</li>
-<li>Proud: You hate admitting weakness or accepting assistance. Even when you're clearly struggling, you would rather make things more difficult for yourself than acknowledge that you need help.</li>
-<li>Impulsive Shopper: You have a habit of purchasing things you don't need. Perhaps you're attracted to unusual trinkets, impressive weapons, or supposedly incredible bargains. Saving money is difficult when something interesting catches your eye.</li>
-<li>People-Pleaser: You desperately want others to like you. You struggle to say no, even when agreeing to someone's request creates problems for yourself or your companions.</li>
-<li>Sweet Tooth: You have an almost irresistible love of sweets. You might spend your last coins on pastries, sneak into a kitchen for dessert, or become distracted by the smell of freshly baked treats.</li>
-<li>Impatient: You hate waiting and prefer immediate action over careful planning. You might interrupt a lengthy discussion, rush ahead before your companions are ready, or act before considering the consequences.</li>
-<li>Reckless Hero: You can't stand watching someone struggle or suffer. Even when helping would put you or your companions in serious danger, you feel compelled to intervene.</li>
-<li>Hoarder: You struggle to throw anything away. Broken tools, scraps of cloth, empty bottles, and seemingly useless objects might all be valuable someday, so you insist on keeping them.</li>
-<li>Argumentative: You find it almost impossible to let a disagreement go. Even when the subject is unimportant, you feel compelled to prove your point or correct someone you believe is wrong.</li>
-<li>Prankster: You love playing tricks on people. Whether it's hiding someone's belongings, inventing a ridiculous story, or setting up an elaborate joke, you sometimes prioritize amusement over good judgment.</li>
-<li>Rebellious: You instinctively resist being told what to do. Even reasonable instructions from authority figures can make you want to do the opposite, especially when you feel someone is trying to control you.</li>
-<li>Sentimental: You become deeply attached to people, places, and possessions. You might refuse to abandon a damaged keepsake, revisit a dangerous location for emotional reasons, or hesitate to part with something that reminds you of home.</li>
-<li>Overly Trusting: You want to believe the best about everyone. Even when someone seems suspicious, you struggle to refuse their requests, question their motives, or believe they might be deceiving you.</li>
-<li>Vengeful: You have difficulty letting go of insults, betrayals, and personal grievances. Even minor offenses can provoke you into seeking retaliation when forgiveness or simply walking away would be wiser.</li>
-</ul>
+<p>Hungry: You're always looking for something to eat. Whether it's a freshly baked loaf of bread, a stranger's unattended meal, or a feast you weren't invited to, you have a hard time resisting food, even when satisfying your appetite gets you into trouble.</p>
+<p>Kleptomaniac: You can't help but steal things, even when you have no use for them. Perhaps it's the thrill of getting away with it, or maybe you simply enjoy possessing things that don't belong to you.</p>
+<p>Thrill-Seeker: You crave excitement and danger. Perhaps you want to ride a wild bear, leap from a towering cliff into the ocean, or explore a cave everyone else is too frightened to enter. If something sounds dangerous and exciting, you're probably interested.</p>
+<p>Love-Maker: You're constantly looking for your next romantic or sexual encounter. You enjoy flirting, pursuing attractive strangers, and testing your charm, even when doing so creates complications.</p>
+<p>Gambler: You find it difficult to resist a wager. Whether it's a game of cards, a contest of strength, or a bet on something completely ridiculous, you're always willing to risk something for the chance to win.</p>
+<p>Show-Off: You love to impress people and rarely pass up an opportunity to demonstrate your abilities. You might attempt a dangerous stunt, exaggerate your accomplishments, or volunteer for a challenge simply because someone is watching.</p>
+<p>Gossip: You love knowing everyone's secrets, and keeping them to yourself is nearly impossible. You might share information you were told in confidence or pry into someone's personal affairs simply because you're curious.</p>
+<p>Hothead: Your emotions often get the better of you. When someone insults you, challenges your beliefs, or mistreats a friend, you struggle to walk away without confronting them.</p>
+<p>Curious: You have an overwhelming desire to discover what's behind every locked door, inside every mysterious chest, or at the end of every unexplored passage. Even when warned against investigating, you struggle to leave a mystery alone.</p>
+<p>Compulsive Liar: You lie even when telling the truth would be easier. Perhaps you enjoy inventing stories, exaggerating your accomplishments, or pretending to be someone you're not.</p>
+<p>Generous to a Fault: You have difficulty refusing anyone who asks for help. You might give away your last coins, share supplies your party desperately needs, or promise assistance you cannot reasonably provide.</p>
+<p>Collector: You have an obsession with collecting certain objects, whether they're rare coins, unusual stones, old books, or weapons. You struggle to pass up an opportunity to add something interesting to your collection.</p>
+<p>Hopeless Flirt: You flirt with nearly everyone you find attractive, regardless of whether the situation is appropriate. Even during serious negotiations or dangerous encounters, you struggle to resist making a charming remark.</p>
+<p>Superstitious: You believe certain rituals, objects, or actions influence your luck. You might refuse to enter a building without performing a ritual, avoid particular numbers, or insist on carrying a lucky charm even when doing so is inconvenient.</p>
+<p>Attention-Seeker: You hate being ignored. Whether you're interrupting conversations, telling exaggerated stories, or making dramatic entrances, you constantly look for ways to become the center of attention.</p>
+<p>Competitive: You can't stand the thought of losing or being considered second-best. Even a harmless game or casual remark can turn into a competition you feel compelled to win.</p>
+<p>Animal Lover: You have a soft spot for animals and struggle to ignore one in distress. You might stop an important journey to rescue an injured creature or attempt to befriend an animal that everyone else considers dangerous.</p>
+<p>Proud: You hate admitting weakness or accepting assistance. Even when you're clearly struggling, you would rather make things more difficult for yourself than acknowledge that you need help.</p>
+<p>Impulsive Shopper: You have a habit of purchasing things you don't need. Perhaps you're attracted to unusual trinkets, impressive weapons, or supposedly incredible bargains. Saving money is difficult when something interesting catches your eye.</p>
+<p>People-Pleaser: You desperately want others to like you. You struggle to say no, even when agreeing to someone's request creates problems for yourself or your companions.</p>
+<p>Sweet Tooth: You have an almost irresistible love of sweets. You might spend your last coins on pastries, sneak into a kitchen for dessert, or become distracted by the smell of freshly baked treats.</p>
+<p>Impatient: You hate waiting and prefer immediate action over careful planning. You might interrupt a lengthy discussion, rush ahead before your companions are ready, or act before considering the consequences.</p>
+<p>Reckless Hero: You can't stand watching someone struggle or suffer. Even when helping would put you or your companions in serious danger, you feel compelled to intervene.</p>
+<p>Hoarder: You struggle to throw anything away. Broken tools, scraps of cloth, empty bottles, and seemingly useless objects might all be valuable someday, so you insist on keeping them.</p>
+<p>Argumentative: You find it almost impossible to let a disagreement go. Even when the subject is unimportant, you feel compelled to prove your point or correct someone you believe is wrong.</p>
+<p>Prankster: You love playing tricks on people. Whether it's hiding someone's belongings, inventing a ridiculous story, or setting up an elaborate joke, you sometimes prioritize amusement over good judgment.</p>
+<p>Rebellious: You instinctively resist being told what to do. Even reasonable instructions from authority figures can make you want to do the opposite, especially when you feel someone is trying to control you.</p>
+<p>Sentimental: You become deeply attached to people, places, and possessions. You might refuse to abandon a damaged keepsake, revisit a dangerous location for emotional reasons, or hesitate to part with something that reminds you of home.</p>
+<p>Overly Trusting: You want to believe the best about everyone. Even when someone seems suspicious, you struggle to refuse their requests, question their motives, or believe they might be deceiving you.</p>
+<p>Vengeful: You have difficulty letting go of insults, betrayals, and personal grievances. Even minor offenses can provoke you into seeking retaliation when forgiveness or simply walking away would be wiser.</p>
 <h2>Desire and Impulse Rewards</h2>
 <p>Desires and Impulses are evaluated separately at the end of each in-game day. Each qualifying Trait earns one reward, allowing a character to earn a maximum of two rewards per day.</p>
 <p>For each reward earned, the player chooses one of the following:</p>
@@ -333,17 +481,25 @@ body[data-theme] .toc-entry:active,body[data-theme] .toc-entry:focus-visible{bac
 <p>The purpose of Traits is to connect character development with gameplay, rewarding players for embracing both their characters’ strengths and their imperfections.</p>
 </div></article>
 <article class="chapter" id="chapter-19" data-chapter="19" hidden><div class="eyebrow">Game Master <span>· 20 / 22</span></div><h1>GM NOTES</h1><div class="chapter-body">
-<p>- This game is designed to be rules-light and give you and the players freedom to craft a narrative together as you play. However, some classes, namely Huntsman, Merchant, and Noble, have abilities that rely on you, the GM, to remember during play. - If you have players who choose Huntsman, you’ll need to remember to introduce “hunger” and the “starving” status. Many GMs opt to ignore hunger and eating in game, but one ability, “Hunting Trip,” would be useless if hunger was ignored. You can use hunger to prompt side missions to get food which can be naturally spun off into full on campaigns. When used correctly, it’s a simple yet effective motivator that feels realistic and gets the players moving toward a simple goal that you can use to introduce them to new NPCs, areas of intrigue, and danger. Additionally, if you have a Huntsman in the party, you’ll need to introduce wildlife fairly often so they can utilize their other abilities. - If you have a player that chooses Merchant, you’ll need to pay more attention to in-game currency. This game is designed to keep money simple, so it’s suggested to simply use 1 currency “coin” and have items cost the same as they would in the real world. This streamlines currency and negates the need for conversion tables that bring the game to a stop. Remember to give the merchant opportunities to sell their wares, and put the party in situations where they need to pay money, or maybe even have their money stolen from them. - If you have a player who chooses Noble, you will need to consider how every NPC would react around them. A Noble is essentially a celebrity. At character creation, discuss with the player how well-known they might be. Are they a Lord over a small town? Or are they a prince over the entire nation? These questions</p>
-<p>would determine how often they are recognized. Allow them to be recognized fairly often so they can use their Charm buff. And in combat, allow enemies to be scared to hurt them, as notated in their “Nobility Armor” ability.</p>
+<p>This game is designed to be a balance between “rules light” and “mechanics heavy,” and give you and the players freedom to craft a narrative together as you play. However, some classes, namely Huntsman, Merchant, and Noble, have abilities that rely on you, the GM, to remember during play.</p>
+<p>If you have players who choose Huntsman, you’ll need to remember to introduce “hunger” and the “starving” status. Many GMs opt to ignore hunger and eating in game, but one ability, “Hunting Trip,” would be useless if hunger was ignored. You can use hunger to prompt side missions to get food which can be naturally spun off into full on campaigns. When used correctly, it’s a simple yet effective motivator that feels realistic and gets the players moving toward a simple goal that you can use to introduce them to new NPCs, areas of intrigue, and danger. Additionally, if you have a Huntsman in the party, you’ll need to introduce wildlife fairly often so they can utilize their other abilities.</p>
+<p>If you have a player that chooses Merchant, you’ll need to pay more attention to in-game currency. This game is designed to keep money simple, so it’s suggested to simply use 1 currency “coin” and have items cost the same as they would in the real world with 1 coin equaling 1 dollar. This streamlines currency and negates the need for conversion tables that bring the game to a stop. Remember to give the merchant opportunities to sell their wares, and put the party in situations where they need to pay money, or maybe even have their money stolen from them.</p>
+<p>If you have a player who chooses Noble, you will need to consider how every NPC would react around them. A Noble is essentially a celebrity. At character creation, discuss with the player how well-known they might be. Are they a Lord over a small town? Or are they a prince over the entire nation? These questions would determine how often they are recognized. Allow them to be recognized fairly often so they can use their Charm buff. And in combat, allow enemies to be scared to hurt them, as notated in their “Nobility Armor” ability.</p>
 </div></article>
 <article class="chapter" id="chapter-20" data-chapter="20" hidden><div class="eyebrow">Game Master <span>· 21 / 22</span></div><h1>Leveling Up</h1><div class="chapter-body">
 <p>Allowing characters to level up should be rare. Characters shouldn’t level up every session. This is because there is a limit to how high stats can go before a d12 has no effect on them. Let leveling up be a big moment to celebrate. Maybe even allow characters to level up mid-combat for an exciting moment. Don’t be afraid to let 1 character level up and not others if they pull off something truly amazing— if your players are ok with being out of sync with each other in terms of their level.</p>
 </div></article>
 <article class="chapter" id="chapter-21" data-chapter="21" hidden><div class="eyebrow">Game Master <span>· 22 / 22</span></div><h1>Potions and Magic</h1><div class="chapter-body">
-<p>There are no magic spells in this world. Magic is housed in potions and magical items only. This is why the magic class is called Magister and not Wizard or Sorcerer. Study the potion table and feel free to create your own. Let potions be common loot, especially if you have a Magister in the party. There’s no hard limit on how many potions a character can carry, but if you want to limit it, feel free to give the characters/players a max number of potions they can carry at one time.</p>
-<p>If a Magister player is confused by the Brewmaster ability, explain that their ingredients bag is essentially a checklist of all the potion ingredients. “Ingredients” is a purposefully vague/amorphous term and you do not have to name specific ingredients. So if the Magister wants to use the Brewmaster ability to brew a Cobweb Potion, for example, ask them if they have the Cobweb ingredients. If they do, then they mark off those ingredients (and they no longer have them) and they now have the potion. If they don’t have the ingredients, then they’ll have to go collect the ingredients instead. Ask the player if they want to look for Cobweb Potion ingredients or brew a different potion. When they look for ingredients, they should name the potion they are looking for ingredients for. On a successful roll, they find the ingredients for that potion only. If they search for ingredients during a Rest, they cannot also brew potions during that same Rest.</p>
-<p>Attacks</p>
-<p>- You’ll have to improvise the Damage Number of improvised weapons, such as rocks or planks of wood. You can use the weapons table in this document to find an established weapon and use its stats for an improvised weapon that is similar. If the player is throwing something, they should roll focus, even if they are throwing a sword (that uses</p>
-<p>Grit to attack). Focus in this scenario represents the character’s aim when throwing something. - If you wish to introduce shields or Armor to the game, have them simply reduce Damage taken. Do not raise Evasion. - If an attack would not realistically make sense, it’s the GM’s responsibility to inform the player that it would not deal damage. For example, if a player wants to punch a fully armored knight with their bare hand, it would not make sense for the player to deal damage to the armored target. In game, this would look like a player saying “I punch the knight,” and instead of the GM saying “Ok, roll Grit,” the GM would describe how the player punches it and doesn’t leave a dent. The punch may even harm the attacker. The narrative should override the rules as written when necessary. Alternatively, you could have a successful attack not deal damage to the knight, but maybe there is still a positive outcome, such as the knight being knocked down, or his helmet flying off. - With Ranged weapons that fire ammunition, such as a bow firing arrows, you do not have to have your players keep track of the ammo. Because this game is rules-light, feel free to allow your players to have infinite ammo. However, if they throw a dagger or their mace, they should have to pick it back up after the fight. Be lenient with your players and if they forget to pick it up, just ret-con the story and say “yeah you grabbed it as you left,” unless they were fleeing from a burning building or an avalanche. - If the world you create includes other fantasy races and your players want to play as them, work with them in session zero to come up with a few abilities their race grants them. Be very careful not to increase Evasion unless it’s only raised for a specific situation like “while you’re in water, Evasion +1” or “When being attacked with a long range weapon, +1 Evasion.” Think outside the box for abilities such as “can speak to plants,” or “can breathe under water,” or “once per rest, you can command someone to take an action. The target rolls Focus and if they fail, they do what you say to the best of their ability.”</p></div></article><div class="chapter-nav" id="chapterNav" hidden><button id="prevChapter" type="button">← Previous</button><button id="nextChapter" type="button">Next →</button></div><p class="swipe-hint" id="swipeHint" hidden>Swipe left or right to change topics</p></div></main><script>
+<p>There are no magic spells in this world. Magic is housed in potions and magical items only. This is why the magic class is called Magister and not Wizard or Sorcerer.</p>
+<p>Study the potion table and feel free to create your own. Let potions be common loot, especially if you have a Magister in the party. There’s no hard limit on how many potions a character can carry, but if you want to limit it, feel free to give the characters/players a max number of potions they can carry at one time.</p>
+<p>If a Magister player is confused by the Brewmaster ability, explain that their ingredients bag is essentially a checklist of all the potion ingredients. “Ingredients” is a purposefully vague/amorphous term and you do not have to name specific ingredients. So if the Magister wants to use the Brewmaster ability to brew a Cobweb Potion, for example, ask them if they have the Cobweb ingredients. If they do, then they mark off those ingredients (and they no longer have them) and they now have the potion. If they don’t have the ingredients, then they’ll have to go collect the ingredients instead. Ask the player if they want to look for Cobweb Potion ingredients or brew a different potion.</p>
+<p>When they look for ingredients, they should name the potion they are looking for ingredients for. On a successful roll, they find the ingredients for that potion only. If they search for ingredients during a Rest, they cannot also brew potions during that same Rest.</p>
+<h2>Attacks</h2>
+<p>You’ll have to improvise the Damage Number of improvised weapons, such as rocks or planks of wood. You can use the weapons table in this document to find an established weapon and use its stats for an improvised weapon that is similar. If the player is throwing something, they should roll focus, even if they are throwing a sword (that uses Grit to attack). Focus in this scenario represents the character’s aim when throwing something.</p>
+<p>If you wish to introduce shields or Armor to the game, have them simply reduce Damage taken. Do not raise Evasion.</p>
+<p>If an attack would not realistically make sense, it’s the GM’s responsibility to inform the player that it would not deal damage. For example, if a player wants to punch a fully armored knight with their bare hand, it would not make sense for the player to deal damage to the armored target. In game, this would look like a player saying “I punch the knight,” and instead of the GM saying “Ok, roll Grit,” the GM would describe how the player punches it and doesn’t leave a dent. The punch may even harm the attacker. The narrative should override the rules as written when necessary. Alternatively, you could have a successful attack not deal damage to the knight, but maybe there is still a positive outcome, such as the knight being knocked down, or his helmet flying off.</p>
+<p>With Ranged weapons that fire ammunition, such as a bow firing arrows, you do not have to have your players keep track of the ammo. Because this game is rules-light, feel free to allow your players to have infinite ammo. However, if they throw a dagger or their mace, they should have to pick it back up after the fight. Be lenient with your players and if they forget to pick it up, just ret-con the story and say “yeah you grabbed it as you left,” unless they were fleeing from a burning building or an avalanche.</p>
+<p>If the world you create includes other fantasy races and your players want to play as them, work with them in session zero to come up with a few abilities their race grants them. Be very careful not to increase Evasion unless it’s only raised for a specific situation like “while you’re in water, Evasion +1” or “When being attacked with a long range weapon, +1 Evasion.” Think outside the box for abilities such as “can speak to plants,” or “can breathe under water,” or “once per rest, you can command someone to take an action. The target rolls Focus and if they fail, they do what you say to the best of their ability.”</p>
+</div></article><div class="chapter-nav" id="chapterNav" hidden><button id="prevChapter" type="button">← Previous</button><button id="nextChapter" type="button">Next →</button></div><p class="swipe-hint" id="swipeHint" hidden>Swipe left or right to change topics</p></div></main><script>
 (()=>{const saved=localStorage.getItem('cis-theme')||'charcoal';document.body.dataset.theme=['charcoal','ember','parchment','cedar','sandy','petals','harbor','plum','meadow','ocean','rosewood','dusk','midnight'].includes(saved)?saved:'charcoal';const chapters=[...document.querySelectorAll('.chapter')],toc=document.getElementById('toc'),tocButton=document.getElementById('tocButton'),nav=document.getElementById('chapterNav'),hint=document.getElementById('swipeHint'),prev=document.getElementById('prevChapter'),next=document.getElementById('nextChapter');let current=-1;function show(index,historyMode='push'){if(index<-1||index>=chapters.length)return;current=index;toc.hidden=index!==-1;tocButton.hidden=index===-1;nav.hidden=index===-1;hint.hidden=index===-1;chapters.forEach((el,i)=>el.hidden=i!==index);if(index>=0){prev.disabled=index===0;next.disabled=index===chapters.length-1;prev.textContent=index===0?'← Previous':'← '+chapters[index-1].querySelector('h1').textContent;next.textContent=index===chapters.length-1?'End of handbook':chapters[index+1].querySelector('h1').textContent+' →'}if(historyMode!=='none'){const hash=index<0?'':('#topic-'+(index+1));if(historyMode==='replace')history.replaceState(null,'',location.pathname+hash);else history.pushState(null,'',location.pathname+hash)}window.scrollTo({top:0,behavior:'instant'})}document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',()=>show(+el.dataset.go)));tocButton.addEventListener('click',()=>show(-1));prev.addEventListener('click',()=>show(current-1));next.addEventListener('click',()=>show(current+1));function fromHash(){const x=location.hash.match(/^#topic-(\d+)$/);show(x?Math.max(-1,Math.min(chapters.length-1,+x[1]-1)):-1,'none')}window.addEventListener('popstate',fromHash);window.addEventListener('hashchange',fromHash);let startX=0,startY=0,startTime=0;document.addEventListener('touchstart',e=>{if(current<0||e.touches.length!==1)return;startX=e.touches[0].clientX;startY=e.touches[0].clientY;startTime=Date.now()},{passive:true});document.addEventListener('touchend',e=>{if(current<0||!startTime||e.changedTouches.length!==1)return;const dx=e.changedTouches[0].clientX-startX,dy=e.changedTouches[0].clientY-startY;startTime=0;if(Math.abs(dx)>75&&Math.abs(dx)>Math.abs(dy)*1.5){show(current+(dx<0?1:-1))}},{passive:true});fromHash()})();
 </script></body></html>
