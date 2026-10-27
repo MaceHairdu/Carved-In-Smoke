@@ -200,7 +200,7 @@ function sizeDesktopClassArt(){
  const padding=parseFloat(getComputedStyle(card).paddingLeft)||18;
  if(window.matchMedia('(max-width:750px)').matches)return;
  const bounds=images.map(img=>{
-  let box={left:0,right:img.naturalWidth};
+  let box={left:0,right:img.naturalWidth,top:0,bottom:img.naturalHeight};
   try{
    const canvas=document.createElement('canvas');
    canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
@@ -208,17 +208,21 @@ function sizeDesktopClassArt(){
    ctx.drawImage(img,0,0);
    const data=ctx.getImageData(0,0,canvas.width,canvas.height).data;
    const columnCounts=new Uint32Array(canvas.width);
+   const rowCounts=new Uint32Array(canvas.height);
    for(let yy=0;yy<canvas.height;yy++)for(let xx=0;xx<canvas.width;xx++){
-    if(data[(yy*canvas.width+xx)*4+3]>48)columnCounts[xx]++;
+    if(data[(yy*canvas.width+xx)*4+3]>48){columnCounts[xx]++;rowCounts[yy]++;}
    }
    // Ignore isolated stray pixels when determining the character's visible edges.
    const threshold=Math.max(3,Math.ceil(canvas.height*.012));
    let minX=canvas.width,maxX=-1;
    for(let xx=0;xx<canvas.width;xx++)if(columnCounts[xx]>=threshold){minX=Math.min(minX,xx);maxX=xx}
-   if(maxX>=0)box={left:minX,right:maxX+1};
+   let minY=canvas.height,maxY=-1;
+   const rowThreshold=Math.max(3,Math.ceil(canvas.width*.012));
+   for(let yy=0;yy<canvas.height;yy++)if(rowCounts[yy]>=rowThreshold){minY=Math.min(minY,yy);maxY=yy}
+   if(maxX>=0)box={left:minX,right:maxX+1,top:minY<canvas.height?minY:0,bottom:maxY>=0?maxY+1:canvas.height};
   }catch(e){/* fallback to full image width */}
   const scale=img.getBoundingClientRect().height/img.naturalHeight;
-  return {img,left:box.left*scale,width:(box.right-box.left)*scale};
+  return {img,left:box.left*scale,width:(box.right-box.left)*scale,top:box.top*scale,bottom:box.bottom*scale};
  });
  const total=bounds.reduce((sum,item)=>sum+item.width,0)+Math.max(0,bounds.length-1)*between;
  art.style.width=total+'px';
@@ -235,6 +239,29 @@ function sizeDesktopClassArt(){
  const available=fieldRight-padding;
  card.style.setProperty('--cis-notes-width',(images.length?Math.max(100,available):cardWidth-padding*2)+'px');
  card.style.setProperty('--cis-portrait-width',total+'px');
+ // Center the VISIBLE pixels vertically between the heading and Class Abilities.
+ // Do not use transparent image edges to determine headroom or footroom.
+ if(images.length){
+  art.style.top='8px';
+  const cardRect=card.getBoundingClientRect();
+  const heading=card.querySelector('h2');
+  const abilities=card.querySelector('#classAbilities');
+  if(heading&&abilities){
+   const areaTop=heading.getBoundingClientRect().bottom-cardRect.top+8;
+   const label=abilities.previousElementSibling;
+   const areaBottom=(label||abilities).getBoundingClientRect().top-cardRect.top-8;
+   let visibleTop=Infinity,visibleBottom=-Infinity;
+   for(const item of bounds){
+    const rect=item.img.getBoundingClientRect();
+    visibleTop=Math.min(visibleTop,rect.top-cardRect.top+item.top);
+    visibleBottom=Math.max(visibleBottom,rect.top-cardRect.top+item.bottom);
+   }
+   if(Number.isFinite(visibleTop)&&areaBottom>areaTop){
+    const offset=(areaTop+areaBottom-visibleTop-visibleBottom)/2;
+    art.style.top=(8+offset)+'px';
+   }
+  }
+ }
 }
 window.addEventListener('resize',sizeDesktopClassArt);
 function updateClassBackground(){
