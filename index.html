@@ -324,7 +324,7 @@ function sizeDesktopClassArt(){
  const shift=width-classArtMaster.right-(width-areaWidth)-visibleRight;
  const visibleLeft=Math.min(...positions.map(p=>p.left+p.w*(p.bounds.left??0)))+(width-areaWidth)+shift;
  positions.forEach(p=>p.img.style.setProperty('left',(p.left+shift)+'px','important'));
- const notesWidth=Math.max(80,visibleLeft-classArtMaster.left);
+ const notesWidth=Math.max(0,visibleLeft-classArtMaster.left);
  for(const el of [appearance,background])if(el)el.style.setProperty('width',notesWidth+'px','important');
  card.style.setProperty('--cis-notes-width',notesWidth+'px');
 
