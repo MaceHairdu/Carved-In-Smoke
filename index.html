@@ -257,18 +257,6 @@ function sizeDesktopClassArt(){
  const areaWidth=Math.floor(width*classArtMaster.areaWidth/100),areaHeight=classArtMaster.areaHeight;
  const areaRight=classArtMaster.right,areaTop=0;
  art.style.cssText='position:absolute!important;top:'+areaTop+'px!important;right:'+areaRight+'px!important;left:auto!important;width:'+areaWidth+'px!important;height:'+areaHeight+'px!important;overflow:visible!important;display:block!important;pointer-events:none!important;';
- const slotWidth=areaWidth/imgs.length;
- imgs.forEach((img,i)=>{
-  const cfg=classArtPixels[img.src.split('/').pop()]||{height:390,x:0,y:0};
-  const abilities=card.querySelector('#classAbilities');
-  const panelTop=card.getBoundingClientRect().top;
-  const fieldTop=abilities?abilities.getBoundingClientRect().top-panelTop:areaHeight;
-  const usable=Math.max(1,fieldTop-classArtMaster.top-classArtMaster.bottom);
-  const h=usable+(cfg.height||0),w=h*img.naturalWidth/img.naturalHeight;
-  const left=i*slotWidth+(slotWidth-w)/2+(i-(imgs.length-1)/2)*classArtMaster.between+classArtMaster.left+(cfg.x||0)+(cfg.left||0)-(cfg.right||0);
-  const bottom=areaHeight-classArtMaster.top-h-(cfg.y||0)-(cfg.top||0)+(cfg.bottom||0);
-  img.style.cssText='position:absolute!important;top:auto!important;bottom:'+bottom+'px!important;left:'+left+'px!important;right:auto!important;width:'+w+'px!important;height:'+h+'px!important;max-width:none!important;max-height:none!important;transform:none!important;margin:0!important;object-fit:contain!important;';
- });
  card.style.setProperty('--cis-notes-width',Math.max(120,width-areaWidth-areaRight-32)+'px');
  // Equal-height Appearance and Background sections between the title and Class Abilities.
  // The label heights and native spacing are subtracted, so each textarea uses its full share.
@@ -295,6 +283,41 @@ function sizeDesktopClassArt(){
   const current=abilitiesLabel.getBoundingClientRect().top-cardRect.top;
   abilitiesLabel.style.setProperty('margin-top',Math.max(0,targetAbilitiesTop-current)+'px','important');
  }
+ // Position from the nontransparent character pixels, not the transparent image canvas.
+ const field=card.querySelector('#classAbilities');
+ const panelTop=card.getBoundingClientRect().top;
+ const fieldTop=field?field.getBoundingClientRect().top-panelTop:areaHeight;
+ const usable=Math.max(1,fieldTop-classArtMaster.top-classArtMaster.bottom);
+ const slotWidth=areaWidth/imgs.length;
+ imgs.forEach((img,i)=>{
+  const cfg=classArtPixels[img.src.split('/').pop()]||{};
+  let bounds=img._cisAlphaBounds;
+  if(!bounds){
+   try{
+    const canvas=document.createElement('canvas');
+    canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
+    const ctx=canvas.getContext('2d',{willReadFrequently:true});
+    ctx.drawImage(img,0,0);
+    const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;
+    let first=canvas.height,last=-1;
+    for(let y=0;y<canvas.height;y++){
+     for(let x=0;x<canvas.width;x++){
+      if(pixels[(y*canvas.width+x)*4+3]>8){first=Math.min(first,y);last=Math.max(last,y);}
+     }
+    }
+    bounds=last>=0?{top:first/canvas.height,bottom:(last+1)/canvas.height}:{top:0,bottom:1};
+   }catch(e){bounds={top:0,bottom:1};}
+   img._cisAlphaBounds=bounds;
+  }
+  const visibleFraction=Math.max(.01,bounds.bottom-bounds.top);
+  const h=usable/visibleFraction+(cfg.height||0);
+  const w=h*img.naturalWidth/img.naturalHeight;
+  const left=i*slotWidth+(slotWidth-w)/2+(i-(imgs.length-1)/2)*classArtMaster.between+classArtMaster.left+(cfg.x||0)+(cfg.left||0)-(cfg.right||0);
+  const imageTop=classArtMaster.top-h*bounds.top+(cfg.y||0)+(cfg.top||0)-(cfg.bottom||0);
+  const bottom=areaHeight-imageTop-h;
+  img.style.cssText='position:absolute!important;top:auto!important;bottom:'+bottom+'px!important;left:'+left+'px!important;right:auto!important;width:'+w+'px!important;height:'+h+'px!important;max-width:none!important;max-height:none!important;transform:none!important;margin:0!important;object-fit:contain!important;';
+ });
+
 }
 window.addEventListener('resize',sizeDesktopClassArt);
 function updateClassBackground(){
