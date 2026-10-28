@@ -180,6 +180,16 @@ body[data-theme]:not([data-theme="charcoal"]):not([data-theme="ember"]) header b
 .trait-info-panel[hidden]{display:none!important}
 .trait-info-close{position:absolute;top:5px;right:6px;min-width:24px;height:24px;padding:0;border:0;background:transparent;color:#e4e5e2;font-size:19px;line-height:1;cursor:pointer}
 textarea[data-field="edge"]::placeholder,textarea[data-field="burden"]::placeholder,textarea[data-field="desire"]::placeholder,textarea[data-field="impulse"]::placeholder{color:#909da5;opacity:1;font-size:13px;line-height:1.35}
+</style><style id="class-notes-layout-correction">
+@media(min-width:751px){
+ #sheet .card:has(> #cisClassArt){min-height:0!important;position:relative!important}
+ #sheet .card:has(> #cisClassArt)>textarea[data-field="appearance"],
+ #sheet .card:has(> #cisClassArt)>textarea[data-field="background"]{box-sizing:border-box!important;width:var(--cis-notes-width,48%)!important;max-width:var(--cis-notes-width,48%)!important;flex:0 0 auto!important}
+ #sheet .card:has(> #cisClassArt)>label:has(+ #classAbilities){margin-top:8px!important}
+ #sheet .desktop-left-top .card:has([data-field="appearance"]) #classAbilities{flex:0 0 auto!important}
+ #sheet .card #cisClassArt{z-index:0!important}
+ #sheet .card:has(> #cisClassArt)>:not(#cisClassArt){position:relative;z-index:1}
+}
 </style></head><body><header><h1>CARVED IN SMOKE</h1><button id="openProfile" class="secondary hidden profile-trigger" type="button" aria-label="Open settings" title="Settings"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2.5h4l.6 2.3a7.5 7.5 0 0 1 1.7 1l2.3-.7 2 3.5-1.7 1.6a8 8 0 0 1 0 2l1.7 1.6-2 3.5-2.3-.7a7.5 7.5 0 0 1-1.7 1L14 20h-4l-.6-2.4a7.5 7.5 0 0 1-1.7-1l-2.3.7-2-3.5 1.7-1.6a8 8 0 0 1 0-2L3.4 8.6l2-3.5 2.3.7a7.5 7.5 0 0 1 1.7-1L10 2.5Z" transform="translate(0 0.75)"/><circle cx="12" cy="11.75" r="3"/></svg></button></header><main>
 <section id="login" class="card"><h2>Character Records</h2><p class="note">Sign in to create and save your characters. The same Supabase account can be used for both websites.</p><label>Email</label><input id="email" type="email" autocomplete="email"><label>Password</label><span class="password-wrap"><input id="password" type="password" autocomplete="current-password"><button type="button" class="password-eye" data-password-toggle="password" aria-label="Show password" aria-pressed="false" title="Show password"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></span><div class="auth-actions"><button id="signin">Sign in</button><button id="signup" class="secondary">Create account</button><button id="forgotPassword" type="button" class="secondary">Forgot password?</button></div><p id="authmsg" class="note" aria-live="polite"></p></section>
 <div id="sheet"><div class="card character-details"><h2>Character</h2><div class="character-toolbar"><div class="character-picker"><label for="characters">Character</label><select id="characters" aria-label="Choose character"><option value="">Select character</option></select></div><div class="character-toolbar-buttons"><span id="saveStatus" class="note" aria-live="polite"></span></div><p id="message"></p></div><div class="fields character-fields"><div class="character-stat-row"><div class="character-class"><label>Class</label><select data-field="class"><option value="">Choose class</option><option>Knight</option><option>Huntsman</option><option>Magister</option><option>Noble</option><option>Merchant</option><option>Rogue</option><option>Pirate</option></select></div><div class="character-level"><label>Level</label><input data-field="level" type="number" min="1" value="1"></div><div class="character-coin"><label>Coins</label><input data-field="coin" type="number" min="0" step="1" inputmode="numeric" value="0"></div></div></div></div>
@@ -215,38 +225,36 @@ function sizeDesktopClassArt(){
  const images=[...art.querySelectorAll('img')].filter(img=>img.complete&&img.naturalWidth);
  if(!images.length){card.style.removeProperty('--cis-notes-width');return;}
  const cardWidth=card.getBoundingClientRect().width;
- const gap=8,items=images.map(img=>{
-  const file=img.src.split('/').pop(),settings=classArtPixels[file]||{height:390,x:0,y:0};
-  const height=settings.height,width=img.naturalWidth*height/img.naturalHeight;
-  return {img,height,width,x:settings.x||0,y:settings.y||0};
+ const cardHeight=card.getBoundingClientRect().height;
+ const gap=8, rightGap=18, top=42;
+ const items=images.map(img=>{
+  const file=img.src.split('/').pop(),cfg=classArtPixels[file]||{height:390,x:0,y:0};
+  const height=cfg.height,width=img.naturalWidth*height/img.naturalHeight;
+  return {img,height,width,x:cfg.x||0,y:cfg.y||0};
  });
- const total=items.reduce((n,item)=>n+item.width,0)+gap*(items.length-1);
- const rightGap=cardWidth*.025;
- art.style.width=total+'px';
- art.style.height='390px';
- art.style.right=rightGap+'px';
- art.style.top='8px';
- art.style.display='block';
+ const total=items.reduce((n,v)=>n+v.width,0)+gap*(items.length-1);
+ const artWidth=Math.min(total,Math.max(180,cardWidth*.53));
+ const scale=artWidth/total;
+ const artHeight=330;
+ art.style.setProperty('width',artWidth+'px','important');
+ art.style.setProperty('height',artHeight+'px','important');
+ art.style.setProperty('top',top+'px','important');
+ art.style.setProperty('right',rightGap+'px','important');
+ art.style.setProperty('left','auto','important');
+ art.style.setProperty('overflow','hidden','important');
+ art.style.setProperty('pointer-events','none','important');
  let cursor=0;
  for(const item of items){
   const img=item.img;
-  img.style.position='absolute';
-  img.style.setProperty('height',item.height+'px','important');
-  img.style.setProperty('width',item.width+'px','important');
-  img.style.setProperty('max-width','none','important');
-  img.style.setProperty('max-height','none','important');
-  img.style.setProperty('transform','none','important');
-  img.style.setProperty('margin','0','important');
-  img.style.setProperty('top','auto','important');
-  img.style.setProperty('bottom',(0-item.y)+'px','important');
-  img.style.setProperty('left',(cursor+item.x)+'px','important');
-  img.style.right='auto';
+  img.style.cssText='position:absolute!important;max-width:none!important;max-height:none!important;object-fit:contain!important;transform:none!important;margin:0!important;top:auto!important;right:auto!important;'+
+   'height:'+(item.height*scale)+'px!important;width:'+(item.width*scale)+'px!important;'+
+   'left:'+((cursor+item.x)*scale)+'px!important;bottom:'+((item.y)*-scale)+'px!important;';
   cursor+=item.width+gap;
  }
  const padding=parseFloat(getComputedStyle(card).paddingLeft)||18;
- const available=Math.max(100,cardWidth-rightGap-total-cardWidth*.04-padding);
- card.style.setProperty('--cis-notes-width',available+'px');
- card.style.setProperty('--cis-portrait-width',total+'px');
+ const notesWidth=Math.max(130,cardWidth-artWidth-rightGap-padding-18);
+ card.style.setProperty('--cis-notes-width',notesWidth+'px');
+ card.style.setProperty('--cis-portrait-width',artWidth+'px');
 }
 window.addEventListener('resize',sizeDesktopClassArt);
 function updateClassBackground(){
