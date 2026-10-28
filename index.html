@@ -236,11 +236,11 @@ let lastClassArt='';
 // height: image height in CSS pixels; x: horizontal shift; y: vertical shift.
 // Positive x moves right; positive y moves down. No automatic shrinking.
 const classArtPixels={
- 'Knight-M.webp':{height:390,x:0,y:0}, 'Knight-F.webp':{height:390,x:0,y:0},
- 'Huntsman-M.webp':{height:402,x:0,y:0}, 'Huntsman-F.webp':{height:300,x:0,y:0},
- 'Magister-M.webp':{height:425,x:0,y:0}, 'Magister-F.webp':{height:470,x:0,y:0},
- 'Noble-M.webp':{height:390,x:0,y:0}, 'Merchant-M.webp':{height:390,x:0,y:0},
- 'Rogue-M.webp':{height:390,x:0,y:0}
+ 'Knight-M.webp':{height:390,x:0,y:0,top:0,bottom:0,left:0,right:0}, 'Knight-F.webp':{height:390,x:0,y:0,top:0,bottom:0,left:0,right:0},
+ 'Huntsman-M.webp':{height:402,x:0,y:0,top:0,bottom:0,left:0,right:0}, 'Huntsman-F.webp':{height:300,x:0,y:0,top:0,bottom:0,left:0,right:0},
+ 'Magister-M.webp':{height:425,x:0,y:0,top:0,bottom:0,left:0,right:0}, 'Magister-F.webp':{height:470,x:0,y:0,top:0,bottom:0,left:0,right:0},
+ 'Noble-M.webp':{height:390,x:0,y:0,top:0,bottom:0,left:0,right:0}, 'Merchant-M.webp':{height:390,x:0,y:0,top:0,bottom:0,left:0,right:0},
+ 'Rogue-M.webp':{height:390,x:0,y:0,top:0,bottom:0,left:0,right:0}
 };
 function sizeDesktopClassArt(){
  const art=document.getElementById('cisClassArt'),card=art?.parentElement;
@@ -254,20 +254,36 @@ function sizeDesktopClassArt(){
  const slotWidth=areaWidth/imgs.length;
  imgs.forEach((img,i)=>{
   const cfg=classArtPixels[img.src.split('/').pop()]||{height:390,x:0,y:0};
-  // Height is literal pixels. Never shrink it to fit the combined image widths.
-  // Independent image slots prevent a wide transparent WebP canvas from scaling down both portraits.
-  const h=cfg.height;
-  const w=h*img.naturalWidth/img.naturalHeight;
-  const left=i*slotWidth+(slotWidth-w)/2+(cfg.x||0);
-  img.style.cssText='position:absolute!important;top:auto!important;bottom:'+(-(cfg.y||0))+'px!important;left:'+left+'px!important;right:auto!important;width:'+w+'px!important;height:'+h+'px!important;max-width:none!important;max-height:none!important;transform:none!important;margin:0!important;object-fit:contain!important;';
+  const h=cfg.height,w=h*img.naturalWidth/img.naturalHeight;
+  const left=i*slotWidth+(slotWidth-w)/2+(cfg.x||0)+(cfg.left||0)-(cfg.right||0);
+  const bottom=-(cfg.y||0)-(cfg.top||0)+(cfg.bottom||0);
+  img.style.cssText='position:absolute!important;top:auto!important;bottom:'+bottom+'px!important;left:'+left+'px!important;right:auto!important;width:'+w+'px!important;height:'+h+'px!important;max-width:none!important;max-height:none!important;transform:none!important;margin:0!important;object-fit:contain!important;';
  });
  card.style.setProperty('--cis-notes-width',Math.max(120,width-areaWidth-areaRight-32)+'px');
- const label=card.querySelector('label:has(+ #classAbilities)');
- if(label){
-  label.style.setProperty('margin-top','0px','important');
-  const current=label.getBoundingClientRect().top-card.getBoundingClientRect().top;
-  const needed=areaTop+areaHeight+8;
-  label.style.setProperty('margin-top',Math.max(0,needed-current)+'px','important');
+ // Equal-height Appearance and Background sections between the title and Class Abilities.
+ // The label heights and native spacing are subtracted, so each textarea uses its full share.
+ const title=card.querySelector('h2'),appearance=card.querySelector('textarea[data-field="appearance"]');
+ const background=card.querySelector('textarea[data-field="background"]');
+ const abilitiesLabel=card.querySelector('label:has(+ #classAbilities)');
+ if(title&&appearance&&background&&abilitiesLabel){
+  const cardRect=card.getBoundingClientRect();
+  const titleBottom=title.getBoundingClientRect().bottom-cardRect.top;
+  const targetAbilitiesTop=Math.max(areaTop+areaHeight+8,titleBottom+160);
+  const firstLabel=appearance.previousElementSibling,secondLabel=background.previousElementSibling;
+  const label1=firstLabel?.getBoundingClientRect().height||16;
+  const label2=secondLabel?.getBoundingClientRect().height||16;
+  const sectionHeight=(targetAbilitiesTop-titleBottom)/2;
+  const labelSpacing=8;
+  const field1=Math.max(70,Math.floor(sectionHeight-label1-labelSpacing));
+  const field2=Math.max(70,Math.floor(sectionHeight-label2-labelSpacing));
+  for(const [el,h] of [[appearance,field1],[background,field2]]){
+   el.style.setProperty('height',h+'px','important');
+   el.style.setProperty('min-height',h+'px','important');
+   el.style.setProperty('flex','0 0 '+h+'px','important');
+  }
+  abilitiesLabel.style.setProperty('margin-top','0px','important');
+  const current=abilitiesLabel.getBoundingClientRect().top-cardRect.top;
+  abilitiesLabel.style.setProperty('margin-top',Math.max(0,targetAbilitiesTop-current)+'px','important');
  }
 }
 window.addEventListener('resize',sizeDesktopClassArt);
