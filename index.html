@@ -240,7 +240,7 @@ function sizeDesktopClassArt(){
  if(!imgs.length){card.style.removeProperty('--cis-notes-width');return}
  const width=card.clientWidth;
  const areaWidth=Math.floor(width*.53),areaHeight=330;
- const areaRight=12,areaTop=24;
+ const areaRight=12,areaTop=82;
  art.style.cssText='position:absolute!important;top:'+areaTop+'px!important;right:'+areaRight+'px!important;left:auto!important;width:'+areaWidth+'px!important;height:'+areaHeight+'px!important;overflow:visible!important;display:block!important;pointer-events:none!important;';
  const slotWidth=areaWidth/imgs.length;
  imgs.forEach((img,i)=>{
