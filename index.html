@@ -155,7 +155,13 @@ body[data-theme]:not([data-theme="charcoal"]):not([data-theme="ember"]) header b
 #potionInfoDrawer[hidden]{display:none}
 #potionInfoDrawer .potion-drawer-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
 #potionInfoDrawer p{white-space:pre-line;line-height:1.6}
-</style><style id="button-vertical-alignment">button{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;line-height:1.2}button .health-arrow{line-height:1} .condition-launch>button{justify-content:flex-start} .number-stepper button{display:flex;align-items:center;justify-content:center} .inventory-add{display:flex;align-items:center;justify-content:center}</style><style id="desktop-class-art-spacing-20261026">
+</style><style id="button-vertical-alignment">button{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;line-height:1.2}button .health-arrow{line-height:1} .condition-launch>button{justify-content:flex-start} .number-stepper button{display:flex;align-items:center;justify-content:center} .inventory-add{display:flex;align-items:center;justify-content:center}</style><style id="class-notes-gap-fix">
+@media(min-width:751px){
+ #sheet .desktop-left-top .card:has([data-field="appearance"]) #classAbilities{flex:0 0 auto!important}
+ #sheet .card:has(> #cisClassArt)>label:has(+ #classAbilities){margin-top:0!important}
+ #sheet .card:has(> #cisClassArt){min-height:0!important}
+}
+</style><style id="desktop-class-art-spacing-20261026">
 @media(min-width:751px){
  #sheet .card:has(> #cisClassArt){min-height:485px}
  #sheet .card #cisClassArt{position:absolute;top:8px;right:5%;height:355px;display:block;width:0;pointer-events:none}
@@ -165,7 +171,7 @@ body[data-theme]:not([data-theme="charcoal"]):not([data-theme="ember"]) header b
  #sheet .card #cisClassArt img[src$="Huntsman-F.webp"]{height:229.075px}
  #sheet .card:has(> #cisClassArt)>textarea[data-field="appearance"],
  #sheet .card:has(> #cisClassArt)>textarea[data-field="background"]{width:var(--cis-notes-width,48%);max-width:var(--cis-notes-width,48%)}
- #sheet .card:has(> #cisClassArt)>label:has(+ #classAbilities){margin-top:95px}
+ #sheet .card:has(> #cisClassArt)>label:has(+ #classAbilities){margin-top:0!important}
 }
 .trait-label-row{display:flex;align-items:center;gap:7px;margin-bottom:5px}
 .trait-label-row label{margin:0}
@@ -199,7 +205,7 @@ let lastClassArt='';
 const classArtPixels={
  'Knight-M.webp':{height:390,x:0,y:0}, 'Knight-F.webp':{height:390,x:0,y:0},
  'Huntsman-M.webp':{height:402,x:0,y:0}, 'Huntsman-F.webp':{height:300,x:0,y:0},
- 'Magister-M.webp':{height:390,x:0,y:0}, 'Magister-F.webp':{height:425,x:0,y:0},
+ 'Magister-M.webp':{height:390,x:0,y:0}, 'Magister-F.webp':{height:425,x:0,y:58},
  'Noble-M.webp':{height:390,x:0,y:0}, 'Merchant-M.webp':{height:390,x:0,y:0},
  'Rogue-M.webp':{height:390,x:0,y:0}
 };
@@ -217,7 +223,7 @@ function sizeDesktopClassArt(){
  const total=items.reduce((n,item)=>n+item.width,0)+gap*(items.length-1);
  const rightGap=cardWidth*.025;
  art.style.width=total+'px';
- art.style.height='440px';
+ art.style.height='390px';
  art.style.right=rightGap+'px';
  art.style.top='8px';
  art.style.display='block';
