@@ -229,7 +229,7 @@ let lastClassArt='';
 const classArtPixels={
  'Knight-M.webp':{height:390,x:0,y:0}, 'Knight-F.webp':{height:390,x:0,y:0},
  'Huntsman-M.webp':{height:402,x:0,y:0}, 'Huntsman-F.webp':{height:300,x:0,y:0},
- 'Magister-M.webp':{height:350,x:0,y:0}, 'Magister-F.webp':{height:390,x:0,y:0},
+ 'Magister-M.webp':{height:425,x:0,y:0}, 'Magister-F.webp':{height:470,x:0,y:0},
  'Noble-M.webp':{height:390,x:0,y:0}, 'Merchant-M.webp':{height:390,x:0,y:0},
  'Rogue-M.webp':{height:390,x:0,y:0}
 };
@@ -237,35 +237,28 @@ function sizeDesktopClassArt(){
  const art=document.getElementById('cisClassArt'),card=art?.parentElement;
  if(!art||!card||matchMedia('(max-width:750px)').matches)return;
  const imgs=[...art.querySelectorAll('img')].filter(img=>img.complete&&img.naturalWidth);
- if(!imgs.length){card.style.removeProperty('--cis-notes-width');card.style.removeProperty('--cis-art-bottom');return}
- const width=card.clientWidth, artTop=44, artBottom=405, gap=0;
- const entries=imgs.map(img=>{
-  const cfg=classArtPixels[img.src.split('/').pop()]||{height:350,x:0,y:0};
-  const h=cfg.height,w=h*img.naturalWidth/img.naturalHeight;
-  return {img,cfg,h,w};
+ if(!imgs.length){card.style.removeProperty('--cis-notes-width');return}
+ const width=card.clientWidth;
+ const areaWidth=Math.floor(width*.53),areaHeight=330;
+ const areaRight=12,areaTop=24;
+ art.style.cssText='position:absolute!important;top:'+areaTop+'px!important;right:'+areaRight+'px!important;left:auto!important;width:'+areaWidth+'px!important;height:'+areaHeight+'px!important;overflow:visible!important;display:block!important;pointer-events:none!important;';
+ const slotWidth=areaWidth/imgs.length;
+ imgs.forEach((img,i)=>{
+  const cfg=classArtPixels[img.src.split('/').pop()]||{height:390,x:0,y:0};
+  // Height is literal pixels. Never shrink it to fit the combined image widths.
+  // Independent image slots prevent a wide transparent WebP canvas from scaling down both portraits.
+  const h=cfg.height;
+  const w=h*img.naturalWidth/img.naturalHeight;
+  const left=i*slotWidth+(slotWidth-w)/2+(cfg.x||0);
+  img.style.cssText='position:absolute!important;top:auto!important;bottom:'+(-(cfg.y||0))+'px!important;left:'+left+'px!important;right:auto!important;width:'+w+'px!important;height:'+h+'px!important;max-width:none!important;max-height:none!important;transform:none!important;margin:0!important;object-fit:contain!important;';
  });
- const total=entries.reduce((v,e)=>v+e.w,0)+gap*(entries.length-1);
- const artWidth=Math.min(width*.52,total);
- // Scale uniformly ONLY if the complete group would exceed the allocated horizontal region.
- const scale=Math.min(1,artWidth/total);
- const actualWidth=total*scale;
- art.style.cssText='position:absolute!important;left:auto!important;right:12px!important;top:'+artTop+'px!important;width:'+actualWidth+'px!important;height:'+(artBottom-artTop)+'px!important;overflow:visible!important;pointer-events:none!important;display:block!important;';
- let x=0;
- for(const e of entries){
-  const h=e.h*scale,w=e.w*scale;
-  e.img.style.cssText='position:absolute!important;top:auto!important;bottom:'+(-e.cfg.y*scale)+'px!important;left:'+(x+e.cfg.x*scale)+'px!important;right:auto!important;height:'+h+'px!important;width:'+w+'px!important;max-width:none!important;max-height:none!important;transform:none!important;margin:0!important;object-fit:contain!important;';
-  x+=w+gap;
- }
- const notesWidth=Math.max(120,width-actualWidth-50);
- card.style.setProperty('--cis-notes-width',notesWidth+'px');
- card.style.setProperty('--cis-art-bottom',artBottom+'px');
+ card.style.setProperty('--cis-notes-width',Math.max(120,width-areaWidth-areaRight-32)+'px');
  const label=card.querySelector('label:has(+ #classAbilities)');
  if(label){
-  // Reserve exactly the artwork's vertical footprint; never overlap artwork or create arbitrary extra space.
   label.style.setProperty('margin-top','0px','important');
   const current=label.getBoundingClientRect().top-card.getBoundingClientRect().top;
-  const desired=artBottom+10;
-  label.style.setProperty('margin-top',Math.max(0,desired-current)+'px','important');
+  const needed=areaTop+areaHeight+8;
+  label.style.setProperty('margin-top',Math.max(0,needed-current)+'px','important');
  }
 }
 window.addEventListener('resize',sizeDesktopClassArt);
