@@ -235,7 +235,7 @@ let lastClassArt='';
 // DESKTOP ART PIXEL CONTROLS — edit each character independently.
 // height: image height in CSS pixels; x: horizontal shift; y: vertical shift.
 // Positive x moves right; positive y moves down. No automatic shrinking.
-const classArtMaster={top:0,bottom:0,left:0,right:0,between:-50,height:390,areaHeight:330,areaWidth:53};
+const classArtMaster={top:20,bottom:20,left:10,right:0,between:-50,height:390,areaHeight:330,areaWidth:53};
 // Per-character overrides remain available; zero means use the master setting.
 const classArtPixels={
  'Knight-M.webp':{height:0,x:0,y:0,top:0,bottom:0,left:0,right:0},
@@ -255,9 +255,9 @@ function sizeDesktopClassArt(){
  if(!imgs.length){card.style.removeProperty('--cis-notes-width');return}
  const width=card.clientWidth;
  const areaWidth=Math.floor(width*classArtMaster.areaWidth/100),areaHeight=classArtMaster.areaHeight;
- const areaRight=classArtMaster.right,areaTop=0;
+ const areaRight=0,areaTop=0;
  art.style.cssText='position:absolute!important;top:'+areaTop+'px!important;right:'+areaRight+'px!important;left:auto!important;width:'+areaWidth+'px!important;height:'+areaHeight+'px!important;overflow:visible!important;display:block!important;pointer-events:none!important;';
- card.style.setProperty('--cis-notes-width',Math.max(120,width-areaWidth-areaRight-32)+'px');
+
  // Equal-height Appearance and Background sections between the title and Class Abilities.
  // The label heights and native spacing are subtracted, so each textarea uses its full share.
  const title=card.querySelector('h2'),appearance=card.querySelector('textarea[data-field="appearance"]');
@@ -289,6 +289,7 @@ function sizeDesktopClassArt(){
  const fieldTop=field?field.getBoundingClientRect().top-panelTop:areaHeight;
  const usable=Math.max(1,fieldTop-classArtMaster.top-classArtMaster.bottom);
  const slotWidth=areaWidth/imgs.length;
+ const positions=[];
  imgs.forEach((img,i)=>{
   const cfg=classArtPixels[img.src.split('/').pop()]||{};
   let bounds=img._cisAlphaBounds;
@@ -299,24 +300,33 @@ function sizeDesktopClassArt(){
     const ctx=canvas.getContext('2d',{willReadFrequently:true});
     ctx.drawImage(img,0,0);
     const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;
-    let first=canvas.height,last=-1;
+    let first=canvas.height,last=-1,minX=canvas.width,maxX=-1;
     for(let y=0;y<canvas.height;y++){
      for(let x=0;x<canvas.width;x++){
-      if(pixels[(y*canvas.width+x)*4+3]>8){first=Math.min(first,y);last=Math.max(last,y);}
+      if(pixels[(y*canvas.width+x)*4+3]>8){first=Math.min(first,y);last=Math.max(last,y);minX=Math.min(minX,x);maxX=Math.max(maxX,x);}
      }
     }
-    bounds=last>=0?{top:first/canvas.height,bottom:(last+1)/canvas.height}:{top:0,bottom:1};
-   }catch(e){bounds={top:0,bottom:1};}
+    bounds=last>=0?{top:first/canvas.height,bottom:(last+1)/canvas.height,left:minX/canvas.width,right:(maxX+1)/canvas.width}:{top:0,bottom:1,left:0,right:1};
+   }catch(e){bounds={top:0,bottom:1,left:0,right:1};}
    img._cisAlphaBounds=bounds;
   }
   const visibleFraction=Math.max(.01,bounds.bottom-bounds.top);
   const h=usable/visibleFraction+(cfg.height||0);
   const w=h*img.naturalWidth/img.naturalHeight;
-  const left=i*slotWidth+(slotWidth-w)/2+(i-(imgs.length-1)/2)*classArtMaster.between+classArtMaster.left+(cfg.x||0)+(cfg.left||0)-(cfg.right||0);
+  const left=i*slotWidth+(slotWidth-w)/2+(i-(imgs.length-1)/2)*classArtMaster.between+(cfg.x||0)+(cfg.left||0)-(cfg.right||0);
   const imageTop=classArtMaster.top-h*bounds.top+(cfg.y||0)+(cfg.top||0)-(cfg.bottom||0);
   const bottom=areaHeight-imageTop-h;
+  positions.push({img,left,w,bounds});
   img.style.cssText='position:absolute!important;top:auto!important;bottom:'+bottom+'px!important;left:'+left+'px!important;right:auto!important;width:'+w+'px!important;height:'+h+'px!important;max-width:none!important;max-height:none!important;transform:none!important;margin:0!important;object-fit:contain!important;';
  });
+ // Align the rightmost visible pixel to the panel wall, then size fields to the leftmost visible pixel.
+ const visibleRight=Math.max(...positions.map(p=>p.left+p.w*(p.bounds.right??1)));
+ const shift=width-classArtMaster.right-(width-areaWidth)-visibleRight;
+ const visibleLeft=Math.min(...positions.map(p=>p.left+p.w*(p.bounds.left??0)))+(width-areaWidth)+shift;
+ positions.forEach(p=>p.img.style.setProperty('left',(p.left+shift)+'px','important'));
+ const notesWidth=Math.max(80,visibleLeft-classArtMaster.left);
+ for(const el of [appearance,background])if(el)el.style.setProperty('width',notesWidth+'px','important');
+ card.style.setProperty('--cis-notes-width',notesWidth+'px');
 
 }
 window.addEventListener('resize',sizeDesktopClassArt);
