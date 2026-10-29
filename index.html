@@ -252,7 +252,16 @@ function sizeDesktopClassArt(){
  const art=document.getElementById('cisClassArt'),card=art?.parentElement;
  if(!art||!card||matchMedia('(max-width:750px)').matches)return;
  const imgs=[...art.querySelectorAll('img')].filter(img=>img.complete&&img.naturalWidth);
- if(!imgs.length){card.style.removeProperty('--cis-notes-width');return}
+ if(!imgs.length){
+  // Classes without artwork must not reserve portrait space.
+  art.style.cssText='display:none!important;';
+  card.style.setProperty('--cis-notes-width','100%');
+  for(const el of card.querySelectorAll('textarea[data-field="appearance"],textarea[data-field="background"]')){
+   el.style.setProperty('width','100%','important');
+   el.style.setProperty('max-width','100%','important');
+  }
+  return;
+ }
  const width=card.clientWidth;
  const areaWidth=Math.floor(width*classArtMaster.areaWidth/100),areaHeight=classArtMaster.areaHeight;
  const areaRight=0,areaTop=0;
@@ -316,14 +325,22 @@ function sizeDesktopClassArt(){
   const left=i*slotWidth+(slotWidth-w)/2+(i-(imgs.length-1)/2)*classArtMaster.between;
   const imageTop=classArtMaster.top-h*bounds.top+(cfg.y||0)+(cfg.top||0)-(cfg.bottom||0);
   const bottom=areaHeight-imageTop-h;
-  positions.push({img,left,w,bounds,cfg});
+  // Crop transparent image margins visually using the measured alpha bounds.
+  // Preserve the original image asset and filename for individual overrides.
+  const insetTop=(bounds.top||0)*100,insetRight=(1-(bounds.right??1))*100;
+  const insetBottom=(1-bounds.bottom)*100,insetLeft=(bounds.left||0)*100;
+  const alphaClip='inset('+insetTop+'% '+insetRight+'% '+insetBottom+'% '+insetLeft+'%)';
+  positions.push({img,left,w,bounds,cfg,alphaClip});
   img.style.cssText='position:absolute!important;top:auto!important;bottom:'+bottom+'px!important;left:'+left+'px!important;right:auto!important;width:'+w+'px!important;height:'+h+'px!important;max-width:none!important;max-height:none!important;transform:none!important;margin:0!important;object-fit:contain!important;';
  });
  // Align the rightmost visible pixel to the panel wall, then size fields to the leftmost visible pixel.
  const visibleRight=Math.max(...positions.map(p=>p.left+p.w*(p.bounds.right??1)));
  const shift=width-classArtMaster.right-(width-areaWidth)-visibleRight;
  const visibleLeft=Math.min(...positions.map(p=>p.left+shift+(p.cfg.x||0)+(p.cfg.left||0)-(p.cfg.right||0)+p.w*(p.bounds.left??0)))+(width-areaWidth);
- positions.forEach(p=>p.img.style.setProperty('left',(p.left+shift+(p.cfg.x||0)+(p.cfg.left||0)-(p.cfg.right||0))+'px','important'));
+ positions.forEach(p=>{
+  p.img.style.setProperty('left',(p.left+shift+(p.cfg.x||0)+(p.cfg.left||0)-(p.cfg.right||0))+'px','important');
+  p.img.style.setProperty('clip-path',p.alphaClip,'important');
+ });
  const rogueGapOverride=positions.some(p=>p.img.src.split('/').pop()==='Rogue-M.webp')?10:null;
  const notesWidth=Math.max(0,visibleLeft-(rogueGapOverride??classArtMaster.left));
  for(const el of [appearance,background])if(el)el.style.setProperty('width',notesWidth+'px','important');
