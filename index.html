@@ -324,7 +324,8 @@ function sizeDesktopClassArt(){
  const shift=width-classArtMaster.right-(width-areaWidth)-visibleRight;
  const visibleLeft=Math.min(...positions.map(p=>p.left+shift+(p.cfg.x||0)+(p.cfg.left||0)-(p.cfg.right||0)+p.w*(p.bounds.left??0)))+(width-areaWidth);
  positions.forEach(p=>p.img.style.setProperty('left',(p.left+shift+(p.cfg.x||0)+(p.cfg.left||0)-(p.cfg.right||0))+'px','important'));
- const notesWidth=Math.max(0,visibleLeft-classArtMaster.left);
+ const rogueGapOverride=positions.some(p=>p.img.src.split('/').pop()==='Rogue-M.webp')?10:null;
+ const notesWidth=Math.max(0,visibleLeft-(rogueGapOverride??classArtMaster.left));
  for(const el of [appearance,background])if(el)el.style.setProperty('width',notesWidth+'px','important');
  card.style.setProperty('--cis-notes-width',notesWidth+'px');
 
