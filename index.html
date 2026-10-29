@@ -313,17 +313,17 @@ function sizeDesktopClassArt(){
   const visibleFraction=Math.max(.01,bounds.bottom-bounds.top);
   const h=usable/visibleFraction+(cfg.height||0);
   const w=h*img.naturalWidth/img.naturalHeight;
-  const left=i*slotWidth+(slotWidth-w)/2+(i-(imgs.length-1)/2)*classArtMaster.between+(cfg.x||0)+(cfg.left||0)-(cfg.right||0);
+  const left=i*slotWidth+(slotWidth-w)/2+(i-(imgs.length-1)/2)*classArtMaster.between;
   const imageTop=classArtMaster.top-h*bounds.top+(cfg.y||0)+(cfg.top||0)-(cfg.bottom||0);
   const bottom=areaHeight-imageTop-h;
-  positions.push({img,left,w,bounds});
+  positions.push({img,left,w,bounds,cfg});
   img.style.cssText='position:absolute!important;top:auto!important;bottom:'+bottom+'px!important;left:'+left+'px!important;right:auto!important;width:'+w+'px!important;height:'+h+'px!important;max-width:none!important;max-height:none!important;transform:none!important;margin:0!important;object-fit:contain!important;';
  });
  // Align the rightmost visible pixel to the panel wall, then size fields to the leftmost visible pixel.
  const visibleRight=Math.max(...positions.map(p=>p.left+p.w*(p.bounds.right??1)));
  const shift=width-classArtMaster.right-(width-areaWidth)-visibleRight;
- const visibleLeft=Math.min(...positions.map(p=>p.left+p.w*(p.bounds.left??0)))+(width-areaWidth)+shift;
- positions.forEach(p=>p.img.style.setProperty('left',(p.left+shift)+'px','important'));
+ const visibleLeft=Math.min(...positions.map(p=>p.left+shift+(p.cfg.x||0)+(p.cfg.left||0)-(p.cfg.right||0)+p.w*(p.bounds.left??0)))+(width-areaWidth);
+ positions.forEach(p=>p.img.style.setProperty('left',(p.left+shift+(p.cfg.x||0)+(p.cfg.left||0)-(p.cfg.right||0))+'px','important'));
  const notesWidth=Math.max(0,visibleLeft-classArtMaster.left);
  for(const el of [appearance,background])if(el)el.style.setProperty('width',notesWidth+'px','important');
  card.style.setProperty('--cis-notes-width',notesWidth+'px');
