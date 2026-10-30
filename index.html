@@ -392,7 +392,8 @@ window.addEventListener('resize',positionClassArtForViewport);
 
 
 function load(d={}){document.querySelectorAll('[data-field]').forEach(e=>e.value=d[e.dataset.field]??(e.dataset.field==='level'?'1':e.dataset.field==='actionPoints'?'2':e.dataset.field.endsWith('Adjust')?'0':''));for(const s of skills)for(const k of ['base','temp'])document.querySelector('[data-skill="'+s+'"][data-kind="'+k+'"]').value=(k==='base'?Math.min(4,Math.max(0,Number(d.skills?.[s]?.[k]??0))):d.skills?.[s]?.[k]??0);for(const s of statuses)document.querySelector('[data-status="'+s+'"]').checked=(d.statuses||[]).includes(s);$('drunkModifier').value=d.drunkModifier??'0';loadItemLists();renderScars();calc();updateClassBackground()}
-function msg(t){$('message').textContent=t}
+let messageDismissTimer=null;
+function msg(t){const el=$('message');el.textContent=t;clearTimeout(messageDismissTimer);if(t&&!/fail|error|could not|unsaved/i.test(t))messageDismissTimer=setTimeout(()=>{if(el.textContent===t)el.textContent=''},3500)}
 let saveTimer=null,saveQueue=Promise.resolve(),loadingCharacter=false;
 function setSaveStatus(t){$('saveStatus').textContent=t==='Changes save automatically'||t==='Saved automatically'?'':t}
 async function persistCharacter(id,snapshot){if(!user||!id)return;const record=records.find(r=>String(r.id)===String(id));const result=await sb.from('cs_characters').update({sheet:snapshot}).eq('id',id).select('id').single();if(result.error)throw result.error;if(!result.data?.id)throw new Error('Character save was not confirmed');if(record)record.sheet=snapshot}
