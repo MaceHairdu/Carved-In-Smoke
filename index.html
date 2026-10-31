@@ -298,7 +298,7 @@ function sizeDesktopClassArt(){
  const panelTop=card.getBoundingClientRect().top;
  const fieldTop=field?field.getBoundingClientRect().top-panelTop:areaHeight;
  const usable=Math.max(1,fieldTop-classArtMaster.top-classArtMaster.bottom);
- const slotWidth=areaWidth/imgs.length;
+ const slotWidth=imgs.length>1?Math.min(areaWidth,390)/imgs.length:areaWidth;
  const positions=[];
  imgs.forEach((img,i)=>{
   const cfg=classArtPixels[img.src.split('/').pop()]||{};
@@ -339,8 +339,11 @@ function sizeDesktopClassArt(){
  const visibleRight=Math.max(...positions.map(p=>p.left+p.w*(p.bounds.right??1)));
  const shift=width-classArtMaster.right-(width-areaWidth)-visibleRight;
  const visibleLeft=Math.min(...positions.map(p=>p.left+shift+(p.cfg.x||0)+(p.cfg.left||0)-(p.cfg.right||0)+p.w*(p.bounds.left??0)))+(width-areaWidth);
+ const duo=imgs.length>1?art.querySelector('.cis-art-duo'):null;
+ const duoLeft=duo?Math.min(...positions.map(p=>p.left+shift+(p.cfg.x||0)+(p.cfg.left||0)-(p.cfg.right||0))):0;
+ if(duo){duo.style.cssText='position:absolute!important;left:'+duoLeft+'px!important;top:0!important;width:'+Math.max(1,Math.max(...positions.map(p=>p.left+shift+(p.cfg.x||0)+(p.cfg.left||0)-(p.cfg.right||0)+p.w))-duoLeft)+'px!important;height:'+areaHeight+'px!important;pointer-events:none!important;';}
  positions.forEach(p=>{
-  p.img.style.setProperty('left',(p.left+shift+(p.cfg.x||0)+(p.cfg.left||0)-(p.cfg.right||0))+'px','important');
+  p.img.style.setProperty('left',(p.left+shift+(p.cfg.x||0)+(p.cfg.left||0)-(p.cfg.right||0)-duoLeft)+'px','important');
   p.img.style.setProperty('clip-path',p.alphaClip,'important');
   if(isMagisterPair)p.img.style.setProperty('z-index',p.img.src.endsWith('Magister-M.webp')?'2':'1','important');
  });
@@ -361,12 +364,15 @@ function updateClassBackground(){
  if(!desktopArt||!mobileArt)return;
  for(const holder of [desktopArt,mobileArt]){
   holder.replaceChildren();
-  for(const file of classArtFiles[current]||[]){
+  const files=classArtFiles[current]||[];
+  const group=holder===desktopArt&&files.length>1?document.createElement('div'):null;
+  if(group){group.className='cis-art-duo';holder.appendChild(group)}
+  for(const file of files){
    const img=document.createElement('img');
    img.alt='';img.decoding='async';img.src='class-art/'+file;
    img.onerror=()=>{img.remove();sizeDesktopClassArt()};
    img.onload=sizeDesktopClassArt;
-   holder.appendChild(img);
+   (group||holder).appendChild(img);
   }
  }
  positionClassArtForViewport();
