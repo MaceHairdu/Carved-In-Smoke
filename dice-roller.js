@@ -26,7 +26,7 @@ const banner=document.createElement('div');banner.id='cis-dice-banner';banner.hi
 document.body.append(stage,panel,launch);
 const skill={value:'Grit'},count=panel.querySelector('#cis-roll-count'),result=panel.querySelector('#cis-dice-result');
 function skillCount(){return Math.max(0,Math.floor(Number(document.querySelector('[data-total="'+skill.value+'"]')?.value)||0))}
-function sync(){const custom=skill.value==='custom';panel.querySelector('#cis-roll-custom-fields').hidden=!custom;panel.querySelector('#cis-roll-auto-count').hidden=custom;if(!custom){const n=skillCount();panel.querySelector('#cis-roll-auto-count').textContent=n===0?'0 '+skill.value+': roll 2d12, keep the lowest.':'Roll '+n+'d12 (current '+skill.value+' total).'}}
+function sync(){const custom=skill.value==='custom';panel.querySelector('#cis-roll-custom-fields').hidden=false;panel.querySelector('#cis-roll-auto-count').hidden=custom;if(!custom){const n=skillCount();panel.querySelector('#cis-roll-auto-count').textContent=n===0?'0 '+skill.value+': roll 2d12, keep the lowest.':'Roll '+n+'d12 (current '+skill.value+' total).'}}
 panel.querySelectorAll('[data-skill]').forEach(b=>b.onclick=()=>{skill.value=b.dataset.skill;panel.querySelector('#cis-roll-go').click()});launch.onclick=()=>{panel.hidden=!panel.hidden;if(!panel.hidden)sync()};
 let THREE,CANNON,renderer,scene,camera,world,animation=0,dice=[],last=0,rolling=false;
 function close(){panel.hidden=true;stage.hidden=true;cancelAnimationFrame(animation);rolling=false}
