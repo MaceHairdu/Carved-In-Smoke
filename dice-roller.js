@@ -115,8 +115,8 @@ panel.querySelector('#cis-roll-go').onclick=async()=>{
  let n=custom?Math.floor(Number(count.value)||0):skillCount();
  n=Math.max(0,Math.min(20,n));const zero=!custom&&n===0;if(zero)n=2;
  if(n===0){result.textContent='Enter at least one die.';return}
- const instantValues=Array.from({length:n},()=>1+Math.floor(crypto.getRandomValues(new Uint32Array(1))[0]/4294967296*12));const instantResult=zero?Math.min(...instantValues):Math.max(...instantValues);result.textContent=(custom?'Custom':skill.value)+' · '+n+'d12: '+instantValues.join(', ')+' · Result: '+instantResult; const button=panel.querySelector('#cis-roll-go');button.disabled=true;
- try{await Promise.race([init(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Loading timed out')),4000))])}catch(e){result.textContent='3D physics unavailable: '+e.message;button.disabled=false;return}
+ const instantValues=Array.from({length:n},()=>1+Math.floor(crypto.getRandomValues(new Uint32Array(1))[0]/4294967296*12));const instantResult=zero?Math.min(...instantValues):Math.max(...instantValues);const fallbackResult=(custom?'Custom':skill.value)+' · '+n+'d12: '+instantValues.join(', ')+' · Result: '+instantResult;result.textContent=fallbackResult; const button=panel.querySelector('#cis-roll-go');button.disabled=true;
+ try{await Promise.race([init(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Loading timed out')),4000))])}catch(e){result.textContent=fallbackResult+' (3D unavailable: '+e.message+')';button.disabled=false;return}
  button.disabled=false;cancelAnimationFrame(animation);
  dice.forEach(d=>{scene.remove(d.mesh);world.removeBody(d.body)});dice=[];stage.hidden=false;banner.hidden=true;result.textContent='Rolling…';try{
  const columns=Math.min(5,Math.ceil(Math.sqrt(n*1.5))),rows=Math.ceil(n/columns);
@@ -132,7 +132,7 @@ panel.querySelector('#cis-roll-go').onclick=async()=>{
   d.body.quaternion.setFromEuler(Math.random()*6,Math.random()*6,Math.random()*6);
   world.addBody(d.body);scene.add(d.mesh);dice.push(d);
  }
- }catch(error){console.error('Dice setup failed',error);result.textContent='3D dice error: '+error.message;stage.hidden=true;return}
+ }catch(error){console.error('Dice setup failed',error);result.textContent=fallbackResult+' (3D error: '+error.message+')';stage.hidden=true;return}
  rolling=true;const started=performance.now();last=started;let settled=0;const watchdog=setTimeout(()=>{if(rolling){cancelAnimationFrame(animation);finish(zero,custom?'Custom':skill.value)}},8500);
  const label=custom?'Custom':skill.value;
  function tick(now){
