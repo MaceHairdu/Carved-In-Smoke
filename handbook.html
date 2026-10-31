@@ -321,6 +321,7 @@ body[data-theme] .toc-entry:active,body[data-theme] .toc-entry:focus-visible{bac
 <p class="rule-example"><strong class="key-term">For example,</strong> a character whose father was permanently injured by a dagger might have the Burden Dagger Trauma, receiving −2 Evasion when defending against attacks that use daggers.</p>
 <p>Burdens do not need to originate from traumatic experiences. They may represent physical limitations, personality flaws, fears, or simple inexperience.</p>
 <p>Players should choose Burdens that are likely to affect their characters during gameplay. A Burden is intended to create meaningful challenges, not merely provide additional backstory.</p>
+<h3 id="handbook-section-18-2-examples" class="handbook-section-heading">Burden Examples</h3>
 <ul class="example-list">
 <li><strong class="key-term">Weapon Trauma:</strong> You or someone you loved was seriously injured or killed by a &lt;weapon&gt;, leaving you with a lasting fear. −1 when defending against attacks using that weapon.</li>
 <li><strong class="key-term">Fear of Fire:</strong> You survived a terrible fire or witnessed someone perish in the flames. Ever since, you've struggled to remain calm around fire. −1 when defending against fire attacks or when in danger of being burned.</li>
@@ -502,11 +503,12 @@ body[data-theme] .toc-entry:active,body[data-theme] .toc-entry:focus-visible{bac
    btn.dataset.go=String(chapterNum);
    btn.className='toc-subsection-depth-'+depth;
    btn.addEventListener('click',()=>{
-    // Existing navigation handler opens the chapter first.
-    requestAnimationFrame(()=>{
+    // Dynamically created subsection buttons need to open their chapter directly.
+    window.location.hash='topic-'+(chapterNum+1);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
      if(target==='main'){window.scrollTo({top:0,behavior:'instant'});return}
      document.getElementById(target)?.scrollIntoView({block:'start',behavior:'instant'});
-    });
+    }));
    });
    drawer.appendChild(btn);
   };
