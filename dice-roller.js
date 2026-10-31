@@ -135,7 +135,8 @@ panel.querySelector('#cis-roll-go').onclick=async()=>{
  rolling=true;const started=performance.now();last=started;let settled=0;
  const label=custom?'Custom':skill.value;
  function tick(now){
-  const dt=Math.min(.05,(now-last)/1000);last=now;world.step(1/60,dt,3);
+  try{
+  const dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;world.step(1/60,dt,3);
   for(const d of dice){d.mesh.position.copy(d.body.position);d.mesh.quaternion.copy(d.body.quaternion)}
   renderer.render(scene,camera);
   const elapsed=now-started;
@@ -143,6 +144,7 @@ panel.querySelector('#cis-roll-go').onclick=async()=>{
   settled=still?settled+dt:0;
   if((settled>.7&&elapsed>1200)||elapsed>7500){finish(zero,label);return}
   animation=requestAnimationFrame(tick);
+  }catch(error){console.error('Dice physics error',error);finish(zero,label);result.append(document.createTextNode(' · Animation interrupted; result read from last dice positions.'));}
  }
  animation=requestAnimationFrame(tick);
 };
