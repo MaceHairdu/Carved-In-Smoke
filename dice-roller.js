@@ -116,7 +116,7 @@ panel.querySelector('#cis-roll-go').onclick=async()=>{
  n=Math.max(0,Math.min(20,n));const zero=!custom&&n===0;if(zero)n=2;
  if(n===0){result.textContent='Enter at least one die.';return}
  const button=panel.querySelector('#cis-roll-go');button.disabled=true;
- try{await init()}catch(e){result.textContent='3D physics could not load. '+e.message;button.disabled=false;return}
+ try{await Promise.race([init(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Loading timed out')),4000))])}catch(e){result.textContent='3D physics unavailable: '+e.message;button.disabled=false;return}
  button.disabled=false;cancelAnimationFrame(animation);
  dice.forEach(d=>{scene.remove(d.mesh);world.removeBody(d.body)});dice=[];stage.hidden=false;banner.hidden=true;result.textContent='Rolling…';
  const columns=Math.min(5,Math.ceil(Math.sqrt(n*1.5))),rows=Math.ceil(n/columns);
