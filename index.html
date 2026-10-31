@@ -465,11 +465,14 @@ function addPotionItem(value='',focus=false){
  select.value=known?data.name:(data.name?'__other__':'');
  customName.value=known?'':data.name||'';customDesc.value=known?'':data.description||'';
  function update(){
-  const homebrew=select.value==='__other__';customName.hidden=!homebrew;customDesc.hidden=!homebrew;
+  const homebrew=select.value==='__other__';
+  other.textContent=customName.value.trim()||'Other (homebrew)';
+  customName.hidden=!homebrew;customDesc.hidden=!homebrew;
   info.disabled=!select.value;
  }
  select.onchange=()=>{update();syncItems('potions');scheduleSave();if(select.value==='__other__')customName.focus()};
- customName.oninput=customDesc.oninput=()=>{syncItems('potions');scheduleSave()};
+ customName.oninput=()=>{update();syncItems('potions');scheduleSave()};
+ customDesc.oninput=()=>{syncItems('potions');scheduleSave()};
  info.onclick=()=>{const homebrew=select.value==='__other__';showPotionInfo(homebrew?customName.value:select.value,homebrew?customDesc.value:handbookPotions[select.value])};
  del.onclick=()=>{row.remove();syncItems('potions');scheduleSave()};
  update();if(focus)select.focus();
@@ -488,7 +491,7 @@ function addWeaponItem(value='',focus=false){
  const select=document.createElement('select');select.className='weapon-select';select.setAttribute('aria-label','Weapon type');
  select.add(new Option('Select a weapon',''));
  for(const name of Object.keys(standardWeapons))select.add(new Option(name,name));
- select.add(new Option('Custom weapon','__custom__'));
+ const customOption=new Option('Custom weapon','__custom__');select.add(customOption);
  select.value=known?item.name:(item.name?'__custom__':'');
  const custom=document.createElement('input');custom.className='weapon-name';custom.type='text';custom.placeholder='Weapon name';custom.setAttribute('aria-label','Custom weapon name');custom.value=known?'':item.name||'';
  const details=document.createElement('div');details.className='weapon-details';
@@ -502,6 +505,7 @@ function addWeaponItem(value='',focus=false){
  row.append(bullet,select,del,custom,details);box.appendChild(row);
  function update(reset=false){
   const preset=standardWeapons[select.value],isCustom=select.value==='__custom__';
+  customOption.textContent=custom.value.trim()||'Custom weapon';
   custom.hidden=!isCustom;details.hidden=!select.value;
   skill.disabled=!!preset;damage.disabled=!!preset;
   if(preset){skill.value=preset.skill;damage.value=String(preset.damage)}
@@ -510,7 +514,8 @@ function addWeaponItem(value='',focus=false){
  update();
  if(!known&&item.name){skill.value=skills.includes(item.skill)?item.skill:'Grit';damage.value=item.damage??1}
  select.onchange=()=>{update(true);syncItems('weapons');scheduleSave();if(select.value==='__custom__')custom.focus()};
- custom.oninput=skill.onchange=damage.oninput=()=>{syncItems('weapons');scheduleSave()};
+ custom.oninput=()=>{update();syncItems('weapons');scheduleSave()};
+ skill.onchange=damage.oninput=()=>{syncItems('weapons');scheduleSave()};
  del.onclick=()=>{row.remove();syncItems('weapons');scheduleSave()};
  if(focus)select.focus();
 }
