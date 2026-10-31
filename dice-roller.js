@@ -10,7 +10,7 @@ style.textContent=`
 #cis-dice-controls .dice-actions{display:flex;gap:8px;margin-top:14px}
 #cis-dice-controls button{flex:1;padding:10px;border-radius:7px;background:#874a3a;border:1px solid #c0926c;color:white;cursor:pointer}
 #cis-dice-controls button.secondary{background:#394147}
-#cis-dice-result{margin-top:12px;line-height:1.5;font:15px Georgia,serif}
+#cis-dice-controls .cis-skill-buttons{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}#cis-dice-controls .cis-skill-buttons button:last-child{grid-column:span 2}#cis-dice-result{margin-top:12px;line-height:1.5;font:15px Georgia,serif}
 #cis-dice-result strong{display:block;font-size:32px;color:#f4c485}
 #cis-dice-stage{position:fixed;inset:0;z-index:2199;pointer-events:none;overflow:hidden}
 #cis-dice-stage canvas{display:block;width:100%;height:100%}
@@ -24,10 +24,10 @@ panel.innerHTML='<strong style="font:22px Georgia,serif;color:#e9ac81">Dice Roll
 const stage=document.createElement('div');stage.id='cis-dice-stage';stage.hidden=true;
 const banner=document.createElement('div');banner.id='cis-dice-banner';banner.hidden=true;stage.append(banner);
 document.body.append(stage,panel,launch);
-const skill=panel.querySelector('#cis-roll-skill'),count=panel.querySelector('#cis-roll-count'),result=panel.querySelector('#cis-dice-result');
+const skill={value:'Grit'},count=panel.querySelector('#cis-roll-count'),result=panel.querySelector('#cis-dice-result');
 function skillCount(){return Math.max(0,Math.floor(Number(document.querySelector('[data-total="'+skill.value+'"]')?.value)||0))}
 function sync(){const custom=skill.value==='custom';panel.querySelector('#cis-roll-custom-fields').hidden=!custom;panel.querySelector('#cis-roll-auto-count').hidden=custom;if(!custom){const n=skillCount();panel.querySelector('#cis-roll-auto-count').textContent=n===0?'0 '+skill.value+': roll 2d12, keep the lowest.':'Roll '+n+'d12 (current '+skill.value+' total).'}}
-skill.onchange=sync;launch.onclick=()=>{panel.hidden=!panel.hidden;if(!panel.hidden)sync()};
+panel.querySelectorAll('[data-skill]').forEach(b=>b.onclick=()=>{skill.value=b.dataset.skill;panel.querySelector('#cis-roll-go').click()});launch.onclick=()=>{panel.hidden=!panel.hidden;if(!panel.hidden)sync()};
 let THREE,CANNON,renderer,scene,camera,world,animation=0,dice=[],last=0,rolling=false;
 function close(){panel.hidden=true;stage.hidden=true;cancelAnimationFrame(animation);rolling=false}
 panel.querySelector('#cis-roll-close').onclick=close;
