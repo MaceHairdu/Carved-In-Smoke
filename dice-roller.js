@@ -61,9 +61,9 @@ function buildDie(){
  const mesh=new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({color:0x812d35,roughness:.38,metalness:.18,flatShading:true}));
  mesh.castShadow=true;
  mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(geometry,10),new THREE.LineBasicMaterial({color:0xe0b67d})));
- const attr=geometry.getAttribute('position'),normalAttr=geometry.getAttribute('normal'),faces=new Map();
+ const attr=geometry.getAttribute('position'),faces=new Map();
  for(let i=0;i<attr.count;i++){
-  const normal=new THREE.Vector3().fromBufferAttribute(normalAttr,i).normalize();
+  const normal=new THREE.Vector3().fromBufferAttribute(attr,Math.floor(i/3)*3+1).sub(new THREE.Vector3().fromBufferAttribute(attr,Math.floor(i/3)*3)).cross(new THREE.Vector3().fromBufferAttribute(attr,Math.floor(i/3)*3+2).sub(new THREE.Vector3().fromBufferAttribute(attr,Math.floor(i/3)*3))).normalize();const origin=new THREE.Vector3().fromBufferAttribute(attr,i);if(normal.dot(origin)<0)normal.negate();
   const key=[normal.x,normal.y,normal.z].map(v=>v.toFixed(3)).join(',');
   if(!faces.has(key))faces.set(key,{normal,vertices:[]});
   const p=new THREE.Vector3().fromBufferAttribute(attr,i);
@@ -88,8 +88,10 @@ function buildDie(){
   const texture=new THREE.CanvasTexture(cv);texture.colorSpace=THREE.SRGBColorSpace;
   mesh.add(new THREE.Mesh(overlay,new THREE.MeshBasicMaterial({map:texture,transparent:true,side:THREE.DoubleSide,depthWrite:false})));
  });
- // A spherical collision hull gives reliable bouncing, rolling and dice-to-dice collisions.
- const body=new CANNON.Body({mass:1,shape:new CANNON.Sphere(.94),linearDamping:.28,angularDamping:.35,sleepSpeedLimit:.13,sleepTimeLimit:.55});
+ const unique=[];for(const face of list)for(const p of face.vertices)if(!unique.some(q=>q.distanceToSquared(p)<1e-7))unique.push(p.clone());
+ const polygons=list.map(face=>{const center=face.vertices.reduce((acc,p)=>acc.add(p),new THREE.Vector3()).divideScalar(face.vertices.length);const axis=face.vertices[0].clone().sub(center).normalize(),side=new THREE.Vector3().crossVectors(face.normal,axis).normalize();return face.vertices.slice().sort((a,b)=>Math.atan2(a.clone().sub(center).dot(side),a.clone().sub(center).dot(axis))-Math.atan2(b.clone().sub(center).dot(side),b.clone().sub(center).dot(axis))).map(p=>unique.findIndex(q=>q.distanceToSquared(p)<1e-7))});
+ const shape=new CANNON.ConvexPolyhedron({vertices:unique.map(p=>new CANNON.Vec3(p.x,p.y,p.z)),faces:polygons});
+ const body=new CANNON.Body({mass:1,shape,linearDamping:.19,angularDamping:.22,sleepSpeedLimit:.15,sleepTimeLimit:.6});
  return {mesh,body,faces:list};
 }
 function faceValue(die){
@@ -124,7 +126,7 @@ panel.querySelector('#cis-roll-go').onclick=async()=>{
  for(let i=0;i<n;i++){
   const d=buildDie();d.mesh.scale.setScalar(scale);
   // Scale the collision body to the same visible size.
-  d.body.shapes[0].radius=.94*scale;d.body.updateBoundingRadius();
+  d.body.shapes[0].vertices.forEach(v=>v.scale(scale,v));d.body.shapes[0].computeNormals();d.body.shapes[0].updateBoundingSphereRadius();d.body.updateBoundingRadius();
   const col=i%columns,row=Math.floor(i/columns);
   d.body.position.set(-10+col*1.0,5+row*1.4+i*.24,(i%3-1)*1.0);
   d.body.velocity.set(11+Math.random()*6,Math.random()*4,Math.random()*5-2.5);
