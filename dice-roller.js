@@ -132,7 +132,7 @@ panel.querySelector('#cis-roll-go').onclick=async()=>{
   d.body.quaternion.setFromEuler(Math.random()*6,Math.random()*6,Math.random()*6);
   world.addBody(d.body);scene.add(d.mesh);dice.push(d);
  }
- rolling=true;const started=performance.now();last=started;let settled=0;
+ rolling=true;const started=performance.now();last=started;let settled=0;const watchdog=setTimeout(()=>{if(rolling){cancelAnimationFrame(animation);finish(zero,custom?'Custom':skill.value)}},8500);
  const label=custom?'Custom':skill.value;
  function tick(now){
   try{
@@ -142,9 +142,9 @@ panel.querySelector('#cis-roll-go').onclick=async()=>{
   const elapsed=now-started;
   const still=dice.every(d=>d.body.velocity.length()<.3&&d.body.angularVelocity.length()<.45);
   settled=still?settled+dt:0;
-  if((settled>.7&&elapsed>1200)||elapsed>7500){finish(zero,label);return}
+  if((settled>.7&&elapsed>1200)||elapsed>7500){clearTimeout(watchdog);finish(zero,label);return}
   animation=requestAnimationFrame(tick);
-  }catch(error){console.error('Dice physics error',error);finish(zero,label);result.append(document.createTextNode(' · Animation interrupted; result read from last dice positions.'));}
+  }catch(error){clearTimeout(watchdog);console.error('Dice physics error',error);finish(zero,label);result.append(document.createTextNode(' · Animation interrupted; result read from last dice positions.'));}
  }
  animation=requestAnimationFrame(tick);
 };
