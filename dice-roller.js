@@ -13,7 +13,7 @@ style.textContent=`
 #cis-dice-controls .cis-skill-buttons{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}#cis-dice-controls .cis-skill-buttons button:last-child{grid-column:span 2}#cis-dice-result{margin-top:12px;line-height:1.5;font:15px Georgia,serif}
 #cis-dice-result strong{display:block;font-size:32px;color:#f4c485}
 #cis-dice-stage{position:fixed;inset:0;z-index:2199;pointer-events:none;overflow:hidden}
-#cis-dice-stage canvas{display:block;width:100%;height:100%}
+#cis-dice-stage canvas{display:block;width:100%;height:100%}#cis-visual-dice{position:absolute;inset:0;overflow:hidden}#cis-visual-dice .cis-fallback-die{position:absolute;left:0;top:0;width:64px;height:64px;display:grid;place-items:center;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);background:#873d3b;border:3px solid #e4b97d;color:#ffe9c4;font:bold 27px Georgia,serif;box-shadow:0 4px 12px #0008}
 #cis-dice-banner{position:absolute;top:9%;left:50%;transform:translateX(-50%);border:1px solid #b78a62;border-radius:12px;background:#1c242bea;padding:12px 28px;color:#f1ddbf;font:17px Georgia,serif;text-align:center;box-shadow:0 12px 30px #000a;white-space:nowrap}
 #cis-dice-banner strong{display:block;color:#ffd48b;font-size:36px}
 @media(max-width:750px){#cis-dice-banner{top:13%;font-size:14px}#cis-dice-banner strong{font-size:27px}}
@@ -22,6 +22,31 @@ const launch=document.createElement('button');launch.id='cis-dice-launch';launch
 const panel=document.createElement('section');panel.id='cis-dice-controls';panel.hidden=true;
 panel.innerHTML='<strong style="font:22px Georgia,serif;color:#e9ac81">Dice Roller</strong><div class="cis-skill-buttons"><button type="button" data-skill="Grit">Grit</button><button type="button" data-skill="Finesse">Finesse</button><button type="button" data-skill="Luck">Luck</button><button type="button" data-skill="Focus">Focus</button><button type="button" data-skill="Charm">Charm</button></div><div id="cis-roll-auto-count" style="margin-top:12px;color:#d5bda0;font-size:14px"></div><div id="cis-roll-custom-fields"><label for="cis-roll-count">Number of d12s</label><input id="cis-roll-count" type="number" min="1" max="20" value="2"></div><div class="dice-actions"><button type="button" id="cis-roll-go">Roll Custom d12s</button><button type="button" class="secondary" id="cis-roll-close">Close</button></div><div id="cis-dice-result" role="status" aria-live="polite"></div>';
 const stage=document.createElement('div');stage.id='cis-dice-stage';stage.hidden=true;
+const visualDice=document.createElement('div');visualDice.id='cis-visual-dice';stage.append(visualDice);
+function showPhysicalFallback(values,label,zero){
+ stage.hidden=false;visualDice.replaceChildren();banner.hidden=true;
+ const particles=values.map((value,i)=>{
+  const el=document.createElement('div');el.className='cis-fallback-die';el.textContent=String(value);visualDice.append(el);
+  const size=64,x=-100-i*25,y=90+i*14;
+  return {el,x,y,vx:550+Math.random()*180,vy:120+Math.random()*100,spin:Math.random()*600+480,angle:Math.random()*360,size};
+ });
+ const start=performance.now();let prev=start;
+ function draw(now){
+  const dt=Math.min(.033,(now-prev)/1000);prev=now;
+  const w=innerWidth,h=innerHeight;
+  for(const p of particles){
+   p.vy+=1100*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.angle+=p.spin*dt;
+   if(p.x<8){p.x=8;p.vx=Math.abs(p.vx)*.72;p.spin*=-.75}
+   if(p.x>w-p.size-8){p.x=w-p.size-8;p.vx=-Math.abs(p.vx)*.72;p.spin*=-.75}
+   if(p.y>h-p.size-12){p.y=h-p.size-12;p.vy=-Math.abs(p.vy)*.48;p.vx*=.84;p.spin*=.65}
+   if(p.y<10){p.y=10;p.vy=Math.abs(p.vy)*.6}
+   p.el.style.transform='translate('+p.x+'px,'+p.y+'px) rotate('+p.angle+'deg)';
+  }
+  if(now-start<2600)requestAnimationFrame(draw);
+  else{const win=zero?Math.min(...values):Math.max(...values);result.textContent=label+' · '+values.length+'d12: '+values.join(', ')+' · '+(zero?'Lowest':'Highest')+' = '+win;banner.replaceChildren();const title=document.createElement('span');title.textContent=label+' result';const number=document.createElement('strong');number.textContent=String(win);banner.append(title,number);banner.hidden=false}
+ }
+ requestAnimationFrame(draw);
+}
 const banner=document.createElement('div');banner.id='cis-dice-banner';banner.hidden=true;stage.append(banner);
 document.body.append(stage,panel,launch);
 const skill={value:'Grit'},count=panel.querySelector('#cis-roll-count'),result=panel.querySelector('#cis-dice-result');
