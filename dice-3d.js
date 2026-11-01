@@ -63,7 +63,7 @@ function diceGeometry(){
   const indices=corners.map(v=>{let i=vertices.findIndex(q=>q.distanceToSquared(v)<1e-7);if(i<0){i=vertices.length;vertices.push(v)}return i});
   faces.push(indices);
   const t=tex(k*15);
-  const value=1+Math.min(3,Math.floor(t.x*4))+4*Math.min(2,Math.floor((1-t.y)*3));
+  const value=1+Math.min(3,Math.floor(t.x*4))+4*Math.min(2,Math.floor(t.y*3));
   labels.push({normal,value});
  }
  if(vertices.length!==20||faces.some(f=>f.length!==5)||new Set(labels.map(f=>f.value)).size!==12)throw Error('Invalid numbered d12 geometry: '+vertices.length+' vertices, labels '+labels.map(f=>f.value));
