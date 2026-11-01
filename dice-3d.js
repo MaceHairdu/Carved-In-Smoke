@@ -76,7 +76,8 @@ export async function roll3d(quantity){
  for(let i=0;i<quantity;i++){
   const mesh=template.clone(true);mesh.scale.multiplyScalar(scale);
   const factor=template.scale.x*scale;
-  const shape=new CANNON.ConvexPolyhedron({vertices:geometry.vertices.map(v=>new CANNON.Vec3(v.x*factor,v.y*factor,v.z*factor)),faces:geometry.faces});
+  const center=new THREE.Box3().setFromPoints(geometry.vertices).getCenter(new THREE.Vector3());
+  const shape=new CANNON.ConvexPolyhedron({vertices:geometry.vertices.map(v=>new CANNON.Vec3((v.x-center.x)*factor,(v.y-center.y)*factor,(v.z-center.z)*factor)),faces:geometry.faces});
   const body=new CANNON.Body({mass:1,shape,linearDamping:.28,angularDamping:.42,sleepSpeedLimit:.22,sleepTimeLimit:.6});
   const row=Math.floor(i/cols),col=i%cols;
   body.position.set(-9+col*.5,4+row*.8+i*.18,(i%4-1.5)*.7);
