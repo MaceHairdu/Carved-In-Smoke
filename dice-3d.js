@@ -64,7 +64,13 @@ function diceGeometry(){
   faces.push(indices);
   const t=tex(k*15);
   const value=1+Math.min(3,Math.floor(t.x*4))+4*Math.min(2,Math.floor(t.y*3));
-  labels.push({normal,value});
+  const p0=point(k*15),p1=point(k*15+1),p2=point(k*15+2);
+  const t0=tex(k*15),t1=tex(k*15+1),t2=tex(k*15+2);
+  const du1=t1.x-t0.x,dv1=t1.y-t0.y,du2=t2.x-t0.x,dv2=t2.y-t0.y;
+  const determinant=du1*dv2-du2*dv1;
+  if(Math.abs(determin)<1e-8)throw Error('Invalid UV orientation for face '+value);
+  const textureUp=p2.clone().sub(p0).multiplyScalar(du1).sub(p1.clone().sub(p0).multiplyScalar(du2)).divideScalar(determin).normalize();
+  labels.push({normal,value,textureUp});
  }
  if(vertices.length!==20||faces.some(f=>f.length!==5)||new Set(labels.map(f=>f.value)).size!==12)throw Error('Invalid numbered d12 geometry: '+vertices.length+' vertices, labels '+labels.map(f=>f.value));
  return {vertices,faces,labels};
@@ -95,7 +101,44 @@ export async function roll3d(quantity){
     for(const d of active){d.mesh.position.copy(d.body.position);d.mesh.quaternion.copy(d.body.quaternion)}
     renderer.render(scene,camera);
     const settled=active.every(d=>d.body.velocity.length()<.22&&d.body.angularVelocity.length()<.3);stillTime=settled?stillTime+dt:0;
-    if((stillTime>.65&&now-started>1400)||now-started>10000){const up=new THREE.Vector3(0,1,0);const values=active.map(d=>{const q=new THREE.Quaternion(d.body.quaternion.x,d.body.quaternion.y,d.body.quaternion.z,d.body.quaternion.w);const top=geometry.labels.reduce((best,f)=>{const dot=f.normal.clone().applyQuaternion(q).dot(up);return dot>best.dot?{dot,face:f}:best},{dot:-Infinity,face:geometry.labels[0]}).face;const align=new THREE.Quaternion().setFromUnitVectors(top.normal.clone().applyQuaternion(q),up);d.mesh.quaternion.copy(align.multiply(q));return top.value});const columns=Math.ceil(Math.sqrt(active.length));const spacing=2.6;const rows=Math.ceil(active.length/columns);active.forEach((d,i)=>{d.mesh.position.set((i%columns-(columns-1)/2)*spacing,0,(Math.floor(i/columns)-(rows-1)/2)*spacing)});renderer.render(scene,camera);resolve(values);return}
+    if((stillTime>.65&&now-started>1400)||now-started>10000){
+     const up=new THREE.Vector3(0,1,0),screenUp=new THREE.Vector3(0,0,-1);
+     const values=[],transitions=[];
+     const columns=Math.ceil(Math.sqrt(active.length)),rows=Math.ceil(active.length/columns);
+     const spacing=Math.min(2.6,18/Math.max(columns,rows));
+     active.forEach((d,i)=>{
+      const q=d.mesh.quaternion.clone();
+      const top=geometry.labels.reduce((best,f)=>{
+       const dot=f.normal.clone().applyQuaternion(q).dot(up);
+       return dot>best.dot?{dot,face:f}:best;
+      },{dot:-Infinity,face:geometry.labels[0]}).face;
+      values.push(top.value);
+      const tilt=new THREE.Quaternion().setFromUnitVectors(top.normal.clone().applyQuaternion(q),up);
+      const flat=tilt.clone().multiply(q);
+      const textUp=top.textureUp.clone().applyQuaternion(flat);
+      textUp.y=0;textUp.normalize();
+      const yaw=Math.atan2(textUp.x,-textUp.z);
+      const upright=new THREE.Quaternion().setFromAxisAngle(up,yaw).multiply(flat);
+      const target=new THREE.Vector3((i%columns-(columns-1)/2)*spacing,0,(Math.floor(i/columns)-(rows-1)/2)*spacing);
+      transitions.push({mesh:d.mesh,from:d.mesh.position.clone(),to:target,rotationFrom:q,rotationTo:upright});
+     });
+     const transitionStart=performance.now(),duration=850;
+     function gather(time){
+      try{
+       const t=Math.min(1,(time-transitionStart)/duration);
+       const ease=t*t*(3-2*t);
+       for(const d of transitions){
+        d.mesh.position.lerpVectors(d.from,d.to,ease);
+        d.mesh.quaternion.slerpQuaternions(d.rotationFrom,d.rotationTo,ease);
+       }
+       renderer.render(scene,camera);
+       if(t<1){raf=requestAnimationFrame(gather)}
+       else{resolve(values)}
+      }catch(e){reject(e)}
+     }
+     raf=requestAnimationFrame(gather);
+     return;
+    }
     raf=requestAnimationFrame(frame);
    }catch(e){reject(e)}
   }
