@@ -101,7 +101,7 @@ export async function roll3d(quantity){
     for(const d of active){d.mesh.position.copy(d.body.position);d.mesh.quaternion.copy(d.body.quaternion)}
     renderer.render(scene,camera);
     const settled=active.every(d=>d.body.velocity.length()<.22&&d.body.angularVelocity.length()<.3);stillTime=settled?stillTime+dt:0;
-    if((stillTime>.65&&now-started>1400)||now-started>10000){
+    if((stillTime>.35&&now-started>900)||now-started>6500){
      const up=new THREE.Vector3(0,1,0),screenUp=new THREE.Vector3(0,0,-1);
      const values=[],transitions=[];
      const columns=Math.ceil(Math.sqrt(active.length)),rows=Math.ceil(active.length/columns);
@@ -122,7 +122,7 @@ export async function roll3d(quantity){
       const target=new THREE.Vector3((i%columns-(columns-1)/2)*spacing,0,(Math.floor(i/columns)-(rows-1)/2)*spacing);
       transitions.push({mesh:d.mesh,from:d.mesh.position.clone(),to:target,rotationFrom:q,rotationTo:upright});
      });
-     const transitionStart=performance.now(),duration=850;
+     const transitionStart=performance.now(),duration=450;
      function gather(time){
       try{
        const t=Math.min(1,(time-transitionStart)/duration);
