@@ -96,7 +96,7 @@ export async function roll3d(quantity){
  return await new Promise((resolve,reject)=>{
   function frame(now){
    try{
-    const dt=Math.min(.05,(now-last)/1000)*1.6;last=now;
+    const dt=Math.min(.05,(now-last)/1000)*1.9;last=now;
     world.step(1/60,dt,8);
     for(const d of active){d.mesh.position.copy(d.body.position);d.mesh.quaternion.copy(d.body.quaternion)}
     renderer.render(scene,camera);
