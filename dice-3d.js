@@ -80,9 +80,29 @@ function diceGeometry(){
  if(vertices.length!==20||faces.some(f=>f.length!==5)||new Set(labels.map(f=>f.value)).size!==12)throw Error('Invalid numbered d12 geometry: '+vertices.length+' vertices, labels '+labels.map(f=>f.value));
  return {vertices,faces,labels};
 }
+function knightElevenUp(){
+ const numeral=template.getObjectByName('medieval_numeral_11');
+ if(!numeral)return null;
+ numeral.updateWorldMatrix(true,false);
+ const pos=numeral.geometry.getAttribute('position');if(!pos)return null;
+ const points=[];const center=new THREE.Vector3();
+ for(let i=0;i<pos.count;i++){const p=new THREE.Vector3().fromBufferAttribute(pos,i).applyMatrix4(numeral.matrixWorld);points.push(p);center.add(p)}
+ center.divideScalar(points.length);
+ const label=geometry.labels.find(f=>f.value===11);if(!label)return null;
+ const normal=label.normal;
+ let axis=new THREE.Vector3(1,0,0).addScaledVector(normal,-normal.x).normalize();
+ let side=new THREE.Vector3().crossVectors(normal,axis).normalize();
+ let xx=0,xy=0,yy=0;
+ for(const p of points){const d=p.sub(center),x=d.dot(axis),y=d.dot(side);xx+=x*x;xy+=x*y;yy+=y*y}
+ const angle=.5*Math.atan2(2*xy,xx-yy);
+ let up=axis.multiplyScalar(Math.cos(angle)).addScaledVector(side,Math.sin(angle)).normalize();
+ if(up.dot(label.textureUp)<0)up.negate();
+ return up;
+}
 export async function roll3d(quantity,style='classic'){
  await setup(style);cancelAnimationFrame(raf);
  for(const d of active){world.removeBody(d.body);scene.remove(d.mesh)}active=[];
+ const knightUp=style==='knight'?knightElevenUp():null;
  const cols=Math.ceil(Math.sqrt(quantity)),scale=Math.min(1.25,Math.max(.48,3.8/cols));
  for(let i=0;i<quantity;i++){
   const mesh=template.clone(true);mesh.scale.multiplyScalar(scale);
@@ -120,7 +140,7 @@ export async function roll3d(quantity,style='classic'){
       values.push(top.value);
       const tilt=new THREE.Quaternion().setFromUnitVectors(top.normal.clone().applyQuaternion(q),up);
       const flat=tilt.clone().multiply(q);
-      const textUp=top.textureUp.clone().applyQuaternion(flat);
+      const textUp=(style==='knight'&&top.value===11&&knightUp?knightUp:top.textureUp).clone().applyQuaternion(flat);
       textUp.y=0;textUp.normalize();
       const yaw=Math.atan2(-textUp.x,textUp.z);
       const upright=new THREE.Quaternion().setFromAxisAngle(up,yaw).multiply(flat);
