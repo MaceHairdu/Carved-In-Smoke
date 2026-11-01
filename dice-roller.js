@@ -67,12 +67,12 @@ async function roll(label,score,isCustom){
  setBusy(true);result.textContent='Preparing 3D dice…';banner.hidden=true;
  stage.hidden=false;
  try{
-  if(!glbEngine)glbEngine=await import('./dice-3d.js?v=7d19084');
+  if(!glbEngine)glbEngine=await import('./dice-3d.js?v=0995c45');
   if(token!==rollToken)return;
   result.textContent='Rolling 3D dice…';
-  await glbEngine.roll3d(qty);
+  const values=await glbEngine.roll3d(qty);
   if(token!==rollToken)return;
-  const values=Array.from({length:qty},()=>1+Math.floor(crypto.getRandomValues(new Uint32Array(1))[0]/4294967296*12));
+  if(values.length!==qty||values.some(v=>!Number.isInteger(v)||v<1||v>12))throw Error('Invalid 3D face results');
   display(label,values,zero);
  }catch(e){
   if(token===rollToken){result.textContent='3D dice error: '+e.message;stage.hidden=true;console.error('CiS dice',e)}
