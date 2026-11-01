@@ -124,6 +124,7 @@ function numeralUp(face){
  const minor=new THREE.Vector3().crossVectors(normal,major).normalize();
  // Wide two-digit numerals need their short axis vertical.
  const up=([10,11,12].includes(number)?minor:major);
+ if(number===9)up.negate();
  if(up.dot(match.up)<0)up.negate();
  return up;
 }
