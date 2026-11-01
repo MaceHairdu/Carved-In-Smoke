@@ -123,7 +123,7 @@ function numeralUp(face){
  const major=a.clone().multiplyScalar(Math.cos(angle)).addScaledVector(b,Math.sin(angle)).normalize();
  const minor=new THREE.Vector3().crossVectors(normal,major).normalize();
  // Wide two-digit numerals need their short axis vertical.
- const up=(number===10?minor:major);
+ const up=([10,11,12].includes(number)?minor:major);
  if(up.dot(match.up)<0)up.negate();
  return up;
 }
@@ -170,7 +170,10 @@ export async function roll3d(quantity,style='classic',sizeMultiplier=1){
       const flat=tilt.clone().multiply(q);
       const textUp=(style==='knight'?numeralUp(top):top.textureUp.clone()).applyQuaternion(flat);
       textUp.y=0;textUp.normalize();
-      const yaw=Math.atan2(-textUp.x,textUp.z);
+      let yaw=Math.atan2(-textUp.x,textUp.z);
+      // atan2 alone can align glyphs to the bottom of the screen: resolve the 180-degree ambiguity.
+      const aligned=textUp.clone().applyAxisAngle(up,yaw);
+      if(aligned.dot(screenUp)<0)yaw+=Math.PI;
       const upright=new THREE.Quaternion().setFromAxisAngle(up,yaw).multiply(flat);
       const target=new THREE.Vector3((i%columns-(columns-1)/2)*spacing,0,(Math.floor(i/columns)-(rows-1)/2)*spacing);
       transitions.push({mesh:d.mesh,from:d.mesh.position.clone(),to:target,rotationFrom:q,rotationTo:upright});
