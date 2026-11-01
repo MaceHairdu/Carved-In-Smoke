@@ -77,7 +77,7 @@ export async function roll3d(quantity){
   const mesh=template.clone(true);mesh.scale.multiplyScalar(scale);
   const factor=template.scale.x*scale;
   const shape=new CANNON.ConvexPolyhedron({vertices:geometry.vertices.map(v=>new CANNON.Vec3(v.x*factor,v.y*factor,v.z*factor)),faces:geometry.faces});
-  const body=new CANNON.Body({mass:1,shape,linearDamping:.18,angularDamping:.23});
+  const body=new CANNON.Body({mass:1,shape,linearDamping:.28,angularDamping:.42,sleepSpeedLimit:.22,sleepTimeLimit:.6});
   const row=Math.floor(i/cols),col=i%cols;
   body.position.set(-9+col*.5,4+row*.8+i*.18,(i%4-1.5)*.7);
   body.velocity.set(13+Math.random()*6,Math.random()*6,Math.random()*5-2.5);
@@ -85,7 +85,7 @@ export async function roll3d(quantity){
   body.quaternion.setFromEuler(Math.random()*6,Math.random()*6,Math.random()*6);
   world.addBody(body);scene.add(mesh);active.push({body,mesh});
  }
- let started=performance.now();last=started;
+ let started=performance.now();last=started;let stillTime=0;
  return await new Promise((resolve,reject)=>{
   function frame(now){
    try{
@@ -93,7 +93,8 @@ export async function roll3d(quantity){
     world.step(1/60,dt,4);
     for(const d of active){d.mesh.position.copy(d.body.position);d.mesh.quaternion.copy(d.body.quaternion)}
     renderer.render(scene,camera);
-    if(now-started>4100){const up=new THREE.Vector3(0,1,0);resolve(active.map(d=>{const q=new THREE.Quaternion(d.body.quaternion.x,d.body.quaternion.y,d.body.quaternion.z,d.body.quaternion.w);return geometry.labels.reduce((best,f)=>{const dot=f.normal.clone().applyQuaternion(q).dot(up);return dot>best.dot?{dot,value:f.value}:best},{dot:-Infinity,value:1}).value}));return}
+    const settled=active.every(d=>d.body.velocity.length()<.22&&d.body.angularVelocity.length()<.3);stillTime=settled?stillTime+dt:0;
+    if((stillTime>.65&&now-started>1400)||now-started>10000){const up=new THREE.Vector3(0,1,0);resolve(active.map(d=>{const q=new THREE.Quaternion(d.body.quaternion.x,d.body.quaternion.y,d.body.quaternion.z,d.body.quaternion.w);return geometry.labels.reduce((best,f)=>{const dot=f.normal.clone().applyQuaternion(q).dot(up);return dot>best.dot?{dot,value:f.value}:best},{dot:-Infinity,value:1}).value}));return}
     raf=requestAnimationFrame(frame);
    }catch(e){reject(e)}
   }
