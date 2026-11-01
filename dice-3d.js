@@ -95,7 +95,7 @@ export async function roll3d(quantity){
     for(const d of active){d.mesh.position.copy(d.body.position);d.mesh.quaternion.copy(d.body.quaternion)}
     renderer.render(scene,camera);
     const settled=active.every(d=>d.body.velocity.length()<.22&&d.body.angularVelocity.length()<.3);stillTime=settled?stillTime+dt:0;
-    if((stillTime>.65&&now-started>1400)||now-started>10000){const up=new THREE.Vector3(0,1,0);resolve(active.map(d=>{const q=new THREE.Quaternion(d.body.quaternion.x,d.body.quaternion.y,d.body.quaternion.z,d.body.quaternion.w);return geometry.labels.reduce((best,f)=>{const dot=f.normal.clone().applyQuaternion(q).dot(up);return dot>best.dot?{dot,value:f.value}:best},{dot:-Infinity,value:1}).value}));return}
+    if((stillTime>.65&&now-started>1400)||now-started>10000){const up=new THREE.Vector3(0,1,0);const values=active.map(d=>{const q=new THREE.Quaternion(d.body.quaternion.x,d.body.quaternion.y,d.body.quaternion.z,d.body.quaternion.w);const top=geometry.labels.reduce((best,f)=>{const dot=f.normal.clone().applyQuaternion(q).dot(up);return dot>best.dot?{dot,face:f}:best},{dot:-Infinity,face:geometry.labels[0]}).face;const align=new THREE.Quaternion().setFromUnitVectors(top.normal.clone().applyQuaternion(q),up);d.mesh.quaternion.copy(align.multiply(q));return top.value});renderer.render(scene,camera);resolve(values);return}
     raf=requestAnimationFrame(frame);
    }catch(e){reject(e)}
   }
