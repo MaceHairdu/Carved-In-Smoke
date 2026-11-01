@@ -17,7 +17,7 @@ async function setup(){
  geometry=diceGeometry();
  scene=new THREE.Scene();
  camera=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,.1,100);
- camera.position.set(0,27,15);camera.lookAt(0,0,0);
+ camera.position.set(0,32,.01);camera.up.set(0,0,-1);camera.lookAt(0,0,0);
  scene.add(new THREE.HemisphereLight(0xffffff,0x5e4242,2.8));
  const sun=new THREE.DirectionalLight(0xffdfb7,3.2);sun.position.set(-7,17,12);scene.add(sun);
  renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});
