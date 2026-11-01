@@ -97,36 +97,11 @@ const knightFaceAxes=[
 [[-.850651,0,.525731],[-.5,.309017,-.809017]]
 ].map(([normal,up])=>({normal:new THREE.Vector3(...normal),up:new THREE.Vector3(...up)}));
 function numeralUp(face){
+ // Each numeral was authored with this explicit local up vector.
+ // Principal-component analysis of glyph geometry is not a valid way to find
+ // the top of an asymmetric glyph (notably 4, 6, 9, 10, and 12).
  const match=knightFaceAxes.reduce((best,f)=>f.normal.dot(face.normal)>best.normal.dot(face.normal)?f:best);
- const number=knightFaceAxes.indexOf(match)+1;
- const glyph=template.getObjectByName('RaisedSteelNumeral_'+number)||template.getObjectByName('medieval_numeral_'+number);
- if(!glyph)return match.up.clone();
- template.updateMatrixWorld(true);
- const position=glyph.geometry.getAttribute('position');
- if(!position||position.count<3)return match.up.clone();
- const normal=match.normal;
- const center=new THREE.Vector3();
- const points=[];
- for(let i=0;i<position.count;i++){
-  const p=new THREE.Vector3().fromBufferAttribute(position,i).applyMatrix4(glyph.matrixWorld);
-  points.push(p);center.add(p);
- }
- center.divideScalar(points.length);
- const a=new THREE.Vector3(1,0,0).addScaledVector(normal,-normal.x).normalize();
- const b=new THREE.Vector3().crossVectors(normal,a).normalize();
- let xx=0,xy=0,yy=0;
- for(const p of points){
-  const d=p.sub(center),x=d.dot(a),y=d.dot(b);
-  xx+=x*x;xy+=x*y;yy+=y*y;
- }
- const angle=.5*Math.atan2(2*xy,xx-yy);
- const major=a.clone().multiplyScalar(Math.cos(angle)).addScaledVector(b,Math.sin(angle)).normalize();
- const minor=new THREE.Vector3().crossVectors(normal,major).normalize();
- // Wide two-digit numerals need their short axis vertical.
- const up=([10,11,12].includes(number)?minor:major);
- if(number===9)up.negate();
- if(up.dot(match.up)<0)up.negate();
- return up;
+ return match.up.clone().addScaledVector(match.normal,-match.up.dot(match.normal)).normalize();
 }
 export async function roll3d(quantity,style='classic',sizeMultiplier=1){
  await setup(style);cancelAnimationFrame(raf);
@@ -171,10 +146,10 @@ export async function roll3d(quantity,style='classic',sizeMultiplier=1){
       const flat=tilt.clone().multiply(q);
       const textUp=(style==='knight'?numeralUp(top):top.textureUp.clone()).applyQuaternion(flat);
       textUp.y=0;textUp.normalize();
-      let yaw=Math.atan2(-textUp.x,textUp.z);
-      // atan2 alone can align glyphs to the bottom of the screen: resolve the 180-degree ambiguity.
-      const aligned=textUp.clone().applyAxisAngle(up,yaw);
-      if(aligned.dot(screenUp)>0)yaw+=Math.PI;
+      // Rotate the projected numeral-up vector exactly onto screen-up (-Z).
+      // For a rotation about +Y, x'=cos(a)*x+sin(a)*z and
+      // z'=-sin(a)*x+cos(a)*z. atan2(x,-z) makes x'=0,z'=-1.
+      const yaw=Math.atan2(textUp.x,-textUp.z);
       const upright=new THREE.Quaternion().setFromAxisAngle(up,yaw).multiply(flat);
       const target=new THREE.Vector3((i%columns-(columns-1)/2)*spacing,0,(Math.floor(i/columns)-(rows-1)/2)*spacing);
       transitions.push({mesh:d.mesh,from:d.mesh.position.clone(),to:target,rotationFrom:q,rotationTo:upright});
