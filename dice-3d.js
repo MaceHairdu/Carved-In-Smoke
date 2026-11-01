@@ -101,7 +101,7 @@ export async function roll3d(quantity){
     for(const d of active){d.mesh.position.copy(d.body.position);d.mesh.quaternion.copy(d.body.quaternion)}
     renderer.render(scene,camera);
     const settled=active.every(d=>d.body.velocity.length()<.22&&d.body.angularVelocity.length()<.3);stillTime=settled?stillTime+dt:0;
-    if((stillTime>.25&&now-started>550)||now-started>4200){
+    if((stillTime>.25&&now-started>550)||now-started>=1500){
      const up=new THREE.Vector3(0,1,0),screenUp=new THREE.Vector3(0,0,-1);
      const values=[],transitions=[];
      const columns=Math.ceil(Math.sqrt(active.length)),rows=Math.ceil(active.length/columns);
