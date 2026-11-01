@@ -99,11 +99,10 @@ function knightElevenUp(){
  if(up.dot(label.textureUp)<0)up.negate();
  return up;
 }
-export async function roll3d(quantity,style='classic'){
+export async function roll3d(quantity,style='classic',sizeMultiplier=1){
  await setup(style);cancelAnimationFrame(raf);
  for(const d of active){world.removeBody(d.body);scene.remove(d.mesh)}active=[];
- const knightUp=style==='knight'?knightElevenUp():null;
- const cols=Math.ceil(Math.sqrt(quantity)),scale=Math.min(1.25,Math.max(.48,3.8/cols));
+ const cols=Math.ceil(Math.sqrt(quantity)),scale=Math.min(1.25,Math.max(.48,3.8/cols))*Math.min(2.2,Math.max(.8,Number(sizeMultiplier)||1));
  for(let i=0;i<quantity;i++){
   const mesh=template.clone(true);mesh.scale.multiplyScalar(scale);
   const factor=template.scale.x*scale;
@@ -140,7 +139,7 @@ export async function roll3d(quantity,style='classic'){
       values.push(top.value);
       const tilt=new THREE.Quaternion().setFromUnitVectors(top.normal.clone().applyQuaternion(q),up);
       const flat=tilt.clone().multiply(q);
-      const textUp=(style==='knight'&&top.value===11&&knightUp?knightUp:top.textureUp).clone().applyQuaternion(flat);
+      const textUp=(style==='knight'?new THREE.Vector3().crossVectors(top.normal,top.textureUp).normalize():top.textureUp).clone().applyQuaternion(flat);
       textUp.y=0;textUp.normalize();
       const yaw=Math.atan2(-textUp.x,textUp.z);
       const upright=new THREE.Quaternion().setFromAxisAngle(up,yaw).multiply(flat);
