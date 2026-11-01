@@ -87,8 +87,8 @@ export async function roll3d(quantity){
   const body=new CANNON.Body({mass:1,shape,linearDamping:.28,angularDamping:.42,sleepSpeedLimit:.22,sleepTimeLimit:.6});
   const row=Math.floor(i/cols),col=i%cols;
   body.position.set(-9+col*.5,4+row*.8+i*.18,(i%4-1.5)*.7);
-  body.velocity.set(10+Math.random()*4,Math.random()*4,Math.random()*4-2);
-  body.angularVelocity.set(Math.random()*13-6.5,Math.random()*13-6.5,Math.random()*13-6.5);
+  body.velocity.set(8+Math.random()*3,Math.random()*3,Math.random()*3-1.5);
+  body.angularVelocity.set(Math.random()*11-5.5,Math.random()*11-5.5,Math.random()*11-5.5);
   body.quaternion.setFromEuler(Math.random()*6,Math.random()*6,Math.random()*6);
   world.addBody(body);scene.add(mesh);active.push({body,mesh});
  }
@@ -101,7 +101,7 @@ export async function roll3d(quantity){
     for(const d of active){d.mesh.position.copy(d.body.position);d.mesh.quaternion.copy(d.body.quaternion)}
     renderer.render(scene,camera);
     const settled=active.every(d=>d.body.velocity.length()<.22&&d.body.angularVelocity.length()<.3);stillTime=settled?stillTime+dt:0;
-    if((stillTime>.35&&now-started>900)||now-started>6500){
+    if((stillTime>.25&&now-started>550)||now-started>4200){
      const up=new THREE.Vector3(0,1,0),screenUp=new THREE.Vector3(0,0,-1);
      const values=[],transitions=[];
      const columns=Math.ceil(Math.sqrt(active.length)),rows=Math.ceil(active.length/columns);
