@@ -40,33 +40,33 @@ async function setup(){
 function diceGeometry(){
  const mesh=template.getObjectByProperty('isMesh',true);
  if(!mesh)throw Error('No mesh in d12 model');
- const g=mesh.geometry,p=g.getAttribute('position'),uv=g.getAttribute('uv');
+ const g=mesh.geometry,p=g.getAttribute('position'),uv=g.getAttribute('uv'),index=g.getIndex();
+ const point=i=>new THREE.Vector3().fromBufferAttribute(p,index?index.getX(i):i);
+ const tex=i=>new THREE.Vector2().fromBufferAttribute(uv,index?index.getX(i):i);
  const vertices=[],faces=[],labels=[];
  for(let k=0;k<12;k++){
-  const indices=[],normal=new THREE.Vector3();
+  const positions=[];
   for(let j=k*15;j<k*15+15;j++){
-   const v=new THREE.Vector3().fromBufferAttribute(p,j);
-   let index=vertices.findIndex(q=>q.distanceToSquared(v)<1e-7);
-   if(index<0){index=vertices.length;vertices.push(v)}
-   if(!indices.includes(index))indices.push(index);
+   const v=point(j);
+   if(!positions.some(q=>q.distanceToSquared(v)<1e-7))positions.push(v);
   }
-  const center=indices.reduce((v,i)=>v.add(vertices[i]),new THREE.Vector3()).divideScalar(indices.length);
-  const axis=vertices[indices[0]].clone().sub(center).normalize();
-  const raw=new THREE.Vector3().fromBufferAttribute(p,k*15+1).sub(new THREE.Vector3().fromBufferAttribute(p,k*15));
-  const edge=new THREE.Vector3().fromBufferAttribute(p,k*15+2).sub(new THREE.Vector3().fromBufferAttribute(p,k*15));
-  normal.crossVectors(raw,edge).normalize();
-  if(normal.dot(center)<0)normal.negate();
+  if(positions.length!==6)throw Error('Face '+(k+1)+' has '+positions.length+' points');
+  const center=positions.reduce((v,p)=>v.add(p),new THREE.Vector3()).divideScalar(positions.length);
+  const middle=positions.reduce((best,p)=>p.distanceToSquared(center)<best.distanceToSquared(center)?p:best);
+  const corners=positions.filter(p=>p!==middle);
+  const faceCenter=corners.reduce((v,p)=>v.add(p),new THREE.Vector3()).divideScalar(5);
+  const axis=corners[0].clone().sub(faceCenter).normalize();
+  const normal=new THREE.Vector3().crossVectors(point(k*15+1).sub(point(k*15)),point(k*15+2).sub(point(k*15))).normalize();
+  if(normal.dot(faceCenter)<0)normal.negate();
   const side=new THREE.Vector3().crossVectors(normal,axis).normalize();
-  indices.sort((i,j)=>{
-   const a=vertices[i].clone().sub(center),b=vertices[j].clone().sub(center);
-   return Math.atan2(a.dot(side),a.dot(axis))-Math.atan2(b.dot(side),b.dot(axis));
-  });
-  const u=uv.getX(k*15),v=uv.getY(k*15);
-  const label=1+Math.min(3,Math.floor(u*4))+4*Math.min(2,Math.floor((1-v)*3));
-  labels.push({normal,value:label});
+  corners.sort((a,b)=>{const x=a.clone().sub(faceCenter),y=b.clone().sub(faceCenter);return Math.atan2(x.dot(side),x.dot(axis))-Math.atan2(y.dot(side),y.dot(axis))});
+  const indices=corners.map(v=>{let i=vertices.findIndex(q=>q.distanceToSquared(v)<1e-7);if(i<0){i=vertices.length;vertices.push(v)}return i});
   faces.push(indices);
+  const t=tex(k*15);
+  const value=1+Math.min(3,Math.floor(t.x*4))+4*Math.min(2,Math.floor((1-t.y)*3));
+  labels.push({normal,value});
  }
- if(vertices.length!==20||faces.some(f=>f.length!==5)||new Set(labels.map(f=>f.value)).size!==12)throw Error('Invalid numbered d12 geometry');
+ if(vertices.length!==20||faces.some(f=>f.length!==5)||new Set(labels.map(f=>f.value)).size!==12)throw Error('Invalid numbered d12 geometry: '+vertices.length+' vertices, labels '+labels.map(f=>f.value));
  return {vertices,faces,labels};
 }
 export async function roll3d(quantity){
