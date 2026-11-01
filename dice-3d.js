@@ -98,7 +98,34 @@ const knightFaceAxes=[
 ].map(([normal,up])=>({normal:new THREE.Vector3(...normal),up:new THREE.Vector3(...up)}));
 function numeralUp(face){
  const match=knightFaceAxes.reduce((best,f)=>f.normal.dot(face.normal)>best.normal.dot(face.normal)?f:best);
- return match.up.clone();
+ const number=knightFaceAxes.indexOf(match)+1;
+ const glyph=template.getObjectByName('RaisedSteelNumeral_'+number);
+ if(!glyph)return match.up.clone();
+ template.updateMatrixWorld(true);
+ const position=glyph.geometry.getAttribute('position');
+ if(!position||position.count<3)return match.up.clone();
+ const normal=match.normal;
+ const center=new THREE.Vector3();
+ const points=[];
+ for(let i=0;i<position.count;i++){
+  const p=new THREE.Vector3().fromBufferAttribute(position,i).applyMatrix4(glyph.matrixWorld);
+  points.push(p);center.add(p);
+ }
+ center.divideScalar(points.length);
+ const a=new THREE.Vector3(1,0,0).addScaledVector(normal,-normal.x).normalize();
+ const b=new THREE.Vector3().crossVectors(normal,a).normalize();
+ let xx=0,xy=0,yy=0;
+ for(const p of points){
+  const d=p.sub(center),x=d.dot(a),y=d.dot(b);
+  xx+=x*x;xy+=x*y;yy+=y*y;
+ }
+ const angle=.5*Math.atan2(2*xy,xx-yy);
+ const major=a.clone().multiplyScalar(Math.cos(angle)).addScaledVector(b,Math.sin(angle)).normalize();
+ const minor=new THREE.Vector3().crossVectors(normal,major).normalize();
+ // Wide two-digit numerals need their short axis vertical.
+ const up=(number===10?minor:major);
+ if(up.dot(match.up)<0)up.negate();
+ return up;
 }
 export async function roll3d(quantity,style='classic',sizeMultiplier=1){
  await setup(style);cancelAnimationFrame(raf);
@@ -131,7 +158,7 @@ export async function roll3d(quantity,style='classic',sizeMultiplier=1){
      const up=new THREE.Vector3(0,1,0),screenUp=new THREE.Vector3(0,0,-1);
      const values=[],transitions=[];
      const columns=Math.ceil(Math.sqrt(active.length)),rows=Math.ceil(active.length/columns);
-     const spacing=Math.min(2.6,18/Math.max(columns,rows));
+     const visualDiameter=1.8*scale;const spacing=Math.max(2.6,visualDiameter*1.65);
      active.forEach((d,i)=>{
       const q=d.mesh.quaternion.clone();
       const top=rollLabels.reduce((best,f)=>{
