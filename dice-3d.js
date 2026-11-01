@@ -68,7 +68,7 @@ function diceGeometry(){
   const t0=tex(k*15),t1=tex(k*15+1),t2=tex(k*15+2);
   const du1=t1.x-t0.x,dv1=t1.y-t0.y,du2=t2.x-t0.x,dv2=t2.y-t0.y;
   const determinant=du1*dv2-du2*dv1;
-  if(Math.abs(determin)<1e-8)throw Error('Invalid UV orientation for face '+value);
+  if(Math.abs(determinant)<1e-8)throw Error('Invalid UV orientation for face '+value);
   const textureUp=p2.clone().sub(p0).multiplyScalar(du1).sub(p1.clone().sub(p0).multiplyScalar(du2)).divideScalar(determinant).normalize();
   labels.push({normal,value,textureUp});
  }
