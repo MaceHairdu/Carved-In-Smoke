@@ -25,7 +25,7 @@ async function setup(){
  renderer.outputColorSpace=THREE.SRGBColorSpace;
  renderer.domElement.style.cssText='position:absolute;inset:0;pointer-events:none;width:100%;height:100%';
  container.append(renderer.domElement);
- world=new CANNON.World({gravity:new CANNON.Vec3(0,-25,0)});
+ world=new CANNON.World({gravity:new CANNON.Vec3(0,-50,0)});
  world.allowSleep=true;
  const material=new CANNON.Material('dice');
  world.defaultContactMaterial.friction=.55;world.defaultContactMaterial.restitution=.48;
@@ -101,7 +101,7 @@ export async function roll3d(quantity){
     for(const d of active){d.mesh.position.copy(d.body.position);d.mesh.quaternion.copy(d.body.quaternion)}
     renderer.render(scene,camera);
     const settled=active.every(d=>d.body.velocity.length()<.22&&d.body.angularVelocity.length()<.3);stillTime=settled?stillTime+dt:0;
-    if((stillTime>.25&&now-started>550)||now-started>=1500){
+    if((stillTime>.25&&now-started>550)||now-started>4200){
      const up=new THREE.Vector3(0,1,0),screenUp=new THREE.Vector3(0,0,-1);
      const values=[],transitions=[];
      const columns=Math.ceil(Math.sqrt(active.length)),rows=Math.ceil(active.length/columns);
