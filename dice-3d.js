@@ -17,7 +17,7 @@ async function setup(){
  geometry=diceGeometry();
  scene=new THREE.Scene();
  camera=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,.1,100);
- camera.position.set(0,16,25);camera.lookAt(0,0,0);
+ camera.position.set(0,27,15);camera.lookAt(0,0,0);
  scene.add(new THREE.HemisphereLight(0xffffff,0x5e4242,2.8));
  const sun=new THREE.DirectionalLight(0xffdfb7,3.2);sun.position.set(-7,17,12);scene.add(sun);
  renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});
@@ -80,8 +80,8 @@ export async function roll3d(quantity){
   const body=new CANNON.Body({mass:1,shape,linearDamping:.28,angularDamping:.42,sleepSpeedLimit:.22,sleepTimeLimit:.6});
   const row=Math.floor(i/cols),col=i%cols;
   body.position.set(-9+col*.5,4+row*.8+i*.18,(i%4-1.5)*.7);
-  body.velocity.set(13+Math.random()*6,Math.random()*6,Math.random()*5-2.5);
-  body.angularVelocity.set(Math.random()*18-9,Math.random()*18-9,Math.random()*18-9);
+  body.velocity.set(10+Math.random()*4,Math.random()*4,Math.random()*4-2);
+  body.angularVelocity.set(Math.random()*13-6.5,Math.random()*13-6.5,Math.random()*13-6.5);
   body.quaternion.setFromEuler(Math.random()*6,Math.random()*6,Math.random()*6);
   world.addBody(body);scene.add(mesh);active.push({body,mesh});
  }
