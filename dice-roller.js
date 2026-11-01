@@ -1,180 +1,92 @@
-// Carved in Smoke — physics-driven 3D dice roller.
-(async()=>{
-const style=document.createElement('style');
-style.textContent=`
-#cis-dice-launch{position:fixed;right:22px;bottom:22px;z-index:2202;border:1px solid #c59b69;background:linear-gradient(135deg,#824438,#462b30);color:#ffebce;border-radius:14px;padding:12px 19px;box-shadow:0 8px 25px #0009;font:700 16px Georgia,serif;cursor:pointer}
-#cis-dice-controls{position:fixed;right:20px;bottom:83px;z-index:2202;background:#242a2ff5;border:1px solid #b78a62;border-radius:13px;padding:17px;width:min(320px,calc(100vw - 40px));color:#eee3d2;box-shadow:0 14px 36px #000b}
-#cis-dice-controls[hidden],#cis-dice-stage[hidden],#cis-roll-custom-fields[hidden],#cis-roll-auto-count[hidden]{display:none!important}
-#cis-dice-controls label{font-size:12px;color:#d5bda0;display:block;margin:9px 0 5px}
-#cis-dice-controls select,#cis-dice-controls input{width:100%;background:#171d20;color:white;border:1px solid #677078;border-radius:6px;padding:9px;font:inherit}
-#cis-dice-controls .dice-actions{display:flex;gap:8px;margin-top:14px}
-#cis-dice-controls button{flex:1;padding:10px;border-radius:7px;background:#874a3a;border:1px solid #c0926c;color:white;cursor:pointer}
-#cis-dice-controls button.secondary{background:#394147}
-#cis-dice-controls .cis-skill-buttons{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}#cis-dice-controls .cis-skill-buttons button:last-child{grid-column:span 2}#cis-dice-result{margin-top:12px;line-height:1.5;font:15px Georgia,serif}
-#cis-dice-result strong{display:block;font-size:32px;color:#f4c485}
-#cis-dice-stage{position:fixed;inset:0;z-index:2199;pointer-events:none;overflow:hidden}
-#cis-dice-stage canvas{display:block;width:100%;height:100%}#cis-visual-dice{position:absolute;inset:0;overflow:hidden}#cis-visual-dice .cis-fallback-die{position:absolute;left:0;top:0;width:64px;height:64px;display:grid;place-items:center;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);background:#873d3b;border:3px solid #e4b97d;color:#ffe9c4;font:bold 27px Georgia,serif;box-shadow:0 4px 12px #0008}
-#cis-dice-banner{position:absolute;top:9%;left:50%;transform:translateX(-50%);border:1px solid #b78a62;border-radius:12px;background:#1c242bea;padding:12px 28px;color:#f1ddbf;font:17px Georgia,serif;text-align:center;box-shadow:0 12px 30px #000a;white-space:nowrap}
-#cis-dice-banner strong{display:block;color:#ffd48b;font-size:36px}
-@media(max-width:750px){#cis-dice-banner{top:13%;font-size:14px}#cis-dice-banner strong{font-size:27px}}
-`;document.head.append(style);
+// Carved in Smoke dice roller. Uses the open-source Dice Box 3D physics engine.
+(()=>{
+const css=document.createElement('style');css.textContent=`
+#cis-dice-launch{position:fixed;right:20px;bottom:20px;z-index:2302;padding:12px 19px;border:1px solid #d1a16f;border-radius:15px;background:#754338;color:#ffebd1;font:700 16px Georgia,serif;cursor:pointer;box-shadow:0 8px 22px #0009}
+#cis-dice-controls{position:fixed;right:20px;bottom:80px;z-index:2302;width:min(335px,calc(100vw - 40px));padding:17px;border:1px solid #bd9066;border-radius:13px;background:#242a2ff5;color:#eee3d2;box-shadow:0 15px 35px #000b;font:15px Georgia,serif}
+#cis-dice-controls[hidden],#cis-dice-stage[hidden]{display:none!important}
+#cis-dice-controls .cis-skills{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 0}
+#cis-dice-controls button{background:#854c3b;color:#fff1db;border:1px solid #b78861;border-radius:7px;padding:11px;cursor:pointer;font:16px Georgia,serif}
+#cis-dice-controls button:disabled{opacity:.5;cursor:wait}
+#cis-dice-controls .cis-skills button:last-child{grid-column:1/-1}
+#cis-dice-controls .cis-custom{border-top:1px solid #5d5e60;padding-top:12px;display:flex;gap:8px;align-items:end}
+#cis-dice-controls .cis-custom label{flex:1;font:12px Georgia,serif;color:#d8c0a4}
+#cis-dice-controls input{display:block;box-sizing:border-box;width:100%;margin-top:5px;padding:10px;border:1px solid #677078;border-radius:6px;background:#171d20;color:white;font:16px Georgia,serif}
+#cis-dice-controls .cis-close{margin-top:12px;background:#353e43;width:100%}
+#cis-dice-result{margin-top:12px;line-height:1.45;overflow-wrap:anywhere}
+#cis-dice-result strong{display:block;font-size:32px;color:#ffd28a}
+#cis-dice-stage{position:fixed;inset:0;z-index:2299;pointer-events:none}
+#cis-dice-stage canvas{pointer-events:none!important}
+#cis-dice-banner{position:fixed;top:12%;left:50%;transform:translateX(-50%);background:#1b232bee;border:1px solid #bd9066;border-radius:12px;color:#f1dec4;padding:12px 25px;text-align:center;white-space:nowrap;box-shadow:0 12px 30px #0009;font:16px Georgia,serif}
+#cis-dice-banner strong{display:block;font-size:36px;color:#ffd28a}
+`;document.head.append(css);
 const launch=document.createElement('button');launch.id='cis-dice-launch';launch.type='button';launch.textContent='⚄ Roll Dice';
 const panel=document.createElement('section');panel.id='cis-dice-controls';panel.hidden=true;
-panel.innerHTML='<strong style="font:22px Georgia,serif;color:#e9ac81">Dice Roller</strong><div class="cis-skill-buttons"><button type="button" data-skill="Grit">Grit</button><button type="button" data-skill="Finesse">Finesse</button><button type="button" data-skill="Luck">Luck</button><button type="button" data-skill="Focus">Focus</button><button type="button" data-skill="Charm">Charm</button></div><div id="cis-roll-auto-count" style="margin-top:12px;color:#d5bda0;font-size:14px"></div><div id="cis-roll-custom-fields"><label for="cis-roll-count">Number of d12s</label><input id="cis-roll-count" type="number" min="1" max="20" value="2"></div><div class="dice-actions"><button type="button" id="cis-roll-go">Roll Custom d12s</button><button type="button" class="secondary" id="cis-roll-close">Close</button></div><div id="cis-dice-result" role="status" aria-live="polite"></div>';
+panel.innerHTML='<strong style="font-size:22px;color:#e9ac81">Dice Roller</strong><div class="cis-skills"><button data-skill="Grit">Grit</button><button data-skill="Finesse">Finesse</button><button data-skill="Luck">Luck</button><button data-skill="Focus">Focus</button><button data-skill="Charm">Charm</button></div><div class="cis-custom"><label>Number of d12s<input id="cis-roll-count" type="number" min="1" max="20" value="2"></label><button id="cis-roll-custom">Roll Custom</button></div><button class="cis-close" id="cis-roll-close">Close</button><div id="cis-dice-result" role="status" aria-live="polite"></div>';
 const stage=document.createElement('div');stage.id='cis-dice-stage';stage.hidden=true;
-const visualDice=document.createElement('div');visualDice.id='cis-visual-dice';stage.append(visualDice);
-function showPhysicalFallback(values,label,zero){
- stage.hidden=false;visualDice.replaceChildren();banner.hidden=true;
- const particles=values.map((value,i)=>{
-  const el=document.createElement('div');el.className='cis-fallback-die';el.textContent=String(value);visualDice.append(el);
-  const size=64,x=-100-i*25,y=90+i*14;
-  return {el,x,y,vx:550+Math.random()*180,vy:120+Math.random()*100,spin:Math.random()*600+480,angle:Math.random()*360,size};
- });
- const start=performance.now();let prev=start;
- function draw(now){
-  const dt=Math.min(.033,(now-prev)/1000);prev=now;
-  const w=innerWidth,h=innerHeight;
-  for(const p of particles){
-   p.vy+=1100*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.angle+=p.spin*dt;
-   if(p.x<8){p.x=8;p.vx=Math.abs(p.vx)*.72;p.spin*=-.75}
-   if(p.x>w-p.size-8){p.x=w-p.size-8;p.vx=-Math.abs(p.vx)*.72;p.spin*=-.75}
-   if(p.y>h-p.size-12){p.y=h-p.size-12;p.vy=-Math.abs(p.vy)*.48;p.vx*=.84;p.spin*=.65}
-   if(p.y<10){p.y=10;p.vy=Math.abs(p.vy)*.6}
-   p.el.style.transform='translate('+p.x+'px,'+p.y+'px) rotate('+p.angle+'deg)';
-  }
-  if(now-start<2600)requestAnimationFrame(draw);
-  else{const win=zero?Math.min(...values):Math.max(...values);result.textContent=label+' · '+values.length+'d12: '+values.join(', ')+' · '+(zero?'Lowest':'Highest')+' = '+win;banner.replaceChildren();const title=document.createElement('span');title.textContent=label+' result';const number=document.createElement('strong');number.textContent=String(win);banner.append(title,number);banner.hidden=false}
- }
- requestAnimationFrame(draw);
-}
 const banner=document.createElement('div');banner.id='cis-dice-banner';banner.hidden=true;stage.append(banner);
 document.body.append(stage,panel,launch);
-const skill={value:'Grit'},count=panel.querySelector('#cis-roll-count'),result=panel.querySelector('#cis-dice-result');
-function skillCount(){return Math.max(0,Math.floor(Number(document.querySelector('[data-total="'+skill.value+'"]')?.value)||0))}
-function sync(){const custom=skill.value==='custom';panel.querySelector('#cis-roll-custom-fields').hidden=false;panel.querySelector('#cis-roll-auto-count').hidden=custom;if(!custom){const n=skillCount();panel.querySelector('#cis-roll-auto-count').textContent=n===0?'0 '+skill.value+': roll 2d12, keep the lowest.':'Roll '+n+'d12 (current '+skill.value+' total).'}}
-panel.querySelectorAll('[data-skill]').forEach(b=>b.onclick=()=>{skill.value=b.dataset.skill;panel.querySelector('#cis-roll-go').click()});launch.onclick=()=>{panel.hidden=!panel.hidden;if(!panel.hidden)sync()};
-let THREE,CANNON,renderer,scene,camera,world,animation=0,dice=[],last=0,rolling=false;
-function close(){panel.hidden=true;stage.hidden=true;cancelAnimationFrame(animation);rolling=false}
-panel.querySelector('#cis-roll-close').onclick=close;
-async function init(){
- if(renderer)return;
- [THREE,CANNON]=await Promise.all([
-  import('https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js'),
-  import('https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js')
- ]);
- scene=new THREE.Scene();
- camera=new THREE.PerspectiveCamera(38,innerWidth/innerHeight,.1,150);
- camera.position.set(0,15,29);camera.lookAt(0,0,0);
- renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});
- renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);
- renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.shadowMap.enabled=true;
- stage.append(renderer.domElement);
- scene.add(new THREE.AmbientLight(0xffffff,2.0));
- const light=new THREE.DirectionalLight(0xffd8ae,3.2);light.position.set(-7,16,10);light.castShadow=true;scene.add(light);
- const floor=new THREE.Mesh(new THREE.PlaneGeometry(120,120),new THREE.MeshBasicMaterial({color:0x20252b,transparent:true,opacity:.10,depthWrite:false}));
- floor.rotation.x=-Math.PI/2;floor.position.y=-4.3;scene.add(floor);
- world=new CANNON.World({gravity:new CANNON.Vec3(0,-25,0)});
- world.allowSleep=true;
- world.defaultContactMaterial.friction=.48;world.defaultContactMaterial.restitution=.34;
- function wall(pos,normal){const body=new CANNON.Body({mass:0,shape:new CANNON.Plane()});body.position.set(...pos);body.quaternion.setFromEuler(...normal);world.addBody(body)}
- wall([0,-4.3,0],[-Math.PI/2,0,0]);
- wall([-12,0,0],[0,Math.PI/2,0]);wall([12,0,0],[0,-Math.PI/2,0]);
- wall([0,0,-8],[0,0,0]);wall([0,0,8],[0,Math.PI,0]);
+const result=panel.querySelector('#cis-dice-result'),customCount=panel.querySelector('#cis-roll-count');
+launch.onclick=()=>{panel.hidden=!panel.hidden};
+panel.querySelector('#cis-roll-close').onclick=()=>{panel.hidden=true;stage.hidden=true;diceBox?.clear()};
+let diceBox=null,initPromise=null,busy=false,rollToken=0;
+async function initialize(){
+ if(diceBox)return diceBox;
+ if(initPromise)return initPromise;
+ initPromise=(async()=>{
+  const url='https://unpkg.com/@3d-dice/dice-box@1.1.4/dist/';
+  const module=await import(url+'dice-box.es.min.js');
+  const box=new module.default({
+   container:'#cis-dice-stage',assetPath:'assets/',origin:url,
+   gravity:1,friction:.72,restitution:.45,angularDamping:.37,linearDamping:.33,
+   throwForce:6,spinForce:5,scale:5.5,themeColor:'#873f42',
+   enableShadows:true,offscreen:false,settleTimeout:5500
+  });
+  await box.init();diceBox=box;return box;
+ })();
+ try{return await initPromise}catch(e){initPromise=null;throw e}
 }
-function buildDie(){
- const geometry=new THREE.DodecahedronGeometry(1,0);
- const mesh=new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({color:0x812d35,roughness:.38,metalness:.18,flatShading:true}));
- mesh.castShadow=true;
- mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(geometry,10),new THREE.LineBasicMaterial({color:0xe0b67d})));
- const attr=geometry.getAttribute('position'),faces=new Map();
- for(let i=0;i<attr.count;i++){
-  const normal=new THREE.Vector3().fromBufferAttribute(attr,Math.floor(i/3)*3+1).sub(new THREE.Vector3().fromBufferAttribute(attr,Math.floor(i/3)*3)).cross(new THREE.Vector3().fromBufferAttribute(attr,Math.floor(i/3)*3+2).sub(new THREE.Vector3().fromBufferAttribute(attr,Math.floor(i/3)*3))).normalize();const origin=new THREE.Vector3().fromBufferAttribute(attr,i);if(normal.dot(origin)<0)normal.negate();
-  const key=[normal.x,normal.y,normal.z].map(v=>v.toFixed(3)).join(',');
-  if(!faces.has(key))faces.set(key,{normal,vertices:[]});
-  const p=new THREE.Vector3().fromBufferAttribute(attr,i);
-  if(!faces.get(key).vertices.some(v=>v.distanceToSquared(p)<1e-7))faces.get(key).vertices.push(p);
- }
- const list=[...faces.values()];
- if(list.length!==12)throw Error('d12 mesh must have 12 faces; found '+list.length);
- list.forEach((face,i)=>{
-  const center=face.vertices.reduce((acc,p)=>acc.add(p),new THREE.Vector3()).divideScalar(face.vertices.length);
-  const axis=face.vertices[0].clone().sub(center).normalize();
-  const side=new THREE.Vector3().crossVectors(face.normal,axis).normalize();
-  const ordered=face.vertices.map(p=>({p,x:p.clone().sub(center).dot(axis),y:p.clone().sub(center).dot(side)})).sort((a,b)=>Math.atan2(a.y,a.x)-Math.atan2(b.y,b.x));
-  const radius=Math.max(...ordered.map(v=>Math.hypot(v.x,v.y)));
-  const verts=[],uv=[];
-  for(let j=0;j<ordered.length;j++)for(const q of [{p:center,x:0,y:0},ordered[j],ordered[(j+1)%ordered.length]]){
-   const p=q.p.clone().addScaledVector(face.normal,.008);
-   verts.push(p.x,p.y,p.z);uv.push(.5+q.x/(radius*2.1),.5+q.y/(radius*2.1));
-  }
-  const overlay=new THREE.BufferGeometry();overlay.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));overlay.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));overlay.computeVertexNormals();
-  const cv=document.createElement('canvas');cv.width=cv.height=256;const ctx=cv.getContext('2d');
-  ctx.fillStyle='#ffe8bf';ctx.font='bold 116px Georgia';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String(i+1),128,135);
-  const texture=new THREE.CanvasTexture(cv);texture.colorSpace=THREE.SRGBColorSpace;
-  mesh.add(new THREE.Mesh(overlay,new THREE.MeshBasicMaterial({map:texture,transparent:true,side:THREE.DoubleSide,depthWrite:false})));
- });
- const unique=[];for(const face of list)for(const p of face.vertices)if(!unique.some(q=>q.distanceToSquared(p)<1e-7))unique.push(p.clone());
- const polygons=list.map(face=>{const center=face.vertices.reduce((acc,p)=>acc.add(p),new THREE.Vector3()).divideScalar(face.vertices.length);const axis=face.vertices[0].clone().sub(center).normalize(),side=new THREE.Vector3().crossVectors(face.normal,axis).normalize();return face.vertices.slice().sort((a,b)=>Math.atan2(a.clone().sub(center).dot(side),a.clone().sub(center).dot(axis))-Math.atan2(b.clone().sub(center).dot(side),b.clone().sub(center).dot(axis))).map(p=>unique.findIndex(q=>q.distanceToSquared(p)<1e-7))});
- const shape=new CANNON.ConvexPolyhedron({vertices:unique.map(p=>new CANNON.Vec3(p.x,p.y,p.z)),faces:polygons});
- const body=new CANNON.Body({mass:1,shape,linearDamping:.19,angularDamping:.22,sleepSpeedLimit:.15,sleepTimeLimit:.6});
- return {mesh,body,faces:list};
-}
-function faceValue(die){
- const q=new THREE.Quaternion(die.body.quaternion.x,die.body.quaternion.y,die.body.quaternion.z,die.body.quaternion.w);
- const up=new THREE.Vector3(0,1,0);let best=-Infinity,value=1;
- die.faces.forEach((face,i)=>{const score=face.normal.clone().applyQuaternion(q).dot(up);if(score>best){best=score;value=i+1}});
- return value;
-}
-function finish(zero,label){
- const values=dice.map(faceValue),outcome=zero?Math.min(...values):Math.max(...values);
- result.innerHTML='';
- const caption=document.createElement('span');caption.textContent=label+' · '+values.length+'d12 · '+(zero?'Lowest':'Highest');
- const big=document.createElement('strong');big.textContent=String(outcome);
- const detail=document.createElement('span');detail.textContent='Dice: '+values.join(', ')+(zero?' (zero-skill rule)':'');
- result.append(caption,big,detail);
+function display(label,values,zero){
+ const winning=zero?Math.min(...values):Math.max(...values);
+ result.replaceChildren();
+ const info=document.createElement('span');info.textContent=label+' · '+values.length+'d12 · '+(zero?'Lowest':'Highest');
+ const number=document.createElement('strong');number.textContent=String(winning);
+ const detail=document.createElement('span');detail.textContent='Dice: '+values.join(', ')+(zero?' · Zero-skill rule':'');
+ result.append(info,number,detail);
  banner.replaceChildren();
- const t=document.createElement('span');t.textContent=label+' result';const v=document.createElement('strong');v.textContent=String(outcome);banner.append(t,v);banner.hidden=false;
- rolling=false;
+ const heading=document.createElement('span');heading.textContent=label+' result';
+ const large=document.createElement('strong');large.textContent=String(winning);
+ banner.append(heading,large);banner.hidden=false;
 }
-panel.querySelector('#cis-roll-go').onclick=async()=>{
- if(rolling)return;
- const custom=skill.value==='custom';
- let n=custom?Math.floor(Number(count.value)||0):skillCount();
- n=Math.max(0,Math.min(20,n));const zero=!custom&&n===0;if(zero)n=2;
- if(n===0){result.textContent='Enter at least one die.';return}
- const instantValues=Array.from({length:n},()=>1+Math.floor(crypto.getRandomValues(new Uint32Array(1))[0]/4294967296*12));const instantResult=zero?Math.min(...instantValues):Math.max(...instantValues);const fallbackResult=(custom?'Custom':skill.value)+' · '+n+'d12: '+instantValues.join(', ')+' · Result: '+instantResult;result.textContent=fallbackResult; const button=panel.querySelector('#cis-roll-go');button.disabled=true;
- try{await Promise.race([init(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Loading timed out')),4000))])}catch(e){result.textContent=fallbackResult+' (3D unavailable: '+e.message+')';button.disabled=false;showPhysicalFallback(instantValues,custom?'Custom':skill.value,zero);return}
- button.disabled=false;cancelAnimationFrame(animation);
- dice.forEach(d=>{scene.remove(d.mesh);world.removeBody(d.body)});dice=[];stage.hidden=false;visualDice.replaceChildren();banner.hidden=true;result.textContent='Rolling…';try{
- const columns=Math.min(5,Math.ceil(Math.sqrt(n*1.5))),rows=Math.ceil(n/columns);
- const scale=Math.min(1.15,Math.max(.48,4.7/Math.max(columns,rows)));
- for(let i=0;i<n;i++){
-  const d=buildDie();d.mesh.scale.setScalar(scale);
-  // Scale the collision body to the same visible size.
-  d.body.shapes[0].vertices.forEach(v=>v.scale(scale,v));d.body.shapes[0].computeNormals();d.body.shapes[0].updateBoundingSphereRadius();d.body.updateBoundingRadius();
-  const col=i%columns,row=Math.floor(i/columns);
-  d.body.position.set(-10+col*1.0,5+row*1.4+i*.24,(i%3-1)*1.0);
-  d.body.velocity.set(11+Math.random()*6,Math.random()*4,Math.random()*5-2.5);
-  d.body.angularVelocity.set(Math.random()*18-9,Math.random()*18-9,Math.random()*18-9);
-  d.body.quaternion.setFromEuler(Math.random()*6,Math.random()*6,Math.random()*6);
-  world.addBody(d.body);scene.add(d.mesh);dice.push(d);
- }
- }catch(error){console.error('Dice setup failed',error);result.textContent=fallbackResult+' (3D error: '+error.message+')';showPhysicalFallback(instantValues,custom?'Custom':skill.value,zero);return}
- rolling=true;const started=performance.now();last=started;let settled=0;const watchdog=setTimeout(()=>{if(rolling){cancelAnimationFrame(animation);finish(zero,custom?'Custom':skill.value)}},8500);
- const label=custom?'Custom':skill.value;
- function tick(now){
-  try{
-  const dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;world.step(1/60,dt,3);
-  for(const d of dice){d.mesh.position.copy(d.body.position);d.mesh.quaternion.copy(d.body.quaternion)}
-  renderer.render(scene,camera);
-  const elapsed=now-started;
-  const still=dice.every(d=>d.body.velocity.length()<.3&&d.body.angularVelocity.length()<.45);
-  settled=still?settled+dt:0;
-  if((settled>.7&&elapsed>1200)||elapsed>7500){clearTimeout(watchdog);finish(zero,label);return}
-  animation=requestAnimationFrame(tick);
-  }catch(error){clearTimeout(watchdog);console.error('Dice physics error',error);finish(zero,label);result.append(document.createTextNode(' · Animation interrupted; result read from last dice positions.'));}
- }
- animation=requestAnimationFrame(tick);
-};
-window.addEventListener('resize',()=>{if(!renderer)return;camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+function setBusy(value){busy=value;panel.querySelectorAll('button[data-skill],#cis-roll-custom').forEach(b=>b.disabled=value)}
+async function roll(label,score,isCustom){
+ if(busy)return;
+ const zero=!isCustom&&score===0;
+ const qty=zero?2:score;
+ if(!Number.isInteger(qty)||qty<1||qty>20){result.textContent='Enter a number from 1 to 20.';return}
+ const token=++rollToken;
+ setBusy(true);result.textContent='Preparing 3D dice…';banner.hidden=true;
+ stage.hidden=false;
+ try{
+  const box=await Promise.race([initialize(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('3D engine failed to load within 12 seconds')),12000))]);
+  if(token!==rollToken)return;
+  result.textContent='Rolling 3D dice…';
+  const groups=await Promise.race([box.roll(qty+'d12'),new Promise((_,reject)=>setTimeout(()=>reject(new Error('3D roll timed out')),12000))]);
+  if(token!==rollToken)return;
+  const values=groups.flatMap(group=>(group.rolls||[]).map(d=>Number(d.value)));
+  if(values.length!==qty||values.some(v=>!Number.isInteger(v)||v<1||v>12))throw Error('Invalid dice results returned');
+  display(label,values,zero);
+ }catch(e){
+  if(token===rollToken){result.textContent='3D dice error: '+e.message;stage.hidden=true;console.error('CiS dice',e)}
+ }finally{if(token===rollToken)setBusy(false)}
+}
+for(const button of panel.querySelectorAll('[data-skill]')){
+ button.onclick=()=>{
+  const name=button.dataset.skill;
+  const el=document.querySelector('[data-total="'+name+'"]');
+  const raw=el?.value??el?.textContent;
+  const score=Math.max(0,Math.floor(Number(raw)||0));
+  roll(name,score,false);
+ };
+}
+panel.querySelector('#cis-roll-custom').onclick=()=>roll('Custom',Number(customCount.value),true);
 })();
