@@ -28,7 +28,7 @@ document.body.append(stage,panel,launch);
 const result=panel.querySelector('#cis-dice-result'),customCount=panel.querySelector('#cis-roll-count');
 launch.onclick=()=>{panel.hidden=!panel.hidden};
 panel.querySelector('#cis-roll-close').onclick=()=>{panel.hidden=true;stage.hidden=true;diceBox?.clear()};
-let diceBox=null,initPromise=null,busy=false,rollToken=0;
+let diceBox=null,initPromise=null,busy=false,rollToken=0;let glbEngine=null;
 async function initialize(){
  if(diceBox)return diceBox;
  if(initPromise)return initPromise;
@@ -67,13 +67,12 @@ async function roll(label,score,isCustom){
  setBusy(true);result.textContent='Preparing 3D dice…';banner.hidden=true;
  stage.hidden=false;
  try{
-  const box=await Promise.race([initialize(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('3D engine failed to load within 12 seconds')),12000))]);
+  if(!glbEngine)glbEngine=await import('./dice-3d.js?v=7d19084');
   if(token!==rollToken)return;
   result.textContent='Rolling 3D dice…';
-  const groups=await Promise.race([box.roll(qty+'d12'),new Promise((_,reject)=>setTimeout(()=>reject(new Error('3D roll timed out')),12000))]);
+  await glbEngine.roll3d(qty);
   if(token!==rollToken)return;
-  const entries=Array.isArray(groups)?groups:(groups?.rolls||groups?.results||[]);const values=entries.flatMap(item=>item?.rolls?item.rolls.map(d=>Number(d.value??d.result)):Number(item?.value??item?.result));
-  if(values.length!==qty||values.some(v=>!Number.isInteger(v)||v<1||v>12))throw Error('Invalid dice results returned');
+  const values=Array.from({length:qty},()=>1+Math.floor(crypto.getRandomValues(new Uint32Array(1))[0]/4294967296*12));
   display(label,values,zero);
  }catch(e){
   if(token===rollToken){result.textContent='3D dice error: '+e.message;stage.hidden=true;console.error('CiS dice',e)}
