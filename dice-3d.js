@@ -33,7 +33,7 @@ async function setup(style){
 }
 async function loadStyle(style){
  if(loadedStyle===style)return;
- const filename=style==='knight'?'knight_armor_d12_medieval_font.glb':'carved_in_smoke_d12.glb';
+ const filename=style==='knight'?'knight_armor_d12_restored_numbers.glb':'carved_in_smoke_d12.glb';
  const gltf=await loader.loadAsync('./dice-models/'+filename);
  const model=gltf.scene;
  const bounds=new THREE.Box3().setFromObject(model),size=bounds.getSize(new THREE.Vector3());
@@ -99,7 +99,7 @@ const knightFaceAxes=[
 function numeralUp(face){
  const match=knightFaceAxes.reduce((best,f)=>f.normal.dot(face.normal)>best.normal.dot(face.normal)?f:best);
  const number=knightFaceAxes.indexOf(match)+1;
- const glyph=template.getObjectByName('RaisedSteelNumeral_'+number);
+ const glyph=template.getObjectByName('RaisedSteelNumeral_'+number)||template.getObjectByName('medieval_numeral_'+number);
  if(!glyph)return match.up.clone();
  template.updateMatrixWorld(true);
  const position=glyph.geometry.getAttribute('position');
