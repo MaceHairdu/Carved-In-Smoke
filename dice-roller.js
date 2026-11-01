@@ -8,7 +8,7 @@ const css=document.createElement('style');css.textContent=`
 #cis-dice-controls button{background:#854c3b;color:#fff1db;border:1px solid #b78861;border-radius:7px;padding:11px;cursor:pointer;font:16px Georgia,serif}
 #cis-dice-controls button:disabled{opacity:.5;cursor:wait}
 #cis-dice-controls .cis-skills button:last-child{grid-column:1/-1}
-#cis-dice-controls .cis-custom{border-top:1px solid #5d5e60;padding-top:12px;display:flex;gap:8px;align-items:end}
+#cis-dice-controls .cis-dice-style{display:block;margin:10px 0;color:#d8c0a4;font:13px Georgia,serif}#cis-dice-controls .cis-dice-style select{display:block;width:100%;margin-top:6px;padding:10px;background:#171d20;color:#fff1db;border:1px solid #677078;border-radius:6px;font:15px Georgia,serif}#cis-dice-controls .cis-custom{border-top:1px solid #5d5e60;padding-top:12px;display:flex;gap:8px;align-items:end}
 #cis-dice-controls .cis-custom label{flex:1;font:12px Georgia,serif;color:#d8c0a4}
 #cis-dice-controls input{display:block;box-sizing:border-box;width:100%;margin-top:5px;padding:10px;border:1px solid #677078;border-radius:6px;background:#171d20;color:white;font:16px Georgia,serif}
 #cis-dice-controls .cis-close{margin-top:12px;background:#353e43;width:100%}
@@ -21,11 +21,11 @@ const css=document.createElement('style');css.textContent=`
 `;document.head.append(css);
 const launch=document.createElement('button');launch.id='cis-dice-launch';launch.type='button';launch.textContent='⚄ Roll Dice';
 const panel=document.createElement('section');panel.id='cis-dice-controls';panel.hidden=true;
-panel.innerHTML='<strong style="font-size:22px;color:#e9ac81">Dice Roller</strong><div class="cis-skills"><button data-skill="Grit">Grit</button><button data-skill="Finesse">Finesse</button><button data-skill="Luck">Luck</button><button data-skill="Focus">Focus</button><button data-skill="Charm">Charm</button></div><div class="cis-custom"><label>Number of d12s<input id="cis-roll-count" type="number" min="1" max="20" value="2"></label><button id="cis-roll-custom">Roll Custom</button></div><button class="cis-close" id="cis-roll-close">Close</button><div id="cis-dice-result" role="status" aria-live="polite"></div>';
+panel.innerHTML='<strong style="font-size:22px;color:#e9ac81">Dice Roller</strong><label class="cis-dice-style">Dice Style<select id="cis-dice-style"><option value="classic">Original D12</option><option value="knight">Knight Armor D12</option></select></label><div class="cis-skills"><button data-skill="Grit">Grit</button><button data-skill="Finesse">Finesse</button><button data-skill="Luck">Luck</button><button data-skill="Focus">Focus</button><button data-skill="Charm">Charm</button></div><div class="cis-custom"><label>Number of d12s<input id="cis-roll-count" type="number" min="1" max="20" value="2"></label><button id="cis-roll-custom">Roll Custom</button></div><button class="cis-close" id="cis-roll-close">Close</button><div id="cis-dice-result" role="status" aria-live="polite"></div>';
 const stage=document.createElement('div');stage.id='cis-dice-stage';stage.hidden=true;
 const banner=document.createElement('div');banner.id='cis-dice-banner';banner.hidden=true;stage.append(banner);
 document.body.append(stage,panel,launch);
-const result=panel.querySelector('#cis-dice-result'),customCount=panel.querySelector('#cis-roll-count');
+const result=panel.querySelector('#cis-dice-result'),customCount=panel.querySelector('#cis-roll-count'),diceStyle=panel.querySelector('#cis-dice-style');
 launch.onclick=()=>{panel.hidden=!panel.hidden};
 panel.querySelector('#cis-roll-close').onclick=()=>{panel.hidden=true;stage.hidden=true;diceBox?.clear()};
 let diceBox=null,initPromise=null,busy=false,rollToken=0;let glbEngine=null;
@@ -57,7 +57,7 @@ function display(label,values,zero){
  const large=document.createElement('strong');large.textContent=String(winning);
  banner.append(heading,large);banner.hidden=false;
 }
-function setBusy(value){busy=value;panel.querySelectorAll('button[data-skill],#cis-roll-custom').forEach(b=>b.disabled=value)}
+function setBusy(value){busy=value;diceStyle.disabled=value;panel.querySelectorAll('button[data-skill],#cis-roll-custom').forEach(b=>b.disabled=value)}
 async function roll(label,score,isCustom){
  if(busy)return;
  const zero=!isCustom&&score===0;
@@ -67,10 +67,10 @@ async function roll(label,score,isCustom){
  setBusy(true);result.textContent='Preparing 3D dice…';banner.hidden=true;
  stage.hidden=false;
  try{
-  if(!glbEngine)glbEngine=await import('./dice-3d.js?v=gravity30fast19');
+  if(!glbEngine)glbEngine=await import('./dice-3d.js?v=style-picker-1');
   if(token!==rollToken)return;
   result.textContent='Rolling 3D dice…';
-  const values=await glbEngine.roll3d(qty);
+  const values=await glbEngine.roll3d(qty,diceStyle.value);
   if(token!==rollToken)return;
   if(values.length!==qty||values.some(v=>!Number.isInteger(v)||v<1||v>12))throw Error('Invalid 3D face results');
   display(label,values,zero);
