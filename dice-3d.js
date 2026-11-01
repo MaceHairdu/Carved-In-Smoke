@@ -33,7 +33,7 @@ async function setup(style){
 }
 async function loadStyle(style){
  if(loadedStyle===style)return;
- const filename=style==='knight'?'knight_armor_d12_restored_numbers.glb':'carved_in_smoke_d12.glb';
+ const filename=style==='knight'?'knight_armor_d12_verified_gold_numbers.glb':'carved_in_smoke_d12.glb';
  const gltf=await loader.loadAsync('./dice-models/'+filename);
  const model=gltf.scene;
  const bounds=new THREE.Box3().setFromObject(model),size=bounds.getSize(new THREE.Vector3());
