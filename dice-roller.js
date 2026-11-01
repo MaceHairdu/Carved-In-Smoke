@@ -18,16 +18,43 @@ const css=document.createElement('style');css.textContent=`
 #cis-dice-stage canvas{pointer-events:none!important}
 #cis-dice-banner{position:fixed;top:12%;left:50%;transform:translateX(-50%);background:#1b232bee;border:1px solid #bd9066;border-radius:12px;color:#f1dec4;padding:12px 25px;text-align:center;white-space:nowrap;box-shadow:0 12px 30px #0009;font:16px Georgia,serif}
 #cis-dice-banner strong{display:block;font-size:36px;color:#ffd28a}
+#cis-roll-history{position:fixed;top:0;right:0;bottom:0;z-index:2305;width:min(370px,100vw);box-sizing:border-box;padding:22px;background:#242a2f;color:#eee3d2;border-left:1px solid #bd9066;box-shadow:-12px 0 35px #0009;overflow-y:auto;font:15px Georgia,serif}
+#cis-roll-history[hidden]{display:none!important}
+#cis-roll-history .history-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}
+#cis-roll-history h2{font-size:23px;color:#e9ac81;margin:0}
+#cis-roll-history button{background:#854c3b;color:#fff1db;border:1px solid #b78861;border-radius:7px;padding:9px 12px;cursor:pointer;font:15px Georgia,serif}
+#cis-roll-history-list{display:grid;gap:12px}
+#cis-roll-history .history-entry{padding:13px;border:1px solid #5d5e60;border-radius:9px;background:#1a2024}
+#cis-roll-history .history-entry header{display:flex;justify-content:space-between;gap:10px;color:#e9ac81;font-weight:bold}
+#cis-roll-history .history-entry p{margin:8px 0 0;overflow-wrap:anywhere}
+#cis-roll-history .history-result{font-size:19px;color:#ffd28a;font-weight:bold}
+#cis-roll-history-empty{color:#d8c0a4}
+#cis-dice-controls .cis-history-open{width:100%;margin-top:10px;background:#353e43}
 `;document.head.append(css);
 const launch=document.createElement('button');launch.id='cis-dice-launch';launch.type='button';launch.textContent='⚄ Roll Dice';
 const panel=document.createElement('section');panel.id='cis-dice-controls';panel.hidden=true;
-panel.innerHTML='<strong style="font-size:22px;color:#e9ac81">Dice Roller</strong><div class="cis-skills"><button data-skill="Grit">Grit</button><button data-skill="Finesse">Finesse</button><button data-skill="Charm">Charm</button><button data-skill="Focus">Focus</button><button data-skill="Luck">Luck</button></div><div class="cis-custom"><label>Number of d12s<input id="cis-roll-count" type="number" min="1" max="20" value="2"></label><button id="cis-roll-custom">Roll Custom</button></div><button class="cis-close" id="cis-roll-close">Close</button><div id="cis-dice-result" role="status" aria-live="polite"></div>';
+panel.innerHTML='<strong style="font-size:22px;color:#e9ac81">Dice Roller</strong><div class="cis-skills"><button data-skill="Grit">Grit</button><button data-skill="Finesse">Finesse</button><button data-skill="Charm">Charm</button><button data-skill="Focus">Focus</button><button data-skill="Luck">Luck</button></div><div class="cis-custom"><label>Number of d12s<input id="cis-roll-count" type="number" min="1" max="20" value="2"></label><button id="cis-roll-custom">Roll Custom</button></div><button class="cis-history-open" id="cis-history-open">Roll History</button><button class="cis-close" id="cis-roll-close">Close</button><div id="cis-dice-result" role="status" aria-live="polite"></div>';
 const stage=document.createElement('div');stage.id='cis-dice-stage';stage.hidden=true;
 const banner=document.createElement('div');banner.id='cis-dice-banner';banner.hidden=true;stage.append(banner);
-document.body.append(stage,panel,launch);
+const historyPanel=document.createElement('aside');historyPanel.id='cis-roll-history';historyPanel.hidden=true;historyPanel.setAttribute('aria-label','Roll History');
+historyPanel.innerHTML='<div class="history-head"><h2>Roll History</h2><button id="cis-history-close" type="button" aria-label="Close roll history">Close</button></div><div id="cis-roll-history-list"></div><p id="cis-roll-history-empty">No rolls yet.</p>';
+document.body.append(stage,panel,launch,historyPanel);
+const historyList=historyPanel.querySelector('#cis-roll-history-list'),historyEmpty=historyPanel.querySelector('#cis-roll-history-empty');
+const history=[];
+function addHistory(label,values,zero){
+ const winning=zero?Math.min(...values):Math.max(...values);
+ history.unshift({label,values:[...values],winning,zero});
+ const entry=document.createElement('article');entry.className='history-entry';
+ const heading=document.createElement('header');const skill=document.createElement('span');skill.textContent=label;const outcome=document.createElement('span');outcome.className='history-result';outcome.textContent=String(winning);heading.append(skill,outcome);
+ const dice=document.createElement('p');dice.textContent='Dice: '+values.map((v,i)=>'Die '+(i+1)+': '+v).join(' · ');
+ const rule=document.createElement('p');rule.textContent='Result used: '+winning+' ('+(zero?'lowest — zero-skill rule':'highest')+')';
+ entry.append(heading,dice,rule);historyList.prepend(entry);historyEmpty.hidden=true;
+}
+panel.querySelector('#cis-history-open').onclick=()=>{historyPanel.hidden=false;panel.hidden=true};
+historyPanel.querySelector('#cis-history-close').onclick=()=>{historyPanel.hidden=true;panel.hidden=false};
 const result=panel.querySelector('#cis-dice-result'),customCount=panel.querySelector('#cis-roll-count');
 launch.onclick=()=>{panel.hidden=!panel.hidden};
-panel.querySelector('#cis-roll-close').onclick=()=>{panel.hidden=true;stage.hidden=true;diceBox?.clear()};
+panel.querySelector('#cis-roll-close').onclick=()=>{panel.hidden=true;stage.hidden=true;historyPanel.hidden=true;diceBox?.clear()};
 let diceBox=null,initPromise=null,busy=false,rollToken=0;let glbEngine=null;
 async function initialize(){
  if(diceBox)return diceBox;
@@ -74,6 +101,7 @@ async function roll(label,score,isCustom){
   if(token!==rollToken)return;
   if(values.length!==qty||values.some(v=>!Number.isInteger(v)||v<1||v>12))throw Error('Invalid 3D face results');
   display(label,values,zero);
+  addHistory(isCustom?'Custom Roll':label,values,zero);
  }catch(e){
   if(token===rollToken){result.textContent='3D dice error: '+e.message;stage.hidden=true;console.error('CiS dice',e)}
  }finally{if(token===rollToken)setBusy(false)}
@@ -87,5 +115,5 @@ for(const button of panel.querySelectorAll('[data-skill]')){
   roll(name,score,false);
  };
 }
-panel.querySelector('#cis-roll-custom').onclick=()=>roll('Custom',Number(customCount.value),true);
+panel.querySelector('#cis-roll-custom').onclick=()=>roll('Custom Roll',Number(customCount.value),true);
 })();
