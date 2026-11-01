@@ -117,7 +117,7 @@ export async function roll3d(quantity){
       const flat=tilt.clone().multiply(q);
       const textUp=top.textureUp.clone().applyQuaternion(flat);
       textUp.y=0;textUp.normalize();
-      const yaw=Math.atan2(textUp.x,-textUp.z);
+      const yaw=Math.atan2(-textUp.x,textUp.z);
       const upright=new THREE.Quaternion().setFromAxisAngle(up,yaw).multiply(flat);
       const target=new THREE.Vector3((i%columns-(columns-1)/2)*spacing,0,(Math.floor(i/columns)-(rows-1)/2)*spacing);
       transitions.push({mesh:d.mesh,from:d.mesh.position.clone(),to:target,rotationFrom:q,rotationTo:upright});
