@@ -67,7 +67,7 @@ async function roll(label,score,isCustom){
  setBusy(true);result.textContent='Preparing 3D dice…';banner.hidden=true;
  stage.hidden=false;
  try{
-  if(!glbEngine)glbEngine=await import('./dice-3d.js?v=verified-gold-7');
+  if(!glbEngine)glbEngine=await import('./dice-3d.js?v=upright-sign-8');
   if(token!==rollToken)return;
   result.textContent='Rolling 3D dice…';
   const values=await glbEngine.roll3d(qty,localStorage.getItem('cis-dice-style')==='knight'?'knight':'classic',Number(localStorage.getItem('cis-dice-scale')||'1.5'));
