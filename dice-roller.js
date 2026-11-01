@@ -56,6 +56,14 @@ const result=panel.querySelector('#cis-dice-result'),customCount=panel.querySele
 launch.onclick=()=>{panel.hidden=!panel.hidden};
 panel.querySelector('#cis-roll-close').onclick=()=>{panel.hidden=true;stage.hidden=true;historyPanel.hidden=true;diceBox?.clear()};
 let diceBox=null,initPromise=null,busy=false,rollToken=0;let glbEngine=null;
+// Dismiss only completed dice visuals; keep the roller and history usable.
+let diceOverlayReady=false;
+document.addEventListener('pointerdown',()=>{
+ if(!diceOverlayReady||stage.hidden)return;
+ stage.hidden=true;
+ banner.hidden=true;
+ diceOverlayReady=false;
+},true);
 async function initialize(){
  if(diceBox)return diceBox;
  if(initPromise)return initPromise;
@@ -91,7 +99,7 @@ async function roll(label,score,isCustom){
  const qty=zero?2:score;
  if(!Number.isInteger(qty)||qty<1||qty>20){result.textContent='Enter a number from 1 to 20.';return}
  const token=++rollToken;
- setBusy(true);result.textContent='Preparing 3D dice…';banner.hidden=true;
+ setBusy(true);diceOverlayReady=false;result.textContent='Preparing 3D dice…';banner.hidden=true;
  stage.hidden=false;
  try{
   if(!glbEngine)glbEngine=await import('./dice-3d.js?v=glb-authored-up-10');
@@ -102,8 +110,9 @@ async function roll(label,score,isCustom){
   if(values.length!==qty||values.some(v=>!Number.isInteger(v)||v<1||v>12))throw Error('Invalid 3D face results');
   display(label,values,zero);
   addHistory(isCustom?'Custom Roll':label,values,zero);
+  diceOverlayReady=true;
  }catch(e){
-  if(token===rollToken){result.textContent='3D dice error: '+e.message;stage.hidden=true;console.error('CiS dice',e)}
+  if(token===rollToken){diceOverlayReady=false;result.textContent='3D dice error: '+e.message;stage.hidden=true;console.error('CiS dice',e)}
  }finally{if(token===rollToken)setBusy(false)}
 }
 for(const button of panel.querySelectorAll('[data-skill]')){
