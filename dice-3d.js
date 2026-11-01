@@ -80,33 +80,35 @@ function diceGeometry(){
  if(vertices.length!==20||faces.some(f=>f.length!==5)||new Set(labels.map(f=>f.value)).size!==12)throw Error('Invalid numbered d12 geometry: '+vertices.length+' vertices, labels '+labels.map(f=>f.value));
  return {vertices,faces,labels};
 }
-// Upright axes from the actual Knight Armor numeral construction (local +Y of each raised glyph).
-// Match by face normal rather than assuming the original die's UV orientation.
-const knightFaceAxes=[
-[[-.525731,.850651,0],[.809017,.5,.309017]],
-[[.525731,.850651,0],[.5,-.309017,.809017]],
-[[-.525731,-.850651,0],[0,0,-1]],
-[[.525731,-.850651,0],[-.809017,-.5,.309017]],
-[[0,-.525731,.850651],[-.809017,-.5,-.309017]],
-[[0,.525731,.850651],[-.309017,-.809017,.5]],
-[[0,-.525731,-.850651],[.809017,.5,-.309017]],
-[[0,.525731,-.850651],[1,0,0]],
-[[.850651,0,-.525731],[.5,.309017,.809017]],
-[[.850651,0,.525731],[-.5,-.309017,.809017]],
-[[-.850651,0,-.525731],[.5,-.309017,-.809017]],
-[[-.850651,0,.525731],[-.5,.309017,-.809017]]
-].map(([normal,up])=>({normal:new THREE.Vector3(...normal),up:new THREE.Vector3(...up)}));
+// The verified Knight Armor GLB was authored in build_knight_final.py using
+// global +Y projected into each pentagon's plane as the numeral-up direction.
+// Do not use guessed per-face axes or glyph PCA: both rotate numbers incorrectly.
+const knightFaceNormals=[
+ [-.525731,.850651,0],[.525731,.850651,0],
+ [-.525731,-.850651,0],[.525731,-.850651,0],
+ [0,-.525731,.850651],[0,.525731,.850651],
+ [0,-.525731,-.850651],[0,.525731,-.850651],
+ [.850651,0,-.525731],[.850651,0,.525731],
+ [-.850651,0,-.525731],[-.850651,0,.525731]
+].map(v=>new THREE.Vector3(...v).normalize());
+function knightFaceIndex(normal){
+ let best=-Infinity,index=-1;
+ for(let i=0;i<knightFaceNormals.length;i++){
+  const dot=knightFaceNormals[i].dot(normal);
+  if(dot>best){best=dot;index=i;}
+ }
+ if(best<.99)throw Error('Knight face normal mismatch: '+best);
+ return index;
+}
 function numeralUp(face){
- // Each numeral was authored with this explicit local up vector.
- // Principal-component analysis of glyph geometry is not a valid way to find
- // the top of an asymmetric glyph (notably 4, 6, 9, 10, and 12).
- const match=knightFaceAxes.reduce((best,f)=>f.normal.dot(face.normal)>best.normal.dot(face.normal)?f:best);
- return match.up.clone().addScaledVector(match.normal,-match.up.dot(match.normal)).normalize();
+ const normal=knightFaceNormals[knightFaceIndex(face.normal)];
+ const y=new THREE.Vector3(0,1,0);
+ return y.addScaledVector(normal,-y.dot(normal)).normalize();
 }
 export async function roll3d(quantity,style='classic',sizeMultiplier=1){
  await setup(style);cancelAnimationFrame(raf);
  for(const d of active){world.removeBody(d.body);scene.remove(d.mesh)}active=[];
- const rollLabels=style==='knight'?geometry.labels.map(f=>({...f,value:knightFaceAxes.reduce((best,x,i)=>x.normal.dot(f.normal)>best.dot?{dot:x.normal.dot(f.normal),value:i+1}:best,{dot:-Infinity,value:1}).value})):geometry.labels;
+ const rollLabels=style==='knight'?geometry.labels.map(f=>({...f,value:knightFaceIndex(f.normal)+1})):geometry.labels;
  const cols=Math.ceil(Math.sqrt(quantity)),scale=Math.min(1.25,Math.max(.48,3.8/cols))*Math.min(2.2,Math.max(.8,Number(sizeMultiplier)||1));
  for(let i=0;i<quantity;i++){
   const mesh=template.clone(true);mesh.scale.multiplyScalar(scale);
