@@ -60,8 +60,10 @@ panel.querySelector('#cis-roll-close').onclick=()=>{panel.hidden=true;stage.hidd
 let diceBox=null,initPromise=null,busy=false,rollToken=0;let glbEngine=null;
 // Dismiss only completed dice visuals; keep the roller and history usable.
 let diceOverlayReady=false;
-document.addEventListener('pointerdown',()=>{
+document.addEventListener('pointerdown',(event)=>{
  if(!diceOverlayReady||stage.hidden)return;
+ // Interactions with the roller, its launch button, or history must not dismiss it.
+ if(event.target.closest('#cis-dice-controls, #cis-dice-launch, #cis-roll-history'))return;
  stage.hidden=true;
  banner.hidden=true;
  panel.hidden=true;
