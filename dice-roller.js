@@ -4,7 +4,7 @@ const css=document.createElement('style');css.textContent=`
 #cis-dice-launch{position:fixed;right:20px;bottom:20px;z-index:2302;padding:12px 19px;border:1px solid #d1a16f;border-radius:15px;background:#754338;color:#ffebd1;font:700 16px Georgia,serif;cursor:pointer;box-shadow:0 8px 22px #0009}
 #cis-dice-controls{position:fixed;right:20px;bottom:80px;z-index:2302;width:min(335px,calc(100vw - 40px));padding:17px;border:1px solid #bd9066;border-radius:13px;background:#242a2ff5;color:#eee3d2;box-shadow:0 15px 35px #000b;font:15px Georgia,serif}
 #cis-dice-controls[hidden],#cis-dice-stage[hidden]{display:none!important}
-#cis-dice-controls .cis-skills{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 0}
+#cis-dice-controls .cis-skills{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin:14px 0}
 #cis-dice-controls button{background:#854c3b;color:#fff1db;border:1px solid #b78861;border-radius:7px;padding:11px;cursor:pointer;font:16px Georgia,serif}
 #cis-dice-controls button:disabled{opacity:.5;cursor:wait}
 #cis-dice-controls .cis-skills button:last-child{grid-column:1/-1}
