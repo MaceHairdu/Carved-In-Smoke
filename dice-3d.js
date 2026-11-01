@@ -2,19 +2,13 @@
 import * as THREE from 'https://esm.sh/three@0.170.0';
 import {GLTFLoader} from 'https://esm.sh/three@0.170.0/examples/jsm/loaders/GLTFLoader.js';
 import * as CANNON from 'https://esm.sh/cannon-es@0.20.0';
-let renderer,scene,camera,world,template,geometry,raf,active=[],last=0,container;
-async function setup(){
- if(renderer)return;
+let renderer,scene,camera,world,template,geometry,raf,active=[],last=0,container,loadedStyle=null;const loader=new GLTFLoader();
+async function setup(style){
+ if(renderer){await loadStyle(style);return;}
  container=document.getElementById('cis-dice-stage');
- const loader=new GLTFLoader();
- const gltf=await loader.loadAsync('./dice-models/carved_in_smoke_d12.glb');
- template=gltf.scene;
- const bounds=new THREE.Box3().setFromObject(template),size=bounds.getSize(new THREE.Vector3());
- if(!size.x||!size.y||!size.z)throw Error('GLB has no visible geometry');
- const center=bounds.getCenter(new THREE.Vector3());
- template.position.sub(center);
- const factor=1.8/Math.max(size.x,size.y,size.z);template.scale.setScalar(factor);
+ await loadStyle('classic');
  geometry=diceGeometry();
+ if(style==='knight')await loadStyle('knight');
  scene=new THREE.Scene();
  camera=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,.1,100);
  camera.position.set(0,32,.01);camera.up.set(0,0,-1);camera.lookAt(0,0,0);
@@ -36,6 +30,17 @@ async function setup(){
  wall([0,-5,0],[-Math.PI/2,0,0]);wall([-11,0,0],[0,Math.PI/2,0]);
  wall([11,0,0],[0,-Math.PI/2,0]);wall([0,0,-7],[0,0,0]);wall([0,0,7],[0,Math.PI,0]);
  window.addEventListener('resize',()=>{if(!renderer)return;camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+}
+async function loadStyle(style){
+ if(loadedStyle===style)return;
+ const filename=style==='knight'?'knight_armor_d12_medieval_font.glb':'carved_in_smoke_d12.glb';
+ const gltf=await loader.loadAsync('./dice-models/'+filename);
+ const model=gltf.scene;
+ const bounds=new THREE.Box3().setFromObject(model),size=bounds.getSize(new THREE.Vector3());
+ if(!size.x||!size.y||!size.z)throw Error('GLB has no visible geometry');
+ model.position.sub(bounds.getCenter(new THREE.Vector3()));
+ model.scale.setScalar(1.8/Math.max(size.x,size.y,size.z));
+ template=model;loadedStyle=style;
 }
 function diceGeometry(){
  const mesh=template.getObjectByProperty('isMesh',true);
@@ -75,8 +80,8 @@ function diceGeometry(){
  if(vertices.length!==20||faces.some(f=>f.length!==5)||new Set(labels.map(f=>f.value)).size!==12)throw Error('Invalid numbered d12 geometry: '+vertices.length+' vertices, labels '+labels.map(f=>f.value));
  return {vertices,faces,labels};
 }
-export async function roll3d(quantity){
- await setup();cancelAnimationFrame(raf);
+export async function roll3d(quantity,style='classic'){
+ await setup(style);cancelAnimationFrame(raf);
  for(const d of active){world.removeBody(d.body);scene.remove(d.mesh)}active=[];
  const cols=Math.ceil(Math.sqrt(quantity)),scale=Math.min(1.25,Math.max(.48,3.8/cols));
  for(let i=0;i<quantity;i++){
