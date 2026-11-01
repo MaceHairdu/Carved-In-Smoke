@@ -80,24 +80,25 @@ function diceGeometry(){
  if(vertices.length!==20||faces.some(f=>f.length!==5)||new Set(labels.map(f=>f.value)).size!==12)throw Error('Invalid numbered d12 geometry: '+vertices.length+' vertices, labels '+labels.map(f=>f.value));
  return {vertices,faces,labels};
 }
-function knightElevenUp(){
- const numeral=template.getObjectByName('medieval_numeral_11');
- if(!numeral)return null;
- numeral.updateWorldMatrix(true,false);
- const pos=numeral.geometry.getAttribute('position');if(!pos)return null;
- const points=[];const center=new THREE.Vector3();
- for(let i=0;i<pos.count;i++){const p=new THREE.Vector3().fromBufferAttribute(pos,i).applyMatrix4(numeral.matrixWorld);points.push(p);center.add(p)}
- center.divideScalar(points.length);
- const label=geometry.labels.find(f=>f.value===11);if(!label)return null;
- const normal=label.normal;
- let axis=new THREE.Vector3(1,0,0).addScaledVector(normal,-normal.x).normalize();
- let side=new THREE.Vector3().crossVectors(normal,axis).normalize();
- let xx=0,xy=0,yy=0;
- for(const p of points){const d=p.sub(center),x=d.dot(axis),y=d.dot(side);xx+=x*x;xy+=x*y;yy+=y*y}
- const angle=.5*Math.atan2(2*xy,xx-yy);
- let up=axis.multiplyScalar(Math.cos(angle)).addScaledVector(side,Math.sin(angle)).normalize();
- if(up.dot(label.textureUp)<0)up.negate();
- return up;
+// Upright axes from the actual Knight Armor numeral construction (local +Y of each raised glyph).
+// Match by face normal rather than assuming the original die's UV orientation.
+const knightFaceAxes=[
+[[-.525731,.850651,0],[.809017,.5,.309017]],
+[[.525731,.850651,0],[.5,-.309017,.809017]],
+[[-.525731,-.850651,0],[0,0,-1]],
+[[.525731,-.850651,0],[-.809017,-.5,.309017]],
+[[0,-.525731,.850651],[-.809017,-.5,-.309017]],
+[[0,.525731,.850651],[-.309017,-.809017,.5]],
+[[0,-.525731,-.850651],[.809017,.5,-.309017]],
+[[0,.525731,-.850651],[1,0,0]],
+[[.850651,0,-.525731],[.5,.309017,.809017]],
+[[.850651,0,.525731],[-.5,-.309017,.809017]],
+[[-.850651,0,-.525731],[.5,-.309017,-.809017]],
+[[-.850651,0,.525731],[-.5,.309017,-.809017]]
+].map(([normal,up])=>({normal:new THREE.Vector3(...normal),up:new THREE.Vector3(...up)}));
+function numeralUp(face){
+ const match=knightFaceAxes.reduce((best,f)=>f.normal.dot(face.normal)>best.normal.dot(face.normal)?f:best);
+ return match.up.clone();
 }
 export async function roll3d(quantity,style='classic',sizeMultiplier=1){
  await setup(style);cancelAnimationFrame(raf);
@@ -139,7 +140,7 @@ export async function roll3d(quantity,style='classic',sizeMultiplier=1){
       values.push(top.value);
       const tilt=new THREE.Quaternion().setFromUnitVectors(top.normal.clone().applyQuaternion(q),up);
       const flat=tilt.clone().multiply(q);
-      const textUp=(style==='knight'?new THREE.Vector3().crossVectors(top.normal,top.textureUp).normalize():top.textureUp).clone().applyQuaternion(flat);
+      const textUp=(style==='knight'?numeralUp(top):top.textureUp.clone()).applyQuaternion(flat);
       textUp.y=0;textUp.normalize();
       const yaw=Math.atan2(-textUp.x,textUp.z);
       const upright=new THREE.Quaternion().setFromAxisAngle(up,yaw).multiply(flat);
