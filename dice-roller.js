@@ -48,7 +48,7 @@ function addHistory(label,values,zero){
  const entry=document.createElement('article');entry.className='history-entry';
  const heading=document.createElement('header');const skill=document.createElement('span');skill.textContent=label;const outcome=document.createElement('span');outcome.className='history-result';outcome.textContent=String(winning);heading.append(skill,outcome);
  const time=document.createElement('p');time.style.cssText='font-size:12px;color:#c5b5a3;margin:6px 0';time.textContent=timestamp.toLocaleString(undefined,{year:'numeric',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',second:'2-digit'});
- const dice=document.createElement('p');dice.textContent='Dice: '+values.map((v,i)=>'Die '+(i+1)+': '+v).join(' · ');
+ const dice=document.createElement('p');dice.textContent='Rolls: '+values.join(', ');
  const rule=document.createElement('p');rule.textContent='Result used: '+winning+' ('+(zero?'lowest — zero-skill rule':'highest')+')';
  entry.append(heading,time,dice,rule);historyList.prepend(entry);historyEmpty.hidden=true;
 }
