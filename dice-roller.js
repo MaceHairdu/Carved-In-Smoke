@@ -67,7 +67,7 @@ async function roll(label,score,isCustom){
  setBusy(true);result.textContent='Preparing 3D dice…';banner.hidden=true;
  stage.hidden=false;
  try{
-  if(!glbEngine)glbEngine=await import('./dice-3d.js?v=gravity200fix1');
+  if(!glbEngine)glbEngine=await import('./dice-3d.js?v=gravity60fix1');
   if(token!==rollToken)return;
   result.textContent='Rolling 3D dice…';
   const values=await glbEngine.roll3d(qty);

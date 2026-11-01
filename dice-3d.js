@@ -25,7 +25,7 @@ async function setup(){
  renderer.outputColorSpace=THREE.SRGBColorSpace;
  renderer.domElement.style.cssText='position:absolute;inset:0;pointer-events:none;width:100%;height:100%';
  container.append(renderer.domElement);
- world=new CANNON.World({gravity:new CANNON.Vec3(0,-200,0)});
+ world=new CANNON.World({gravity:new CANNON.Vec3(0,-60,0)});
  world.allowSleep=true;
  const material=new CANNON.Material('dice');
  world.defaultContactMaterial.friction=.55;world.defaultContactMaterial.restitution=.48;
