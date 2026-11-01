@@ -69,7 +69,7 @@ function diceGeometry(){
   const du1=t1.x-t0.x,dv1=t1.y-t0.y,du2=t2.x-t0.x,dv2=t2.y-t0.y;
   const determinant=du1*dv2-du2*dv1;
   if(Math.abs(determin)<1e-8)throw Error('Invalid UV orientation for face '+value);
-  const textureUp=p2.clone().sub(p0).multiplyScalar(du1).sub(p1.clone().sub(p0).multiplyScalar(du2)).divideScalar(determin).normalize();
+  const textureUp=p2.clone().sub(p0).multiplyScalar(du1).sub(p1.clone().sub(p0).multiplyScalar(du2)).divideScalar(determinant).normalize();
   labels.push({normal,value,textureUp});
  }
  if(vertices.length!==20||faces.some(f=>f.length!==5)||new Set(labels.map(f=>f.value)).size!==12)throw Error('Invalid numbered d12 geometry: '+vertices.length+' vertices, labels '+labels.map(f=>f.value));
