@@ -72,7 +72,7 @@ async function roll(label,score,isCustom){
   result.textContent='Rolling 3D dice…';
   const groups=await Promise.race([box.roll(qty+'d12'),new Promise((_,reject)=>setTimeout(()=>reject(new Error('3D roll timed out')),12000))]);
   if(token!==rollToken)return;
-  const values=groups.flatMap(group=>(group.rolls||[]).map(d=>Number(d.value)));
+  const entries=Array.isArray(groups)?groups:(groups?.rolls||groups?.results||[]);const values=entries.flatMap(item=>item?.rolls?item.rolls.map(d=>Number(d.value??d.result)):Number(item?.value??item?.result));
   if(values.length!==qty||values.some(v=>!Number.isInteger(v)||v<1||v>12))throw Error('Invalid dice results returned');
   display(label,values,zero);
  }catch(e){
