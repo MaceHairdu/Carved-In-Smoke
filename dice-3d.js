@@ -103,6 +103,7 @@ function numeralUp(face){
 export async function roll3d(quantity,style='classic',sizeMultiplier=1){
  await setup(style);cancelAnimationFrame(raf);
  for(const d of active){world.removeBody(d.body);scene.remove(d.mesh)}active=[];
+ const rollLabels=style==='knight'?geometry.labels.map(f=>({...f,value:knightFaceAxes.reduce((best,x,i)=>x.normal.dot(f.normal)>best.dot?{dot:x.normal.dot(f.normal),value:i+1}:best,{dot:-Infinity,value:1}).value})):geometry.labels;
  const cols=Math.ceil(Math.sqrt(quantity)),scale=Math.min(1.25,Math.max(.48,3.8/cols))*Math.min(2.2,Math.max(.8,Number(sizeMultiplier)||1));
  for(let i=0;i<quantity;i++){
   const mesh=template.clone(true);mesh.scale.multiplyScalar(scale);
@@ -133,10 +134,10 @@ export async function roll3d(quantity,style='classic',sizeMultiplier=1){
      const spacing=Math.min(2.6,18/Math.max(columns,rows));
      active.forEach((d,i)=>{
       const q=d.mesh.quaternion.clone();
-      const top=geometry.labels.reduce((best,f)=>{
+      const top=rollLabels.reduce((best,f)=>{
        const dot=f.normal.clone().applyQuaternion(q).dot(up);
        return dot>best.dot?{dot,face:f}:best;
-      },{dot:-Infinity,face:geometry.labels[0]}).face;
+      },{dot:-Infinity,face:rollLabels[0]}).face;
       values.push(top.value);
       const tilt=new THREE.Quaternion().setFromUnitVectors(top.normal.clone().applyQuaternion(q),up);
       const flat=tilt.clone().multiply(q);
