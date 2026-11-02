@@ -110,6 +110,8 @@ async function roll(label,score,isCustom){
  if(!Number.isInteger(qty)||qty<1||qty>20){result.textContent='Enter a number from 1 to 20.';return}
  const token=++rollToken;
  setBusy(true);diceOverlayReady=false;banner.hidden=true;
+ // On narrow screens the controls obscure the dice; collapse them when a roll starts.
+ if(window.matchMedia('(max-width: 700px)').matches)panel.hidden=true;
  stage.hidden=false;
  try{
   if(!glbEngine)glbEngine=await import('./dice-3d.js?v=bronze-bounds-23');
