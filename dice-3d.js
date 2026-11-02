@@ -11,8 +11,10 @@ async function setup(style){
  scene=new THREE.Scene();
  camera=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,.1,100);
  camera.position.set(0,32,.01);camera.up.set(0,0,-1);camera.lookAt(0,0,0);
- scene.add(new THREE.HemisphereLight(0xffffff,0x5e4242,2.8));
- const sun=new THREE.DirectionalLight(0xffdfb7,3.2);sun.position.set(-7,17,12);scene.add(sun);
+ scene.add(new THREE.HemisphereLight(0xffffff,0x8e7970,4.0));
+ scene.add(new THREE.AmbientLight(0xffffff,1.2));
+ const sun=new THREE.DirectionalLight(0xffe8ce,4.5);sun.position.set(-7,17,12);scene.add(sun);
+ const fill=new THREE.DirectionalLight(0xffffff,3.0);fill.position.set(8,13,-9);scene.add(fill);
  renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});
  renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);
  renderer.outputColorSpace=THREE.SRGBColorSpace;
@@ -35,11 +37,16 @@ async function loadStyle(style){
  const filename=style==='bronze'?'Ancient_Bronze_Smooth_Recessed_Gold_D12.glb':'knight_armor_d12_verified_gold_numbers.glb';
  const gltf=await loader.loadAsync('./dice-models/'+filename);
  const model=gltf.scene;
+ if(style==='bronze')model.traverse(node=>{if(!node.isMesh)return;node.material=node.material.clone();const mat=node.material;if(mat.isMeshStandardMaterial||mat.isMeshPhysicalMaterial){mat.roughness=Math.max(.4,mat.roughness);mat.metalness=Math.min(.55,mat.metalness);mat.envMapIntensity=1;}});
  const bounds=new THREE.Box3().setFromObject(model),size=bounds.getSize(new THREE.Vector3());
  if(!size.x||!size.y||!size.z)throw Error('GLB has no visible geometry');
- model.position.sub(bounds.getCenter(new THREE.Vector3()));
- model.scale.setScalar(1.8/Math.max(size.x,size.y,size.z));
- template=model;loadedStyle=style;
+ const normalized=new THREE.Group();
+ const center=bounds.getCenter(new THREE.Vector3());
+ model.position.sub(center);
+ normalized.add(model);
+ normalized.scale.setScalar(1.8/Math.max(size.x,size.y,size.z));
+ // Keep all styles in the same physical units, regardless of their source GLB dimensions.
+ template=normalized;loadedStyle=style;
 }
 function diceGeometry(){
  // Regular dodecahedron: each face plane is normal · position = 1.
@@ -101,7 +108,9 @@ export async function roll3d(quantity,style='knight',sizeMultiplier=1){
  const cols=Math.ceil(Math.sqrt(quantity)),scale=Math.min(1.25,Math.max(.48,3.8/cols))*Math.min(2.2,Math.max(.8,Number(sizeMultiplier)||1));
  for(let i=0;i<quantity;i++){
   const mesh=template.clone(true);mesh.scale.multiplyScalar(scale);
-  const factor=template.scale.x*scale;
+  // Collision hull must match the normalized visual size, not the GLB's original scale.
+  const hullSize=new THREE.Box3().setFromPoints(geometry.vertices).getSize(new THREE.Vector3());
+  const factor=(1.8/Math.max(hullSize.x,hullSize.y,hullSize.z))*scale;
   const center=new THREE.Box3().setFromPoints(geometry.vertices).getCenter(new THREE.Vector3());
   const shape=new CANNON.ConvexPolyhedron({vertices:geometry.vertices.map(v=>new CANNON.Vec3((v.x-center.x)*factor,(v.y-center.y)*factor,(v.z-center.z)*factor)),faces:geometry.faces});
   const body=new CANNON.Body({mass:1,shape,linearDamping:.28,angularDamping:.42,sleepSpeedLimit:.22,sleepTimeLimit:.6});
