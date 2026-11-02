@@ -99,6 +99,13 @@ function knightFaceIndex(normal){
  if(best<.99)throw Error('Knight face normal mismatch: '+best);
  return index;
 }
+// Numeral-up vectors recovered from the Ancient Bronze GLB's face UV mapping.
+// Unlike Knight Armor, bronze uses a separate texture orientation on each face.
+const bronzeNumeralUp=[
+ [-.692,-.428,-.582],[-.269,.166,-.949],[.269,-.166,-.949],[.692,.428,-.582],
+ [.594,-.684,-.423],[-.594,.684,-.423],[.953,.257,-.159],[-.953,-.257,-.159],
+ [-.423,.594,-.684],[.159,.953,-.257],[.423,-.594,-.684],[-.159,-.953,-.257]
+].map(v=>new THREE.Vector3(...v).normalize());
 function factorForRest(scale){
  const size=new THREE.Box3().setFromPoints(geometry.vertices).getSize(new THREE.Vector3());
  return 1.8/Math.max(size.x,size.y,size.z)*scale;
@@ -151,7 +158,7 @@ export async function roll3d(quantity,style='knight',sizeMultiplier=1){
       values.push(top.value);
       const tilt=new THREE.Quaternion().setFromUnitVectors(top.normal.clone().applyQuaternion(q),up);
       const flat=tilt.clone().multiply(q);
-      const textUp=numeralUp(top).applyQuaternion(flat);
+      const textUp=(style==='bronze'?bronzeNumeralUp[knightFaceIndex(top.normal)].clone():numeralUp(top)).applyQuaternion(flat);
       textUp.y=0;textUp.normalize();
       // Rotate the projected numeral-up vector exactly onto screen-up (-Z).
       // For a rotation about +Y, x'=cos(a)*x+sin(a)*z and
