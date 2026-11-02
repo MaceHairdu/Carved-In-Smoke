@@ -32,7 +32,7 @@ async function setup(style){
 }
 async function loadStyle(style){
  if(loadedStyle===style)return;
- const filename=style==='bronze'?'Ancient Bronze Smooth Recessed Gold D12.glb':'knight_armor_d12_verified_gold_numbers.glb';
+ const filename=style==='bronze'?'Ancient_Bronze_Smooth_Recessed_Gold_D12.glb':'knight_armor_d12_verified_gold_numbers.glb';
  const gltf=await loader.loadAsync('./dice-models/'+filename);
  const model=gltf.scene;
  const bounds=new THREE.Box3().setFromObject(model),size=bounds.getSize(new THREE.Vector3());
