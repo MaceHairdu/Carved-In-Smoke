@@ -58,7 +58,8 @@ historyPanel.querySelector('#cis-history-close').onclick=()=>{historyPanel.hidde
 const result=panel.querySelector('#cis-dice-result'),customCount=panel.querySelector('#cis-roll-count');
 const styleSelect=panel.querySelector('#cis-dice-style');
 styleSelect.value=localStorage.getItem('cis-dice-style')==='bronze'?'bronze':'knight';
-styleSelect.addEventListener('change',()=>localStorage.setItem('cis-dice-style',styleSelect.value));
+styleSelect.addEventListener('change',()=>{localStorage.setItem('cis-dice-style',styleSelect.value);const settings=document.getElementById('cis-settings-dice-style');if(settings)settings.value=styleSelect.value});
+document.addEventListener('cis-dice-style-change',event=>{styleSelect.value=event.detail});
 launch.onclick=()=>{panel.hidden=!panel.hidden};
 panel.querySelector('#cis-roll-close').onclick=()=>{panel.hidden=true;stage.hidden=true;historyPanel.hidden=true;diceBox?.clear()};
 let diceBox=null,initPromise=null,busy=false,rollToken=0;let glbEngine=null;
