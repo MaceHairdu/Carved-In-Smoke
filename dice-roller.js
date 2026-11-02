@@ -114,7 +114,7 @@ async function roll(label,score,isCustom){
  if(window.matchMedia('(max-width: 700px)').matches)panel.hidden=true;
  stage.hidden=false;
  try{
-  if(!glbEngine)glbEngine=await import('./dice-3d.js?v=bronze-bounds-23');
+  if(!glbEngine)glbEngine=await import('./dice-3d.js?v=bronze-inversion-25');
   if(token!==rollToken)return;
   const values=await glbEngine.roll3d(qty,styleSelect.value,Number(localStorage.getItem('cis-dice-scale')||'1.5'));
   if(token!==rollToken)return;
