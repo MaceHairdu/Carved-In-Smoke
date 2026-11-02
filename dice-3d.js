@@ -6,9 +6,8 @@ let renderer,scene,camera,world,template,geometry,raf,active=[],last=0,container
 async function setup(style){
  if(renderer){await loadStyle(style);return;}
  container=document.getElementById('cis-dice-stage');
- await loadStyle('classic');
+ await loadStyle('knight');
  geometry=diceGeometry();
- if(style==='knight')await loadStyle('knight');
  scene=new THREE.Scene();
  camera=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,.1,100);
  camera.position.set(0,32,.01);camera.up.set(0,0,-1);camera.lookAt(0,0,0);
@@ -33,7 +32,7 @@ async function setup(style){
 }
 async function loadStyle(style){
  if(loadedStyle===style)return;
- const filename=style==='knight'?'knight_armor_d12_verified_gold_numbers.glb':'carved_in_smoke_d12.glb';
+ const filename='knight_armor_d12_verified_gold_numbers.glb';
  const gltf=await loader.loadAsync('./dice-models/'+filename);
  const model=gltf.scene;
  const bounds=new THREE.Box3().setFromObject(model),size=bounds.getSize(new THREE.Vector3());
@@ -43,42 +42,32 @@ async function loadStyle(style){
  template=model;loadedStyle=style;
 }
 function diceGeometry(){
- const mesh=template.getObjectByProperty('isMesh',true);
- if(!mesh)throw Error('No mesh in d12 model');
- const g=mesh.geometry,p=g.getAttribute('position'),uv=g.getAttribute('uv'),index=g.getIndex();
- const point=i=>new THREE.Vector3().fromBufferAttribute(p,index?index.getX(i):i);
- const tex=i=>new THREE.Vector2().fromBufferAttribute(uv,index?index.getX(i):i);
- const vertices=[],faces=[],labels=[];
- for(let k=0;k<12;k++){
-  const positions=[];
-  for(let j=k*15;j<k*15+15;j++){
-   const v=point(j);
-   if(!positions.some(q=>q.distanceToSquared(v)<1e-7))positions.push(v);
-  }
-  if(positions.length!==6)throw Error('Face '+(k+1)+' has '+positions.length+' points');
-  const center=positions.reduce((v,p)=>v.add(p),new THREE.Vector3()).divideScalar(positions.length);
-  const middle=positions.reduce((best,p)=>p.distanceToSquared(center)<best.distanceToSquared(center)?p:best);
-  const corners=positions.filter(p=>p!==middle);
-  const faceCenter=corners.reduce((v,p)=>v.add(p),new THREE.Vector3()).divideScalar(5);
-  const axis=corners[0].clone().sub(faceCenter).normalize();
-  const normal=new THREE.Vector3().crossVectors(point(k*15+1).sub(point(k*15)),point(k*15+2).sub(point(k*15))).normalize();
-  if(normal.dot(faceCenter)<0)normal.negate();
-  const side=new THREE.Vector3().crossVectors(normal,axis).normalize();
-  corners.sort((a,b)=>{const x=a.clone().sub(faceCenter),y=b.clone().sub(faceCenter);return Math.atan2(x.dot(side),x.dot(axis))-Math.atan2(y.dot(side),y.dot(axis))});
-  const indices=corners.map(v=>{let i=vertices.findIndex(q=>q.distanceToSquared(v)<1e-7);if(i<0){i=vertices.length;vertices.push(v)}return i});
-  faces.push(indices);
-  const t=tex(k*15);
-  const value=1+Math.min(3,Math.floor(t.x*4))+4*Math.min(2,Math.floor(t.y*3));
-  const p0=point(k*15),p1=point(k*15+1),p2=point(k*15+2);
-  const t0=tex(k*15),t1=tex(k*15+1),t2=tex(k*15+2);
-  const du1=t1.x-t0.x,dv1=t1.y-t0.y,du2=t2.x-t0.x,dv2=t2.y-t0.y;
-  const determinant=du1*dv2-du2*dv1;
-  if(Math.abs(determinant)<1e-8)throw Error('Invalid UV orientation for face '+value);
-  const textureUp=p2.clone().sub(p0).multiplyScalar(du1).sub(p1.clone().sub(p0).multiplyScalar(du2)).divideScalar(determinant).normalize();
-  labels.push({normal,value,textureUp});
+ // Regular dodecahedron: each face plane is normal · position = 1.
+ // Its 20 vertices are intersections of three adjacent face planes.
+ const normals=knightFaceNormals;
+ const vertices=[];
+ for(let i=0;i<normals.length;i++)for(let j=i+1;j<normals.length;j++)for(let k=j+1;k<normals.length;k++){
+  const a=normals[i],b=normals[j],c=normals[k];
+  const bc=new THREE.Vector3().crossVectors(b,c),ca=new THREE.Vector3().crossVectors(c,a),ab=new THREE.Vector3().crossVectors(a,b);
+  const det=a.dot(bc);if(Math.abs(det)<1e-6)continue;
+  const v=bc.add(ca).add(ab).divideScalar(det);
+  if(normals.some(n=>n.dot(v)>1+1e-5))continue;
+  if(!vertices.some(p=>p.distanceToSquared(v)<1e-8))vertices.push(v);
  }
- if(vertices.length!==20||faces.some(f=>f.length!==5)||new Set(labels.map(f=>f.value)).size!==12)throw Error('Invalid numbered d12 geometry: '+vertices.length+' vertices, labels '+labels.map(f=>f.value));
- return {vertices,faces,labels};
+ const faces=normals.map(n=>{
+  const indices=vertices.map((v,i)=>Math.abs(n.dot(v)-1)<1e-5?i:-1).filter(i=>i>=0);
+  if(indices.length!==5)throw Error('Invalid d12 face geometry');
+  const center=indices.reduce((v,i)=>v.add(vertices[i]),new THREE.Vector3()).divideScalar(5);
+  const axis=vertices[indices[0]].clone().sub(center).normalize();
+  const side=new THREE.Vector3().crossVectors(n,axis).normalize();
+  indices.sort((i,j)=>{
+   const a=vertices[i].clone().sub(center),b=vertices[j].clone().sub(center);
+   return Math.atan2(a.dot(side),a.dot(axis))-Math.atan2(b.dot(side),b.dot(axis));
+  });
+  return indices;
+ });
+ if(vertices.length!==20||faces.length!==12)throw Error('Invalid d12 collision hull');
+ return {vertices,faces,labels:normals.map((normal,i)=>({normal,value:i+1}))};
 }
 // The verified Knight Armor GLB was authored in build_knight_final.py using
 // global +Y projected into each pentagon's plane as the numeral-up direction.
@@ -105,10 +94,10 @@ function numeralUp(face){
  const y=new THREE.Vector3(0,1,0);
  return y.addScaledVector(normal,-y.dot(normal)).normalize();
 }
-export async function roll3d(quantity,style='classic',sizeMultiplier=1){
- await setup(style);cancelAnimationFrame(raf);
+export async function roll3d(quantity,style='knight',sizeMultiplier=1){
+ await setup('knight');cancelAnimationFrame(raf);
  for(const d of active){world.removeBody(d.body);scene.remove(d.mesh)}active=[];
- const rollLabels=style==='knight'?geometry.labels.map(f=>({...f,value:knightFaceIndex(f.normal)+1})):geometry.labels;
+ const rollLabels=geometry.labels;
  const cols=Math.ceil(Math.sqrt(quantity)),scale=Math.min(1.25,Math.max(.48,3.8/cols))*Math.min(2.2,Math.max(.8,Number(sizeMultiplier)||1));
  for(let i=0;i<quantity;i++){
   const mesh=template.clone(true);mesh.scale.multiplyScalar(scale);
@@ -146,7 +135,7 @@ export async function roll3d(quantity,style='classic',sizeMultiplier=1){
       values.push(top.value);
       const tilt=new THREE.Quaternion().setFromUnitVectors(top.normal.clone().applyQuaternion(q),up);
       const flat=tilt.clone().multiply(q);
-      const textUp=(style==='knight'?numeralUp(top):top.textureUp.clone()).applyQuaternion(flat);
+      const textUp=numeralUp(top).applyQuaternion(flat);
       textUp.y=0;textUp.normalize();
       // Rotate the projected numeral-up vector exactly onto screen-up (-Z).
       // For a rotation about +Y, x'=cos(a)*x+sin(a)*z and
