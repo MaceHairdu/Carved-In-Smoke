@@ -13,6 +13,7 @@ const css=document.createElement('style');css.textContent=`
 #cis-dice-controls input{display:block;box-sizing:border-box;width:100%;margin-top:5px;padding:10px;border:1px solid #677078;border-radius:6px;background:#171d20;color:white;font:16px Georgia,serif}
 #cis-dice-controls .cis-close{margin-top:12px;background:#353e43;width:100%}
 #cis-dice-result{margin-top:12px;line-height:1.45;overflow-wrap:anywhere}
+#cis-dice-result{min-height:91px;box-sizing:border-box}
 #cis-dice-result strong{display:block;font-size:32px;color:#ffd28a}
 #cis-dice-stage{position:fixed;inset:0;z-index:2299;pointer-events:none}
 #cis-dice-stage canvas{pointer-events:none!important}
@@ -104,12 +105,11 @@ async function roll(label,score,isCustom){
  const qty=zero?2:score;
  if(!Number.isInteger(qty)||qty<1||qty>20){result.textContent='Enter a number from 1 to 20.';return}
  const token=++rollToken;
- setBusy(true);diceOverlayReady=false;result.textContent='Preparing 3D dice…';banner.hidden=true;
+ setBusy(true);diceOverlayReady=false;banner.hidden=true;
  stage.hidden=false;
  try{
   if(!glbEngine)glbEngine=await import('./dice-3d.js?v=knight-only-17');
   if(token!==rollToken)return;
-  result.textContent='Rolling 3D dice…';
   const values=await glbEngine.roll3d(qty,'knight',Number(localStorage.getItem('cis-dice-scale')||'1.5'));
   if(token!==rollToken)return;
   if(values.length!==qty||values.some(v=>!Number.isInteger(v)||v<1||v>12))throw Error('Invalid 3D face results');
