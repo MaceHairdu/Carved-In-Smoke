@@ -71,6 +71,8 @@ function diceGeometry(){
    const a=vertices[i].clone().sub(center),b=vertices[j].clone().sub(center);
    return Math.atan2(a.dot(side),a.dot(axis))-Math.atan2(b.dot(side),b.dot(axis));
   });
+  // Cannon requires outward-facing polygon winding. The angle sort above is clockwise viewed from outside.
+  indices.reverse();
   return indices;
  });
  if(vertices.length!==20||faces.length!==12)throw Error('Invalid d12 collision hull');
@@ -157,7 +159,10 @@ export async function roll3d(quantity,style='knight',sizeMultiplier=1){
       const upright=new THREE.Quaternion().setFromAxisAngle(up,yaw).multiply(flat);
       // Keep the settled dice resting on the actual floor instead of lifting them into midair.
       // The collision dodecahedron has face-plane distance 1 before scaling.
-      const restingY=-5+factorForRest(scale);
+      // Match the visible die's actual support height after the final rotation.
+      const visualBounds=new THREE.Box3().setFromObject(d.mesh);
+      const currentBottom=visualBounds.min.y;
+      const restingY=-5+(d.mesh.position.y-currentBottom);
       const target=new THREE.Vector3((i%columns-(columns-1)/2)*spacing,restingY,(Math.floor(i/columns)-(rows-1)/2)*spacing);
       transitions.push({mesh:d.mesh,from:d.mesh.position.clone(),to:target,rotationFrom:q,rotationTo:upright});
      });
