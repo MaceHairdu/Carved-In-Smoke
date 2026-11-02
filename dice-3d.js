@@ -6,7 +6,7 @@ let renderer,scene,camera,world,template,geometry,raf,active=[],last=0,container
 async function setup(style){
  if(renderer){await loadStyle(style);return;}
  container=document.getElementById('cis-dice-stage');
- await loadStyle('knight');
+ await loadStyle(style);
  geometry=diceGeometry();
  scene=new THREE.Scene();
  camera=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,.1,100);
@@ -32,7 +32,7 @@ async function setup(style){
 }
 async function loadStyle(style){
  if(loadedStyle===style)return;
- const filename='knight_armor_d12_verified_gold_numbers.glb';
+ const filename=style==='bronze'?'Ancient Bronze Smooth Recessed Gold D12.glb':'knight_armor_d12_verified_gold_numbers.glb';
  const gltf=await loader.loadAsync('./dice-models/'+filename);
  const model=gltf.scene;
  const bounds=new THREE.Box3().setFromObject(model),size=bounds.getSize(new THREE.Vector3());
@@ -95,7 +95,7 @@ function numeralUp(face){
  return y.addScaledVector(normal,-y.dot(normal)).normalize();
 }
 export async function roll3d(quantity,style='knight',sizeMultiplier=1){
- await setup('knight');cancelAnimationFrame(raf);
+ await setup(style);cancelAnimationFrame(raf);
  for(const d of active){world.removeBody(d.body);scene.remove(d.mesh)}active=[];
  const rollLabels=geometry.labels;
  const cols=Math.ceil(Math.sqrt(quantity)),scale=Math.min(1.25,Math.max(.48,3.8/cols))*Math.min(2.2,Math.max(.8,Number(sizeMultiplier)||1));
