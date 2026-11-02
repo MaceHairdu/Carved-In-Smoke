@@ -96,6 +96,10 @@ function knightFaceIndex(normal){
  if(best<.99)throw Error('Knight face normal mismatch: '+best);
  return index;
 }
+function factorForRest(scale){
+ const size=new THREE.Box3().setFromPoints(geometry.vertices).getSize(new THREE.Vector3());
+ return 1.8/Math.max(size.x,size.y,size.z)*scale;
+}
 function numeralUp(face){
  const normal=knightFaceNormals[knightFaceIndex(face.normal)];
  const y=new THREE.Vector3(0,1,0);
@@ -110,7 +114,7 @@ export async function roll3d(quantity,style='knight',sizeMultiplier=1){
   const mesh=template.clone(true);mesh.scale.multiplyScalar(scale);
   // Collision hull must match the normalized visual size, not the GLB's original scale.
   const hullSize=new THREE.Box3().setFromPoints(geometry.vertices).getSize(new THREE.Vector3());
-  const factor=(1.8/Math.max(hullSize.x,hullSize.y,hullSize.z))*scale;
+  const factor=factorForRest(scale);
   const center=new THREE.Box3().setFromPoints(geometry.vertices).getCenter(new THREE.Vector3());
   const shape=new CANNON.ConvexPolyhedron({vertices:geometry.vertices.map(v=>new CANNON.Vec3((v.x-center.x)*factor,(v.y-center.y)*factor,(v.z-center.z)*factor)),faces:geometry.faces});
   const body=new CANNON.Body({mass:1,shape,linearDamping:.28,angularDamping:.42,sleepSpeedLimit:.22,sleepTimeLimit:.6});
@@ -151,7 +155,10 @@ export async function roll3d(quantity,style='knight',sizeMultiplier=1){
       // z'=-sin(a)*x+cos(a)*z. atan2(x,-z) makes x'=0,z'=-1.
       const yaw=Math.atan2(textUp.x,-textUp.z);
       const upright=new THREE.Quaternion().setFromAxisAngle(up,yaw).multiply(flat);
-      const target=new THREE.Vector3((i%columns-(columns-1)/2)*spacing,0,(Math.floor(i/columns)-(rows-1)/2)*spacing);
+      // Keep the settled dice resting on the actual floor instead of lifting them into midair.
+      // The collision dodecahedron has face-plane distance 1 before scaling.
+      const restingY=-5+factorForRest(scale);
+      const target=new THREE.Vector3((i%columns-(columns-1)/2)*spacing,restingY,(Math.floor(i/columns)-(rows-1)/2)*spacing);
       transitions.push({mesh:d.mesh,from:d.mesh.position.clone(),to:target,rotationFrom:q,rotationTo:upright});
      });
      const transitionStart=performance.now(),duration=450;
