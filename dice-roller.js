@@ -112,7 +112,7 @@ async function roll(label,score,isCustom){
  setBusy(true);diceOverlayReady=false;banner.hidden=true;
  stage.hidden=false;
  try{
-  if(!glbEngine)glbEngine=await import('./dice-3d.js?v=bronze-physics-21');
+  if(!glbEngine)glbEngine=await import('./dice-3d.js?v=bronze-floor-22');
   if(token!==rollToken)return;
   const values=await glbEngine.roll3d(qty,styleSelect.value,Number(localStorage.getItem('cis-dice-scale')||'1.5'));
   if(token!==rollToken)return;
