@@ -45,7 +45,7 @@ async function loadStyle(style){
  model.position.sub(center);
  // Bronze was exported with its visible face orientation inverted relative to the roller.
  // Rotate only that GLB; Knight Armor retains its verified original orientation.
- if(style==='bronze'){model.rotation.x=Math.PI;model.scale.x=-1;}
+ // Preserve the GLB's original handedness. Mirroring its X scale inverted the bronze mesh.
  normalized.add(model);
  normalized.scale.setScalar(1.8/Math.max(size.x,size.y,size.z));
  // Keep all styles in the same physical units, regardless of their source GLB dimensions.
@@ -111,7 +111,7 @@ function numeralUp(face){
 export async function roll3d(quantity,style='knight',sizeMultiplier=1){
  await setup(style);cancelAnimationFrame(raf);
  for(const d of active){world.removeBody(d.body);scene.remove(d.mesh)}active=[];
- const rollLabels=style==='bronze'?geometry.labels.map(f=>({normal:new THREE.Vector3(-f.normal.x,f.normal.y,f.normal.z).applyAxisAngle(new THREE.Vector3(1,0,0),Math.PI),value:f.value})):geometry.labels;
+ const rollLabels=geometry.labels;
  const cols=Math.ceil(Math.sqrt(quantity)),scale=Math.min(1.25,Math.max(.48,3.8/cols))*Math.min(2.2,Math.max(.8,Number(sizeMultiplier)||1));
  for(let i=0;i<quantity;i++){
   const mesh=template.clone(true);mesh.scale.multiplyScalar(scale);
@@ -151,7 +151,7 @@ export async function roll3d(quantity,style='knight',sizeMultiplier=1){
       values.push(top.value);
       const tilt=new THREE.Quaternion().setFromUnitVectors(top.normal.clone().applyQuaternion(q),up);
       const flat=tilt.clone().multiply(q);
-      const textUp=(style==='bronze'?new THREE.Vector3(-numeralUp(top).x,numeralUp(top).y,numeralUp(top).z).applyAxisAngle(new THREE.Vector3(1,0,0),Math.PI):numeralUp(top)).applyQuaternion(flat);
+      const textUp=numeralUp(top).applyQuaternion(flat);
       textUp.y=0;textUp.normalize();
       // Rotate the projected numeral-up vector exactly onto screen-up (-Z).
       // For a rotation about +Y, x'=cos(a)*x+sin(a)*z and
