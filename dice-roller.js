@@ -107,10 +107,10 @@ async function roll(label,score,isCustom){
  setBusy(true);diceOverlayReady=false;result.textContent='Preparing 3D dice…';banner.hidden=true;
  stage.hidden=false;
  try{
-  if(!glbEngine)glbEngine=await import('./dice-3d.js?v=glb-authored-up-10');
+  if(!glbEngine)glbEngine=await import('./dice-3d.js?v=knight-only-17');
   if(token!==rollToken)return;
   result.textContent='Rolling 3D dice…';
-  const values=await glbEngine.roll3d(qty,localStorage.getItem('cis-dice-style')==='knight'?'knight':'classic',Number(localStorage.getItem('cis-dice-scale')||'1.5'));
+  const values=await glbEngine.roll3d(qty,'knight',Number(localStorage.getItem('cis-dice-scale')||'1.5'));
   if(token!==rollToken)return;
   if(values.length!==qty||values.some(v=>!Number.isInteger(v)||v<1||v>12))throw Error('Invalid 3D face results');
   display(label,values,zero);
