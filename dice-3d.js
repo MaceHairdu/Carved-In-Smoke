@@ -2,7 +2,7 @@
 import * as THREE from 'https://esm.sh/three@0.170.0';
 import {GLTFLoader} from 'https://esm.sh/three@0.170.0/examples/jsm/loaders/GLTFLoader.js';
 import * as CANNON from 'https://esm.sh/cannon-es@0.20.0';
-let renderer,scene,camera,world,template,geometry,raf,active=[],last=0,container,loadedStyle=null;const loader=new GLTFLoader();
+let renderer,scene,camera,world,template,geometry,raf,active=[],last=0,container,loadedStyle=null,cardboardHull=null;const loader=new GLTFLoader();
 async function setup(style){
  if(renderer){await loadStyle(style);return;}
  container=document.getElementById('cis-dice-stage');
@@ -34,7 +34,7 @@ async function setup(style){
 }
 async function loadStyle(style){
  if(loadedStyle===style)return;
- const filename=style==='bronze'?'Ancient_Bronze_Smooth_Recessed_Gold_D12.glb':'knight_armor_d12_verified_gold_numbers.glb';
+ const filename=style==='bronze'?'Ancient_Bronze_Smooth_Recessed_Gold_D12.glb':style==='cardboard'?'Cardboard_D12_Raised_Rolls_Varied_Tape.glb':'knight_armor_d12_verified_gold_numbers.glb';
  const gltf=await loader.loadAsync('./dice-models/'+filename);
  const model=gltf.scene;
  if(style==='bronze')model.traverse(node=>{if(!node.isMesh)return;node.material=node.material.clone();const mat=node.material;if(mat.isMeshStandardMaterial||mat.isMeshPhysicalMaterial){mat.roughness=Math.max(.4,mat.roughness);mat.metalness=Math.min(.55,mat.metalness);mat.envMapIntensity=1;mat.side=THREE.DoubleSide;}});
@@ -48,6 +48,42 @@ async function loadStyle(style){
  // Preserve the GLB's original handedness. Mirroring its X scale inverted the bronze mesh.
  normalized.add(model);
  normalized.scale.setScalar(1.8/Math.max(size.x,size.y,size.z));
+ if(style==='cardboard'){
+  // The separate, undecorated GLB is the ONLY collision source for this style.
+  // Tape and rolled-paper meshes in the visible GLB never enter Cannon physics.
+  if(!cardboardHull){
+   const collisionGLB=await loader.loadAsync('./dice-models/Cardboard_D12_Unchanged_Collision_Hull.glb');
+   const vertices=[];
+   collisionGLB.scene.updateMatrixWorld(true);
+   collisionGLB.scene.traverse(node=>{
+    if(!node.isMesh)return;
+    const positions=node.geometry.getAttribute('position');
+    if(!positions)return;
+    for(let i=0;i<positions.count;i++){
+     const point=new THREE.Vector3().fromBufferAttribute(positions,i).applyMatrix4(node.matrixWorld);
+     if(!vertices.some(existing=>existing.distanceToSquared(point)<1e-8))vertices.push(point);
+    }
+   });
+   if(vertices.length!==20)throw Error('Cardboard collision hull must contain 20 unique vertices, got '+vertices.length);
+   const faces=knightFaceNormals.map(normal=>{
+    const plane=Math.max(...vertices.map(v=>normal.dot(v)));
+    const indices=vertices.map((v,i)=>Math.abs(normal.dot(v)-plane)<1e-4?i:-1).filter(i=>i>=0);
+    if(indices.length!==5)throw Error('Invalid cardboard collision face: '+indices.length+' vertices');
+    const midpoint=indices.reduce((sum,i)=>sum.add(vertices[i]),new THREE.Vector3()).divideScalar(5);
+    const axis=vertices[indices[0]].clone().sub(midpoint).normalize();
+    const side=new THREE.Vector3().crossVectors(normal,axis).normalize();
+    indices.sort((i,j)=>{
+     const a=vertices[i].clone().sub(midpoint),b=vertices[j].clone().sub(midpoint);
+     return Math.atan2(a.dot(side),a.dot(axis))-Math.atan2(b.dot(side),b.dot(axis));
+    });
+    return indices;
+   });
+   cardboardHull={vertices,faces};
+  }
+  // Align the independent hull to the same origin and scale as the visible GLB.
+  cardboardHull.visualCenter=center.clone();
+  cardboardHull.visualScale=normalized.scale.x;
+ }
  // Keep all styles in the same physical units, regardless of their source GLB dimensions.
  template=normalized;loadedStyle=style;
 }
@@ -106,6 +142,18 @@ const bronzeNumeralUp=[
  [.594,-.684,-.423],[-.594,.684,-.423],[.953,.257,-.159],[-.953,-.257,-.159],
  [-.423,.594,-.684],[.159,.953,-.257],[.423,-.594,-.684],[-.159,-.953,-.257]
 ].map(v=>new THREE.Vector3(...v).normalize());
+
+ // Number placement in the approved cardboard GLB differs from Knight Armor.
+ // Index = the existing physical face-normal index; value = printed cardboard numeral.
+const cardboardValuesByPhysicalFace=[1,11,8,2,7,4,3,5,9,10,12,6];
+// Numeral-up directions obtained from each numbered face's embedded UV mapping.
+// They rotate the top face upright without altering the roll's physical outcome.
+const cardboardNumeralUp=[
+ [-.261,-.161,.952],[-.256,-.158,.954],[-.003,-.851,.526],
+ [-.018,-.851,.526],[-.599,.681,.421],[.407,-.633,.658],
+ [-.550,.710,.439],[-.241,.149,.959],[.424,-.592,.685],
+ [-.526,.015,.851],[-.279,.172,.945],[-.526,.009,.851]
+].map(v=>new THREE.Vector3(...v).normalize());
 function factorForRest(scale){
  const size=new THREE.Box3().setFromPoints(geometry.vertices).getSize(new THREE.Vector3());
  return 1.8/Math.max(size.x,size.y,size.z)*scale;
@@ -118,15 +166,20 @@ function numeralUp(face){
 export async function roll3d(quantity,style='knight',sizeMultiplier=1){
  await setup(style);cancelAnimationFrame(raf);
  for(const d of active){world.removeBody(d.body);scene.remove(d.mesh)}active=[];
- const rollLabels=geometry.labels;
+ const rollLabels=style==='cardboard'?geometry.labels.map((face,i)=>({normal:face.normal,value:cardboardValuesByPhysicalFace[i]})):geometry.labels;
  const cols=Math.ceil(Math.sqrt(quantity)),scale=Math.min(1.25,Math.max(.48,3.8/cols))*Math.min(2.2,Math.max(.8,Number(sizeMultiplier)||1));
  for(let i=0;i<quantity;i++){
   const mesh=template.clone(true);mesh.scale.multiplyScalar(scale);
   // Collision hull must match the normalized visual size, not the GLB's original scale.
-  const hullSize=new THREE.Box3().setFromPoints(geometry.vertices).getSize(new THREE.Vector3());
-  const factor=factorForRest(scale);
-  const center=new THREE.Box3().setFromPoints(geometry.vertices).getCenter(new THREE.Vector3());
-  const shape=new CANNON.ConvexPolyhedron({vertices:geometry.vertices.map(v=>new CANNON.Vec3((v.x-center.x)*factor,(v.y-center.y)*factor,(v.z-center.z)*factor)),faces:geometry.faces});
+  const usingCardboardHull=style==='cardboard';
+  const sourceVertices=usingCardboardHull?cardboardHull.vertices:geometry.vertices;
+  const sourceFaces=usingCardboardHull?cardboardHull.faces:geometry.faces;
+  const factor=usingCardboardHull?cardboardHull.visualScale*scale:factorForRest(scale);
+  const center=usingCardboardHull?cardboardHull.visualCenter:new THREE.Box3().setFromPoints(geometry.vertices).getCenter(new THREE.Vector3());
+  const shape=new CANNON.ConvexPolyhedron({
+   vertices:sourceVertices.map(v=>new CANNON.Vec3((v.x-center.x)*factor,(v.y-center.y)*factor,(v.z-center.z)*factor)),
+   faces:sourceFaces
+  });
   const body=new CANNON.Body({mass:1,shape,linearDamping:.28,angularDamping:.42,sleepSpeedLimit:.22,sleepTimeLimit:.6});
   const row=Math.floor(i/cols),col=i%cols;
   body.position.set(-9+col*.5,4+row*.8+i*.18,(i%4-1.5)*.7);
@@ -158,21 +211,31 @@ export async function roll3d(quantity,style='knight',sizeMultiplier=1){
       values.push(top.value);
       const tilt=new THREE.Quaternion().setFromUnitVectors(top.normal.clone().applyQuaternion(q),up);
       const flat=tilt.clone().multiply(q);
-      const textUp=(style==='bronze'?bronzeNumeralUp[knightFaceIndex(top.normal)].clone():numeralUp(top)).applyQuaternion(flat);
+      const numeralDirection=style==='bronze'?bronzeNumeralUp[knightFaceIndex(top.normal)]:style==='cardboard'?cardboardNumeralUp[top.value-1]:numeralUp(top);
+      const textUp=numeralDirection.clone().applyQuaternion(flat);
       textUp.y=0;textUp.normalize();
       // Rotate the projected numeral-up vector exactly onto screen-up (-Z).
       // For a rotation about +Y, x'=cos(a)*x+sin(a)*z and
       // z'=-sin(a)*x+cos(a)*z. atan2(x,-z) makes x'=0,z'=-1.
       const yaw=Math.atan2(textUp.x,-textUp.z);
       const upright=new THREE.Quaternion().setFromAxisAngle(up,yaw).multiply(flat);
-      // Keep the settled dice resting on the actual floor instead of lifting them into midair.
-      // The collision dodecahedron has face-plane distance 1 before scaling.
-      // Match the visible die's actual support height after the final rotation.
-      const originalRotation=d.mesh.quaternion.clone();
-      d.mesh.quaternion.copy(upright);
-      const visualBounds=new THREE.Box3().setFromObject(d.mesh);
-      const restingY=-5+(d.mesh.position.y-visualBounds.min.y);
-      d.mesh.quaternion.copy(originalRotation);
+      // Cardboard uses the collision hull, not decorative tape/rolls, for floor contact.
+      // Existing Knight Armor and Bronze final placement remains unchanged.
+      let restingY;
+      if(style==='cardboard'){
+       let lowest=Infinity;
+       for(const vertex of cardboardHull.vertices){
+        const y=vertex.clone().sub(cardboardHull.visualCenter).multiplyScalar(cardboardHull.visualScale*scale).applyQuaternion(upright).y;
+        lowest=Math.min(lowest,y);
+       }
+       restingY=-5-lowest;
+      }else{
+       const originalRotation=d.mesh.quaternion.clone();
+       d.mesh.quaternion.copy(upright);
+       const visualBounds=new THREE.Box3().setFromObject(d.mesh);
+       restingY=-5+(d.mesh.position.y-visualBounds.min.y);
+       d.mesh.quaternion.copy(originalRotation);
+      }
       const target=new THREE.Vector3((i%columns-(columns-1)/2)*spacing,restingY,(Math.floor(i/columns)-(rows-1)/2)*spacing);
       transitions.push({mesh:d.mesh,from:d.mesh.position.clone(),to:target,rotationFrom:q,rotationTo:upright});
      });
