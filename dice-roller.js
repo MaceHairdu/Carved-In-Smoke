@@ -34,7 +34,7 @@ const css=document.createElement('style');css.textContent=`
 `;document.head.append(css);
 const launch=document.createElement('button');launch.id='cis-dice-launch';launch.type='button';launch.textContent='⚄ Roll Dice';
 const panel=document.createElement('section');panel.id='cis-dice-controls';panel.hidden=true;
-panel.innerHTML='<strong style="font-size:22px;color:#e9ac81">Dice Roller</strong><label class="cis-style">Dice Style<select id="cis-dice-style"><option value="knight">Knight Armor</option><option value="bronze">Ancient Bronze</option></select></label><div class="cis-skills"><button data-skill="Grit">Grit</button><button data-skill="Finesse">Finesse</button><button data-skill="Charm">Charm</button><button data-skill="Focus">Focus</button><button data-skill="Luck">Luck</button></div><div class="cis-custom"><label>Number of d12s<input id="cis-roll-count" type="number" min="1" max="20" value="2"></label><button id="cis-roll-custom">Roll Custom</button></div><button class="cis-history-open" id="cis-history-open">Roll History</button><button class="cis-close" id="cis-roll-close">Close</button><div id="cis-dice-result" role="status" aria-live="polite"></div>';
+panel.innerHTML='<strong style="font-size:22px;color:#e9ac81">Dice Roller</strong><label class="cis-style">Dice Style<select id="cis-dice-style"><option value="knight">Knight Armor</option><option value="bronze">Ancient Bronze</option><option value="cardboard">Cardboard D12</option></select></label><div class="cis-skills"><button data-skill="Grit">Grit</button><button data-skill="Finesse">Finesse</button><button data-skill="Charm">Charm</button><button data-skill="Focus">Focus</button><button data-skill="Luck">Luck</button></div><div class="cis-custom"><label>Number of d12s<input id="cis-roll-count" type="number" min="1" max="20" value="2"></label><button id="cis-roll-custom">Roll Custom</button></div><button class="cis-history-open" id="cis-history-open">Roll History</button><button class="cis-close" id="cis-roll-close">Close</button><div id="cis-dice-result" role="status" aria-live="polite"></div>';
 const stage=document.createElement('div');stage.id='cis-dice-stage';stage.hidden=true;
 const banner=document.createElement('div');banner.id='cis-dice-banner';banner.hidden=true;stage.append(banner);
 const historyPanel=document.createElement('aside');historyPanel.id='cis-roll-history';historyPanel.hidden=true;historyPanel.setAttribute('aria-label','Roll History');
@@ -57,7 +57,8 @@ panel.querySelector('#cis-history-open').onclick=()=>{historyPanel.hidden=false;
 historyPanel.querySelector('#cis-history-close').onclick=()=>{historyPanel.hidden=true;panel.hidden=false};
 const result=panel.querySelector('#cis-dice-result'),customCount=panel.querySelector('#cis-roll-count');
 const styleSelect=panel.querySelector('#cis-dice-style');
-styleSelect.value=localStorage.getItem('cis-dice-style')==='bronze'?'bronze':'knight';
+const savedStyle=localStorage.getItem('cis-dice-style');
+styleSelect.value=['knight','bronze','cardboard'].includes(savedStyle)?savedStyle:'knight';
 styleSelect.addEventListener('change',()=>{localStorage.setItem('cis-dice-style',styleSelect.value);const settings=document.getElementById('cis-settings-dice-style');if(settings)settings.value=styleSelect.value});
 document.addEventListener('cis-dice-style-change',event=>{styleSelect.value=event.detail});
 launch.onclick=()=>{panel.hidden=!panel.hidden};
@@ -114,7 +115,7 @@ async function roll(label,score,isCustom){
  if(window.matchMedia('(max-width: 700px)').matches)panel.hidden=true;
  stage.hidden=false;
  try{
-  if(!glbEngine)glbEngine=await import('./dice-3d.js?v=bronze-face-uv-28');
+  if(!glbEngine)glbEngine=await import('./dice-3d.js?v=cardboard-d12-01');
   if(token!==rollToken)return;
   const values=await glbEngine.roll3d(qty,styleSelect.value,Number(localStorage.getItem('cis-dice-scale')||'1.5'));
   if(token!==rollToken)return;
