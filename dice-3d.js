@@ -146,13 +146,23 @@ const bronzeNumeralUp=[
  // Number placement in the approved cardboard GLB differs from Knight Armor.
  // Index = the existing physical face-normal index; value = printed cardboard numeral.
 const cardboardValuesByPhysicalFace=[1,11,8,2,7,4,3,5,9,10,12,6];
-// Numeral-up directions obtained from each numbered face's embedded UV mapping.
-// They rotate the top face upright without altering the roll's physical outcome.
+// The cardboard net's glyphs are ROTATED within their UVs. Atlas +V is not
+// the same as the actual numeral-up direction. Values below are tangent-space
+// ink directions measured from the approved GLB's per-face artwork; indices 1-12.
+// Do not reuse the Knight Armor or Bronze orientation tables for this GLB.
 const cardboardNumeralUp=[
- [-.261,-.161,.952],[-.256,-.158,.954],[-.003,-.851,.526],
- [-.018,-.851,.526],[-.599,.681,.421],[.407,-.633,.658],
- [-.550,.710,.439],[-.241,.149,.959],[.424,-.592,.685],
- [-.526,.015,.851],[-.279,.172,.945],[-.526,.009,.851]
+ [0.808902,0.499929,0.309431],  // 1
+ [0.808209,0.499500,0.311926],  // 2
+ [-0.707602,-0.601080,0.371488],// 3
+ [-0.999942,0.009177,-0.005672],// 4
+ [0.149626,0.841075,0.519813],  // 5
+ [0.302843,0.817420,0.490011],  // 6
+ [0.983816,-0.152421,-0.094201],// 7
+ [0.812582,-0.502203,0.295809], // 8
+ [0.308656,0.809515,0.499416],  // 9
+ [-0.264679,-0.864025,0.428260],// 10
+ [-0.834484,0.515739,0.194036],// 11
+ [-0.251820,-0.877820,0.407453] // 12
 ].map(v=>new THREE.Vector3(...v).normalize());
 function factorForRest(scale){
  const size=new THREE.Box3().setFromPoints(geometry.vertices).getSize(new THREE.Vector3());
@@ -163,8 +173,21 @@ function numeralUp(face){
  const y=new THREE.Vector3(0,1,0);
  return y.addScaledVector(normal,-y.dot(normal)).normalize();
 }
+function applyLighting(style){
+ // Preserve the original lighting for Knight Armor and Ancient Bronze.
+ // Unlit cardboard is diffuse and becomes washed out with the metal-die lights.
+ const cardboard=style==='cardboard';
+ scene.traverse(light=>{
+  if(light.isHemisphereLight)light.intensity=cardboard?1.25:4.0;
+  else if(light.isAmbientLight)light.intensity=cardboard?0.35:1.2;
+  else if(light.isDirectionalLight){
+   const isSun=light.position.x<0;
+   light.intensity=cardboard?(isSun?1.7:0.75):(isSun?4.5:3.0);
+  }
+ });
+}
 export async function roll3d(quantity,style='knight',sizeMultiplier=1){
- await setup(style);cancelAnimationFrame(raf);
+ await setup(style);applyLighting(style);cancelAnimationFrame(raf);
  for(const d of active){world.removeBody(d.body);scene.remove(d.mesh)}active=[];
  const rollLabels=style==='cardboard'?geometry.labels.map((face,i)=>({normal:face.normal,value:cardboardValuesByPhysicalFace[i]})):geometry.labels;
  const cols=Math.ceil(Math.sqrt(quantity)),scale=Math.min(1.25,Math.max(.48,3.8/cols))*Math.min(2.2,Math.max(.8,Number(sizeMultiplier)||1));
