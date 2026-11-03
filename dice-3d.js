@@ -242,6 +242,11 @@ export async function roll3d(quantity,style='knight',sizeMultiplier=1){
       // z'=-sin(a)*x+cos(a)*z. atan2(x,-z) makes x'=0,z'=-1.
       const yaw=Math.atan2(textUp.x,-textUp.z);
       const upright=new THREE.Quaternion().setFromAxisAngle(up,yaw).multiply(flat);
+      // The bronze 1 glyph's local up direction is 90 degrees off the UV-based vector.
+      // Correct only this physical face; do not touch physics or other dice models.
+      if(style==='bronze'&&top.value===1){
+       upright.premultiply(new THREE.Quaternion().setFromAxisAngle(up,Math.PI/2));
+      }
       // Cardboard uses the collision hull, not decorative tape/rolls, for floor contact.
       // Existing Knight Armor and Bronze final placement remains unchanged.
       let restingY;
