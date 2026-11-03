@@ -146,23 +146,23 @@ const bronzeNumeralUp=[
  // Number placement in the approved cardboard GLB differs from Knight Armor.
  // Index = the existing physical face-normal index; value = printed cardboard numeral.
 const cardboardValuesByPhysicalFace=[1,11,8,2,7,4,3,5,9,10,12,6];
-// The cardboard net's glyphs are ROTATED within their UVs. Atlas +V is not
-// the same as the actual numeral-up direction. Values below are tangent-space
-// ink directions measured from the approved GLB's per-face artwork; indices 1-12.
-// Do not reuse the Knight Armor or Bronze orientation tables for this GLB.
+// Verified against an actual per-face, texture-mapped orthographic projection
+// of Cardboard_D12_Raised_Rolls_Varied_Tape.glb (each numeral 1–12).
+// These vectors describe the painted glyphs, not the pentagon corners.
+// Keep this mapping exclusive to the cardboard dice style.
 const cardboardNumeralUp=[
- [0.808902,0.499929,0.309431],  // 1
- [0.808209,0.499500,0.311926],  // 2
- [-0.707602,-0.601080,0.371488],// 3
- [-0.999942,0.009177,-0.005672],// 4
- [0.149626,0.841075,0.519813],  // 5
- [0.302843,0.817420,0.490011],  // 6
- [0.983816,-0.152421,-0.094201],// 7
- [0.812582,-0.502203,0.295809], // 8
- [0.308656,0.809515,0.499416],  // 9
- [-0.264679,-0.864025,0.428260],// 10
- [-0.834484,0.515739,0.194036],// 11
- [-0.251820,-0.877820,0.407453] // 12
+ [0.808902, 0.499929, 0.309431], // 1 original correct
+ [0.808209, 0.499500, 0.311926], // 2 original correct
+ [0.707602, 0.601080, -0.371488], // 3 corrected 180°
+ [0.010788, 0.850601, -0.525700], // 4 corrected 90° CCW
+ [0.149626, 0.841075, 0.519813], // 5 original correct
+ [0.302843, 0.817420, 0.490011], // 6 original correct
+ [0.179182, 0.836884, 0.517223], // 7 corrected 90° clockwise
+ [0.812582, -0.502203, 0.295809], // 8 original correct
+ [0.308656, 0.809515, 0.499416], // 9 original correct
+ [0.264679, 0.864025, -0.428260], // 10 corrected 180°
+ [-0.834484, 0.515739, 0.194036], // 11 original correct
+ [0.251820, 0.877820, -0.407453], // 12 corrected 180°
 ].map(v=>new THREE.Vector3(...v).normalize());
 function factorForRest(scale){
  const size=new THREE.Box3().setFromPoints(geometry.vertices).getSize(new THREE.Vector3());
