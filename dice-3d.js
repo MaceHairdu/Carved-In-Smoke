@@ -2,12 +2,13 @@
 import * as THREE from 'https://esm.sh/three@0.170.0';
 import {GLTFLoader} from 'https://esm.sh/three@0.170.0/examples/jsm/loaders/GLTFLoader.js';
 import * as CANNON from 'https://esm.sh/cannon-es@0.20.0';
+import {PROCEDURAL_STYLES,createProceduralDie} from './dice-procedural.js?v=1';
 let renderer,scene,camera,world,template,geometry,raf,active=[],last=0,container,loadedStyle=null,cardboardHull=null;const loader=new GLTFLoader();
 async function setup(style){
  if(renderer){await loadStyle(style);return;}
  container=document.getElementById('cis-dice-stage');
- await loadStyle(style);
  geometry=diceGeometry();
+ await loadStyle(style);
  scene=new THREE.Scene();
  camera=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,.1,100);
  camera.position.set(0,32,.01);camera.up.set(0,0,-1);camera.lookAt(0,0,0);
@@ -34,6 +35,11 @@ async function setup(style){
 }
 async function loadStyle(style){
  if(loadedStyle===style)return;
+ if(PROCEDURAL_STYLES.includes(style)){
+  template=createProceduralDie(style,geometry);
+  loadedStyle=style;
+  return;
+ }
  const filename=style==='bronze'?'Ancient_Bronze_Smooth_Recessed_Gold_D12.glb':style==='cardboard'?'Cardboard_D12_Raised_Rolls_Varied_Tape.glb':'knight_armor_d12_verified_gold_numbers.glb';
  const gltf=await loader.loadAsync('./dice-models/'+filename);
  const model=gltf.scene;
@@ -187,14 +193,18 @@ function applyLighting(style){
  });
 }
 export async function roll3d(quantity,style='knight',sizeMultiplier=1){
- await setup(style);applyLighting(style);cancelAnimationFrame(raf);
+ const styles=Array.isArray(style)?style:Array(quantity).fill(style);
+ if(styles.length!==quantity||styles.some(s=>typeof s!=='string'||!s))throw Error('Invalid dice styles for roll');
+ await setup(styles[0]);applyLighting(styles.includes('cardboard')?'cardboard':styles[0]);cancelAnimationFrame(raf);
  for(const d of active){world.removeBody(d.body);scene.remove(d.mesh)}active=[];
- const rollLabels=style==='cardboard'?geometry.labels.map((face,i)=>({normal:face.normal,value:cardboardValuesByPhysicalFace[i]})):geometry.labels;
  const cols=Math.ceil(Math.sqrt(quantity)),scale=Math.min(1.25,Math.max(.48,3.8/cols))*Math.min(2.2,Math.max(.8,Number(sizeMultiplier)||1));
  for(let i=0;i<quantity;i++){
+  const dieStyle=styles[i];
+  await loadStyle(dieStyle);
+  const rollLabels=dieStyle==='cardboard'?geometry.labels.map((face,j)=>({normal:face.normal,value:cardboardValuesByPhysicalFace[j]})):geometry.labels;
   const mesh=template.clone(true);mesh.scale.multiplyScalar(scale);
   // Collision hull must match the normalized visual size, not the GLB's original scale.
-  const usingCardboardHull=style==='cardboard';
+  const usingCardboardHull=dieStyle==='cardboard';
   const sourceVertices=usingCardboardHull?cardboardHull.vertices:geometry.vertices;
   const sourceFaces=usingCardboardHull?cardboardHull.faces:geometry.faces;
   const factor=usingCardboardHull?cardboardHull.visualScale*scale:factorForRest(scale);
@@ -209,7 +219,7 @@ export async function roll3d(quantity,style='knight',sizeMultiplier=1){
   body.velocity.set(8+Math.random()*3,Math.random()*3,Math.random()*3-1.5);
   body.angularVelocity.set(Math.random()*11-5.5,Math.random()*11-5.5,Math.random()*11-5.5);
   body.quaternion.setFromEuler(Math.random()*6,Math.random()*6,Math.random()*6);
-  world.addBody(body);scene.add(mesh);active.push({body,mesh});
+  world.addBody(body);scene.add(mesh);active.push({body,mesh,style:dieStyle,labels:rollLabels});
  }
  let started=performance.now();last=started;let stillTime=0;
  return await new Promise((resolve,reject)=>{
@@ -227,14 +237,14 @@ export async function roll3d(quantity,style='knight',sizeMultiplier=1){
      const visualDiameter=1.8*scale;const spacing=Math.max(2.6,visualDiameter*1.65);
      active.forEach((d,i)=>{
       const q=d.mesh.quaternion.clone();
-      const top=rollLabels.reduce((best,f)=>{
+      const top=d.labels.reduce((best,f)=>{
        const dot=f.normal.clone().applyQuaternion(q).dot(up);
        return dot>best.dot?{dot,face:f}:best;
-      },{dot:-Infinity,face:rollLabels[0]}).face;
+      },{dot:-Infinity,face:d.labels[0]}).face;
       values.push(top.value);
       const tilt=new THREE.Quaternion().setFromUnitVectors(top.normal.clone().applyQuaternion(q),up);
       const flat=tilt.clone().multiply(q);
-      const numeralDirection=style==='bronze'?bronzeNumeralUp[knightFaceIndex(top.normal)]:style==='cardboard'?cardboardNumeralUp[top.value-1]:numeralUp(top);
+      const numeralDirection=d.style==='bronze'?bronzeNumeralUp[knightFaceIndex(top.normal)]:d.style==='cardboard'?cardboardNumeralUp[top.value-1]:numeralUp(top);
       const textUp=numeralDirection.clone().applyQuaternion(flat);
       textUp.y=0;textUp.normalize();
       // Rotate the projected numeral-up vector exactly onto screen-up (-Z).
@@ -244,13 +254,13 @@ export async function roll3d(quantity,style='knight',sizeMultiplier=1){
       const upright=new THREE.Quaternion().setFromAxisAngle(up,yaw).multiply(flat);
       // The bronze 1 glyph's local up direction is 90 degrees off the UV-based vector.
       // Correct only this physical face; do not touch physics or other dice models.
-      if(style==='bronze'&&top.value===1){
+      if(d.style==='bronze'&&top.value===1){
        upright.premultiply(new THREE.Quaternion().setFromAxisAngle(up,Math.PI/2));
       }
       // Cardboard uses the collision hull, not decorative tape/rolls, for floor contact.
       // Existing Knight Armor and Bronze final placement remains unchanged.
       let restingY;
-      if(style==='cardboard'){
+      if(d.style==='cardboard'){
        let lowest=Infinity;
        for(const vertex of cardboardHull.vertices){
         const y=vertex.clone().sub(cardboardHull.visualCenter).multiplyScalar(cardboardHull.visualScale*scale).applyQuaternion(upright).y;
