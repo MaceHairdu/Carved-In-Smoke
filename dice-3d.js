@@ -3,7 +3,7 @@ import * as THREE from 'https://esm.sh/three@0.170.0';
 import {GLTFLoader} from 'https://esm.sh/three@0.170.0/examples/jsm/loaders/GLTFLoader.js';
 import * as CANNON from 'https://esm.sh/cannon-es@0.20.0';
 import {PROCEDURAL_STYLES,createProceduralDie} from './dice-procedural.js?v=1';
-let renderer,scene,camera,world,template,geometry,raf,active=[],last=0,container,loadedStyle=null,cardboardHull=null;const loader=new GLTFLoader();
+let renderer,scene,camera,world,template,geometry,raf,active=[],last=0,container,loadedStyle=null,cardboardHull=null;const templatesByStyle=new Map();const loader=new GLTFLoader();
 async function setup(style){
  if(renderer){await loadStyle(style);return;}
  container=document.getElementById('cis-dice-stage');
@@ -35,8 +35,10 @@ async function setup(style){
 }
 async function loadStyle(style){
  if(loadedStyle===style)return;
+ if(templatesByStyle.has(style)){template=templatesByStyle.get(style);loadedStyle=style;return;}
  if(PROCEDURAL_STYLES.includes(style)){
   template=createProceduralDie(style,geometry);
+  templatesByStyle.set(style,template);
   loadedStyle=style;
   return;
  }
@@ -91,7 +93,7 @@ async function loadStyle(style){
   cardboardHull.visualScale=normalized.scale.x;
  }
  // Keep all styles in the same physical units, regardless of their source GLB dimensions.
- template=normalized;loadedStyle=style;
+ template=normalized;templatesByStyle.set(style,template);loadedStyle=style;
 }
 function diceGeometry(){
  // Regular dodecahedron: each face plane is normal · position = 1.
