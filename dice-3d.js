@@ -56,6 +56,7 @@ async function loadStyle(style){
    model.position.sub(bounds.getCenter(new THREE.Vector3()));
    normalized.add(model);
    normalized.scale.setScalar(1.8/Math.max(size.x,size.y,size.z));
+   normalized.userData.cisArtSource='rebuilt-glb';
    template=normalized;
   }catch(error){
    console.warn('Updated dice model not installed for '+style+'; using prior art.',error);
@@ -269,7 +270,7 @@ export async function roll3d(quantity,style='knight',sizeMultiplier=1){
       values.push(top.value);
       const tilt=new THREE.Quaternion().setFromUnitVectors(top.normal.clone().applyQuaternion(q),up);
       const flat=tilt.clone().multiply(q);
-      const numeralDirection=d.style==='bronze'?bronzeNumeralUp[knightFaceIndex(top.normal)]:d.style==='cardboard'?cardboardNumeralUp[top.value-1]:numeralUp(top);
+      const numeralDirection=d.style==='pokeball'&&top.value===12&&d.mesh.userData.cisArtSource==='rebuilt-glb'?new THREE.Vector3(0.16245980756920714,0.9510565094915557,0.26286560573478374):d.style==='bronze'?bronzeNumeralUp[knightFaceIndex(top.normal)]:d.style==='cardboard'?cardboardNumeralUp[top.value-1]:numeralUp(top);
       const textUp=numeralDirection.clone().applyQuaternion(flat);
       textUp.y=0;textUp.normalize();
       // Rotate the projected numeral-up vector exactly onto screen-up (-Z).
