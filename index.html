@@ -644,5 +644,5 @@ if(favoritesRoot)for(const [id,name] of Object.entries(favoriteNames)){
 }
 const mix=document.getElementById('cis-settings-dice-mix');
 if(mix){mix.checked=localStorage.getItem('cis-dice-mix')==='true';mix.addEventListener('change',()=>localStorage.setItem('cis-dice-mix',String(mix.checked)));}
-if(!scale)return;const saved=Number(localStorage.getItem('cis-dice-scale')||'1.5');scale.value=String(Math.round(Math.min(2.2,Math.max(.8,saved))*100));label.textContent=scale.value+'%';scale.addEventListener('input',()=>{label.textContent=scale.value+'%';localStorage.setItem('cis-dice-scale',String(Number(scale.value)/100))})})();</script><script type="module" src="dice-roller.js?v=mixed-dice-retro-green-2"></script></body><!-- Redeploy GitHub Pages; no visual or functional changes. -->
+if(!scale)return;const saved=Number(localStorage.getItem('cis-dice-scale')||'1.5');scale.value=String(Math.round(Math.min(2.2,Math.max(.8,saved))*100));label.textContent=scale.value+'%';scale.addEventListener('input',()=>{label.textContent=scale.value+'%';localStorage.setItem('cis-dice-scale',String(Number(scale.value)/100))})})();</script><script type="module" src="dice-roller.js?v=remove-wireframe-2"></script></body><!-- Redeploy GitHub Pages; no visual or functional changes. -->
 </html>
