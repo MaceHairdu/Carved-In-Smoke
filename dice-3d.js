@@ -43,8 +43,7 @@ async function loadStyle(style){
    handdrawn:'Handdrawn_Sketch_D12.glb',
    watermelon:'Watermelon_Rind_D12.glb',
    pokeball:'Pokeball_Straight_Belt_Button12_D12.glb',
-   map:'Fantasy_Map_Detailed_D12.glb',
-   skull:'Encased_Anatomical_Skull_D12.glb'
+   map:'Fantasy_Map_Detailed_D12.glb'
   };
   try{
    const imported=await loader.loadAsync('./dice-models/'+modelFiles[style]);
