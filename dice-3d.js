@@ -2,7 +2,7 @@
 import * as THREE from 'https://esm.sh/three@0.170.0';
 import {GLTFLoader} from 'https://esm.sh/three@0.170.0/examples/jsm/loaders/GLTFLoader.js';
 import * as CANNON from 'https://esm.sh/cannon-es@0.20.0';
-import {PROCEDURAL_STYLES,createProceduralDie} from './dice-procedural.js?v=retro-green-1';
+import {PROCEDURAL_STYLES,createProceduralDie} from './dice-procedural.js?v=remove-wireframe-2';
 let renderer,scene,camera,world,template,geometry,raf,active=[],last=0,container,loadedStyle=null,cardboardHull=null;const templatesByStyle=new Map();const loader=new GLTFLoader();
 async function setup(style){
  if(renderer){await loadStyle(style);return;}
