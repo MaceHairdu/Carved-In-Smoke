@@ -1,6 +1,6 @@
 // Six procedural 3D dice, sharing the exact regular-d12 collision geometry.
 import * as THREE from 'https://esm.sh/three@0.170.0';
-export const PROCEDURAL_STYLES=['handdrawn','watermelon','pokeball','map','wireframe','skull'];
+export const PROCEDURAL_STYLES=['handdrawn','watermelon','pokeball','map','skull'];
 const V=(x,y,z)=>new THREE.Vector3(x,y,z);
 function rand(seed){return ()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296;};}
 function material(color,props={}){return new THREE.MeshStandardMaterial({color,metalness:0,roughness:.87,side:THREE.DoubleSide,...props});}
