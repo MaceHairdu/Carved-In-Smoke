@@ -37,7 +37,30 @@ async function loadStyle(style){
  if(loadedStyle===style)return;
  if(templatesByStyle.has(style)){template=templatesByStyle.get(style);loadedStyle=style;return;}
  if(PROCEDURAL_STYLES.includes(style)){
-  template=createProceduralDie(style,geometry);
+  // Prefer the finished GLB files in dice-models/. Retain the old procedural
+  // styles only as a non-breaking fallback until the GLBs are uploaded.
+  const modelFiles={
+   handdrawn:'Handdrawn_Sketch_D12.glb',
+   watermelon:'Watermelon_Rind_D12.glb',
+   pokeball:'Pokeball_Straight_Belt_Button12_D12.glb',
+   map:'Fantasy_Map_Detailed_D12.glb',
+   skull:'Encased_Anatomical_Skull_D12.glb'
+  };
+  try{
+   const imported=await loader.loadAsync('./dice-models/'+modelFiles[style]);
+   const model=imported.scene;
+   const bounds=new THREE.Box3().setFromObject(model);
+   const size=bounds.getSize(new THREE.Vector3());
+   if(!size.x||!size.y||!size.z)throw Error('GLB has no visible geometry');
+   const normalized=new THREE.Group();
+   model.position.sub(bounds.getCenter(new THREE.Vector3()));
+   normalized.add(model);
+   normalized.scale.setScalar(1.8/Math.max(size.x,size.y,size.z));
+   template=normalized;
+  }catch(error){
+   console.warn('Updated dice model not installed for '+style+'; using prior art.',error);
+   template=createProceduralDie(style,geometry);
+  }
   templatesByStyle.set(style,template);
   loadedStyle=style;
   return;
