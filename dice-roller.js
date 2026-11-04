@@ -34,7 +34,7 @@ const css=document.createElement('style');css.textContent=`
 `;document.head.append(css);
 const launch=document.createElement('button');launch.id='cis-dice-launch';launch.type='button';launch.textContent='⚄ Roll Dice';
 const panel=document.createElement('section');panel.id='cis-dice-controls';panel.hidden=true;
-panel.innerHTML='<strong style="font-size:22px;color:#e9ac81">Dice Roller</strong><label class="cis-style" style="display:none">Dice Style<select id="cis-dice-style"><option value="knight">Knight Armor</option><option value="bronze">Ancient Bronze</option><option value="cardboard">Cardboard</option><option value="handdrawn">Hand-drawn</option><option value="watermelon">Watermelon</option><option value="pokeball">Poké Ball</option><option value="map">Fantasy Map</option><option value="skull">Encased Skull</option><option value="favorites">Roll from my favorites</option></select></label><div class="cis-skills"><button data-skill="Grit">Grit</button><button data-skill="Finesse">Finesse</button><button data-skill="Charm">Charm</button><button data-skill="Focus">Focus</button><button data-skill="Luck">Luck</button></div><div class="cis-custom"><label>Number of d12s<input id="cis-roll-count" type="number" min="1" max="20" value="2"></label><button id="cis-roll-custom">Roll Custom</button></div><button class="cis-history-open" id="cis-history-open">Roll History</button><button class="cis-close" id="cis-roll-close">Close</button><div id="cis-dice-result" role="status" aria-live="polite"></div>';
+panel.innerHTML='<strong style="font-size:22px;color:#e9ac81">Dice Roller</strong><label class="cis-style" style="display:none">Dice Style<select id="cis-dice-style"><option value="knight">Knight Armor</option><option value="bronze">Ancient Bronze</option><option value="cardboard">Cardboard</option><option value="handdrawn">Hand-drawn</option><option value="watermelon">Watermelon</option><option value="pokeball">Poké Ball</option><option value="map">Fantasy Map</option><option value="favorites">Roll from my favorites</option></select></label><div class="cis-skills"><button data-skill="Grit">Grit</button><button data-skill="Finesse">Finesse</button><button data-skill="Charm">Charm</button><button data-skill="Focus">Focus</button><button data-skill="Luck">Luck</button></div><div class="cis-custom"><label>Number of d12s<input id="cis-roll-count" type="number" min="1" max="10" value="2"></label><button id="cis-roll-custom">Roll Custom</button></div><button class="cis-history-open" id="cis-history-open">Roll History</button><button class="cis-close" id="cis-roll-close">Close</button><div id="cis-dice-result" role="status" aria-live="polite"></div>';
 const stage=document.createElement('div');stage.id='cis-dice-stage';stage.hidden=true;
 const banner=document.createElement('div');banner.id='cis-dice-banner';banner.hidden=true;stage.append(banner);
 const historyPanel=document.createElement('aside');historyPanel.id='cis-roll-history';historyPanel.hidden=true;historyPanel.setAttribute('aria-label','Roll History');
@@ -56,8 +56,8 @@ function addHistory(label,values,zero){
 panel.querySelector('#cis-history-open').onclick=()=>{historyPanel.hidden=false;panel.hidden=true};
 historyPanel.querySelector('#cis-history-close').onclick=()=>{historyPanel.hidden=true;panel.hidden=false};
 const result=panel.querySelector('#cis-dice-result'),customCount=panel.querySelector('#cis-roll-count');
-const AVAILABLE_STYLES=["knight","bronze","cardboard","handdrawn","watermelon","pokeball","map","skull","favorites"];
-const DICE_LABELS={"knight":"Knight Armor","bronze":"Ancient Bronze","cardboard":"Cardboard","handdrawn":"Hand-drawn","watermelon":"Watermelon","pokeball":"Poké Ball","map":"Fantasy Map","skull":"Encased Skull","favorites":"Roll from my favorites"};
+const AVAILABLE_STYLES=["knight","bronze","cardboard","handdrawn","watermelon","pokeball","map","favorites"];
+const DICE_LABELS={"knight":"Knight Armor","bronze":"Ancient Bronze","cardboard":"Cardboard","handdrawn":"Hand-drawn","watermelon":"Watermelon","pokeball":"Poké Ball","map":"Fantasy Map":"Encased Skull","favorites":"Roll from my favorites"};
 function getFavorites(){
  try{
   const saved=JSON.parse(localStorage.getItem('cis-dice-favorites')||'[]');
@@ -131,7 +131,7 @@ async function roll(label,score,isCustom){
  if(busy)return;
  const zero=!isCustom&&score===0;
  const qty=zero?2:score;
- if(!Number.isInteger(qty)||qty<1||qty>20){result.textContent='Enter a number from 1 to 20.';return}
+ if(!Number.isInteger(qty)||qty<1||(isCustom&&qty>10)||(!isCustom&&qty>20)){result.textContent=isCustom?'Enter a number from 1 to 10.':'Invalid skill dice count.';return}
  const token=++rollToken;
  setBusy(true);diceOverlayReady=false;banner.hidden=true;
  // On narrow screens the controls obscure the dice; collapse them when a roll starts.
