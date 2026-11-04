@@ -57,7 +57,7 @@ panel.querySelector('#cis-history-open').onclick=()=>{historyPanel.hidden=false;
 historyPanel.querySelector('#cis-history-close').onclick=()=>{historyPanel.hidden=true;panel.hidden=false};
 const result=panel.querySelector('#cis-dice-result'),customCount=panel.querySelector('#cis-roll-count');
 const AVAILABLE_STYLES=["knight","bronze","cardboard","handdrawn","watermelon","pokeball","map","favorites"];
-const DICE_LABELS={"knight":"Knight Armor","bronze":"Ancient Bronze","cardboard":"Cardboard","handdrawn":"Hand-drawn","watermelon":"Watermelon","pokeball":"Poké Ball","map":"Fantasy Map":"Encased Skull","favorites":"Roll from my favorites"};
+const DICE_LABELS={"knight":"Knight Armor","bronze":"Ancient Bronze","cardboard":"Cardboard","handdrawn":"Hand-drawn","watermelon":"Watermelon","pokeball":"Poké Ball","map":"Fantasy Map","favorites":"Roll from my favorites"};
 function getFavorites(){
  try{
   const saved=JSON.parse(localStorage.getItem('cis-dice-favorites')||'[]');
