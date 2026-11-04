@@ -138,7 +138,7 @@ async function roll(label,score,isCustom){
  if(window.matchMedia('(max-width: 700px)').matches)panel.hidden=true;
  stage.hidden=false;
  try{
-  if(!glbEngine)glbEngine=await import('./dice-3d.js?v=rebuilt-models-3');
+  if(!glbEngine)glbEngine=await import('./dice-3d.js?v=rebuilt-models-4');
   if(token!==rollToken)return;
   const selectedStyles=chooseStyles(qty);
   const values=await glbEngine.roll3d(qty,selectedStyles,Number(localStorage.getItem('cis-dice-scale')||'1.5'));
