@@ -62,6 +62,7 @@ async function loadStyle(style){
    normalized.scale.setScalar(1.8/Math.max(size.x,size.y,size.z));
    normalized.userData.cisArtSource='rebuilt-glb';
    normalized.userData.cisDiePoseRadians=poseRadians;
+   normalized.userData.cisModelScale=normalized.scale.x;
    template=normalized;
   }catch(error){
    console.warn('Updated dice model not installed for '+style+'; using prior art.',error);
@@ -244,7 +245,7 @@ export async function roll3d(quantity,style='knight',sizeMultiplier=1){
   const usingCardboardHull=dieStyle==='cardboard';
   const sourceVertices=usingCardboardHull?cardboardHull.vertices:poseRadians?geometry.vertices.map(vertex=>vertex.clone().applyQuaternion(poseQ)):geometry.vertices;
   const sourceFaces=usingCardboardHull?cardboardHull.faces:geometry.faces;
-  const factor=usingCardboardHull?cardboardHull.visualScale*scale:factorForRest(scale);
+  const factor=usingCardboardHull?cardboardHull.visualScale*scale:factorForRest(scale)*(poseRadians?Number(template.userData.cisModelScale||1):1);
   const center=usingCardboardHull?cardboardHull.visualCenter:new THREE.Box3().setFromPoints(geometry.vertices).getCenter(new THREE.Vector3());
   const shape=new CANNON.ConvexPolyhedron({
    vertices:sourceVertices.map(v=>new CANNON.Vec3((v.x-center.x)*factor,(v.y-center.y)*factor,(v.z-center.z)*factor)),
