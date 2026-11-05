@@ -48,6 +48,11 @@ async function loadStyle(style){
   try{
    const imported=await loader.loadAsync('./dice-models/'+modelFiles[style]);
    const model=imported.scene;
+   // Read optional pose metadata from the v6 Pokeball GLB.
+   let poseRadians=0;
+   if(style==='pokeball')model.traverse(node=>{
+    if(Number.isFinite(node.userData?.cisDiePoseRadians))poseRadians=Number(node.userData.cisDiePoseRadians);
+   });
    const bounds=new THREE.Box3().setFromObject(model);
    const size=bounds.getSize(new THREE.Vector3());
    if(!size.x||!size.y||!size.z)throw Error('GLB has no visible geometry');
@@ -56,6 +61,7 @@ async function loadStyle(style){
    normalized.add(model);
    normalized.scale.setScalar(1.8/Math.max(size.x,size.y,size.z));
    normalized.userData.cisArtSource='rebuilt-glb';
+   normalized.userData.cisDiePoseRadians=poseRadians;
    template=normalized;
   }catch(error){
    console.warn('Updated dice model not installed for '+style+'; using prior art.',error);
@@ -226,11 +232,17 @@ export async function roll3d(quantity,style='knight',sizeMultiplier=1){
  for(let i=0;i<quantity;i++){
   const dieStyle=styles[i];
   await loadStyle(dieStyle);
-  const rollLabels=dieStyle==='cardboard'?geometry.labels.map((face,j)=>({normal:face.normal,value:cardboardValuesByPhysicalFace[j]})):geometry.labels;
+  const poseRadians=dieStyle==='pokeball'?Number(template.userData.cisDiePoseRadians||0):0;
+  const poseQ=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(-.850650911463407,0,.5257309452814002),poseRadians);
+  const rollLabels=dieStyle==='cardboard'
+   ?geometry.labels.map((face,j)=>({normal:face.normal,value:cardboardValuesByPhysicalFace[j]}))
+   :poseRadians
+    ?geometry.labels.map(face=>({normal:face.normal.clone().applyQuaternion(poseQ),baseNormal:face.normal,value:face.value}))
+    :geometry.labels;
   const mesh=template.clone(true);mesh.scale.multiplyScalar(scale);
   // Collision hull must match the normalized visual size, not the GLB's original scale.
   const usingCardboardHull=dieStyle==='cardboard';
-  const sourceVertices=usingCardboardHull?cardboardHull.vertices:geometry.vertices;
+  const sourceVertices=usingCardboardHull?cardboardHull.vertices:poseRadians?geometry.vertices.map(vertex=>vertex.clone().applyQuaternion(poseQ)):geometry.vertices;
   const sourceFaces=usingCardboardHull?cardboardHull.faces:geometry.faces;
   const factor=usingCardboardHull?cardboardHull.visualScale*scale:factorForRest(scale);
   const center=usingCardboardHull?cardboardHull.visualCenter:new THREE.Box3().setFromPoints(geometry.vertices).getCenter(new THREE.Vector3());
@@ -244,7 +256,7 @@ export async function roll3d(quantity,style='knight',sizeMultiplier=1){
   body.velocity.set(8+Math.random()*3,Math.random()*3,Math.random()*3-1.5);
   body.angularVelocity.set(Math.random()*11-5.5,Math.random()*11-5.5,Math.random()*11-5.5);
   body.quaternion.setFromEuler(Math.random()*6,Math.random()*6,Math.random()*6);
-  world.addBody(body);scene.add(mesh);active.push({body,mesh,style:dieStyle,labels:rollLabels});
+  world.addBody(body);scene.add(mesh);active.push({body,mesh,style:dieStyle,labels:rollLabels,poseQ,poseRadians});
  }
  let started=performance.now();last=started;let stillTime=0;
  return await new Promise((resolve,reject)=>{
@@ -269,7 +281,12 @@ export async function roll3d(quantity,style='knight',sizeMultiplier=1){
       values.push(top.value);
       const tilt=new THREE.Quaternion().setFromUnitVectors(top.normal.clone().applyQuaternion(q),up);
       const flat=tilt.clone().multiply(q);
-      const numeralDirection=d.style==='pokeball'&&top.value===12&&d.mesh.userData.cisArtSource==='rebuilt-glb'?new THREE.Vector3(0.16245980756920714,0.9510565094915557,0.26286560573478374):d.style==='bronze'?bronzeNumeralUp[knightFaceIndex(top.normal)]:d.style==='cardboard'?cardboardNumeralUp[top.value-1]:numeralUp(top);
+      const numeralDirection=d.style==='pokeball'&&top.value===12&&d.mesh.userData.cisArtSource==='rebuilt-glb'
+       ?new THREE.Vector3(0.16245980756920714,0.9510565094915557,0.26286560573478374).applyQuaternion(d.poseQ)
+       :d.style==='pokeball'&&d.poseRadians
+        ?numeralUp({normal:top.baseNormal}).applyQuaternion(d.poseQ)
+        :d.style==='bronze'?bronzeNumeralUp[knightFaceIndex(top.normal)]
+        :d.style==='cardboard'?cardboardNumeralUp[top.value-1]:numeralUp(top);
       const textUp=numeralDirection.clone().applyQuaternion(flat);
       textUp.y=0;textUp.normalize();
       // Rotate the projected numeral-up vector exactly onto screen-up (-Z).
@@ -277,9 +294,9 @@ export async function roll3d(quantity,style='knight',sizeMultiplier=1){
       // z'=-sin(a)*x+cos(a)*z. atan2(x,-z) makes x'=0,z'=-1.
       const yaw=Math.atan2(textUp.x,-textUp.z);
       const upright=new THREE.Quaternion().setFromAxisAngle(up,yaw).multiply(flat);
-      // The bronze 1 glyph's local up direction is 90 degrees off the UV-based vector.
-      // Correct only this physical face; do not touch physics or other dice models.
-      if(d.style==='bronze'&&top.value===1){
+      // Bronze face 1 and face 5 require separate quarter-turn alignment
+      // relative to their originally authored texture bases.
+      if(d.style==='bronze'&&(top.value===1||top.value===5)){
        upright.premultiply(new THREE.Quaternion().setFromAxisAngle(up,Math.PI/2));
       }
       // Cardboard uses the collision hull, not decorative tape/rolls, for floor contact.
