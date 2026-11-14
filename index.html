@@ -509,7 +509,7 @@ $('saveGmTemplate').onclick=async()=>{
  if(error){$('gmLibraryMessage').textContent='Could not save GM sheet: '+error.message;return}
  records.unshift(created);renderGmLibrary();$('gmLibraryMessage').textContent='"'+trimmed+'" saved to GM library.';
 };
-async function createCharacter(){const name=prompt('Name your new character:');if(name===null){$('characters').value=active||'';return}const trimmed=name.trim();if(!trimmed){msg('Enter a character name.');$('characters').value=active||'';return}setSaveStatus('Creating character…');const {data:created,error}=await sb.from('cs_characters').insert({name:trimmed,user_id:user.id,sheet:{name:trimmed,level:'1'}}).select('id,name,sheet').single();if(error){msg('Could not create character: '+error.message);$('characters').value=active||'';return}active=created.id;records.unshift(created);loadingCharacter=true;load(created.sheet);loadingCharacter=false;await refresh();setSaveStatus('Saved automatically');msg('Character created. Changes save automatically.')}
+async function createCharacter(){const name=prompt('Name your new character:');if(name===null){$('characters').value=active||'';return}const trimmed=name.trim();if(!trimmed){msg('Enter a character name.');$('characters').value=active||'';return}setSaveStatus('Creating character…');const {data:created,error}=await sb.from('cs_characters').insert({name:trimmed,user_id:user.id,sheet:{name:trimmed,level:'1'}}).select('id,name,sheet').single();if(error){msg('Could not create character: '+error.message);$('characters').value=active||'';return}active=created.id;records.unshift(created);configureReadOnly(false);loadingCharacter=true;load(created.sheet);loadingCharacter=false;await refresh();setSaveStatus('Saved automatically');msg('Character created. Changes save automatically.')}
 function stopSharedRefresh(){
  if(sharedRefreshTimer){clearInterval(sharedRefreshTimer);sharedRefreshTimer=null}
  if(sharedChannel){sb.removeChannel(sharedChannel);sharedChannel=null}
@@ -584,7 +584,7 @@ $('signout').onclick=async()=>{toggleProfile(false);await sb.auth.signOut();user
 $('characters').onchange=async()=>{
  const selected=$('characters').value;
  await flushSave();
- if(selected==='__create__'){configureReadOnly(false);await createCharacter();return}
+ if(selected==='__create__'){await createCharacter();configureReadOnly(isShared(active));$('characters').value=active&&!records.find(r=>String(r.id)===String(active))?.name.startsWith('[GM] ')?String(active):'';return}
  active=selected||null;
  const r=records.find(x=>String(x.id)===String(active))||sharedRecords.find(x=>String(x.id)===String(active));
  loadingCharacter=true;load(r?.sheet||{});loadingCharacter=false;
