@@ -237,8 +237,8 @@ textarea[data-field="edge"]::placeholder,textarea[data-field="burden"]::placehol
 </style><style>.rest-rewards{margin-top:16px;padding-top:12px;border-top:1px solid #485057}.rest-rewards h3{font-size:14px;margin:0 0 10px}.rest-reward-row{display:flex;gap:8px}.rest-reward-item{display:flex;align-items:center;gap:4px;flex:1;min-width:0}.rest-reward-button{flex:1;min-width:0;padding:9px 3px;border:1px solid #657078;border-radius:7px;background:#293137;color:#eee4d5;font-size:12px;cursor:pointer}.rest-reward-button[aria-pressed="true"]{background:#a84c3e;border-color:#e5a18e;color:#fff;font-weight:700}.rest-reward-info{flex:0 0 22px;width:22px;height:22px;padding:0;border:1px solid #9ba5a9;border-radius:50%;background:transparent;color:inherit;font-size:12px;font-weight:700;cursor:pointer}#restRewardInfo{font-size:13px;margin:9px 0 0}</style><style>.rest-reward-count{font-weight:800;white-space:nowrap}.rest-rewards h3 small{font-weight:400;font-size:12px}</style><style>.rest-reward-dots{display:inline-flex;gap:4px;vertical-align:middle;margin-left:4px}.rest-reward-dot{display:inline-block;width:12px;height:12px;border:1.5px solid currentColor;border-radius:50%;background:transparent}.rest-reward-dot.filled{background:currentColor;box-shadow:inset 0 0 0 2px #a84c3e}.rest-reward-button{display:flex;align-items:center;justify-content:center;gap:4px}.rest-reward-button[aria-pressed="true"] .rest-reward-dot.filled{background:#fff}</style><style id="active-condition-quick-remove">.active-condition{display:inline-flex;align-items:center;gap:6px;padding:3px 5px 3px 9px}.active-condition-name,.active-condition-remove{appearance:none;border:0;background:transparent;color:inherit;font:inherit;cursor:pointer;padding:3px}.active-condition-remove{font-size:19px;line-height:1;min-width:22px;min-height:24px;border-radius:4px}.active-condition-remove:hover,.active-condition-remove:focus-visible{background:#854247}.active-condition-name:hover{text-decoration:underline}</style><style id="character-picker-font-match">.character-picker select{font-size:24px;height:68px;min-height:68px;box-sizing:border-box;padding:12px 16px}.character-details .character-picker,.character-details .character-class{width:100%;min-width:0}.character-details .character-class select{width:100%;max-width:100%;box-sizing:border-box}@media(min-width:700px){.character-details>.character-toolbar{grid-template-columns:minmax(0,1fr)!important}.character-details .character-picker{grid-column:1/-1}}</style><style id="trait-textarea-autosize">textarea[data-field="edge"],textarea[data-field="burden"],textarea[data-field="desire"],textarea[data-field="impulse"]{overflow-y:hidden;resize:vertical}</style><style id="cis-character-custom-art">
 #sheet .cis-art-upload,#sheet .cis-art-remove{position:absolute;z-index:8;width:23px;height:23px;min-height:0;padding:0;border:1px solid #7c848b55;border-radius:5px;background:#252a2dcc;color:#aeb5b9;font-size:13px;line-height:21px;text-align:center;opacity:.33;cursor:pointer;transition:opacity .15s ease}
 #sheet .cis-art-upload:hover,#sheet .cis-art-upload:focus-visible,#sheet .cis-art-remove:hover,#sheet .cis-art-remove:focus-visible{opacity:1}
-#sheet .cis-art-upload-desktop{top:10px;right:10px}
-#sheet .cis-art-remove-desktop{top:10px;right:36px}
+#sheet .card:has(> #cisClassArt)>.cis-art-upload-desktop{top:12px!important;right:12px!important;left:auto!important;bottom:auto!important}
+#sheet .card:has(> #cisClassArt)>.cis-art-remove-desktop{top:12px!important;right:40px!important;left:auto!important;bottom:auto!important}
 #sheet .cis-art-upload-mobile,#sheet .cis-art-remove-mobile{display:none}
 #sheet .cis-art-remove[hidden]{display:none!important}
 #sheet.cis-shared-readonly .cis-art-upload,#sheet.cis-shared-readonly .cis-art-remove{display:none!important}
@@ -246,12 +246,58 @@ textarea[data-field="edge"]::placeholder,textarea[data-field="burden"]::placehol
 #sheet #cisClassArt img.cis-custom-art{position:absolute!important;display:block!important;top:0!important;right:0!important;bottom:auto!important;left:auto!important;margin:0!important;width:100%!important;height:100%!important;max-width:100%!important;object-fit:contain!important;object-position:center top!important;transform:none!important;clip-path:none!important;filter:none!important}
 @media(max-width:750px){
  #sheet .cis-art-upload-desktop,#sheet .cis-art-remove-desktop{display:none!important}
- #sheet .cis-art-upload-mobile{display:block;top:8px;right:8px}
- #sheet .cis-art-remove-mobile{display:block;top:8px;right:35px}
+ #sheet .card:has(> #cisMobileClassArt)>.cis-art-upload-mobile{display:block;top:8px!important;right:8px!important;left:auto!important;bottom:auto!important}
+ #sheet .card:has(> #cisMobileClassArt)>.cis-art-remove-mobile{display:block;top:8px!important;right:35px!important;left:auto!important;bottom:auto!important}
  #sheet .card.class-art-skills>#cisMobileClassArt:has(.cis-custom-art){right:0!important;width:52%!important;overflow:hidden!important}
  #sheet .card.class-art-skills>#cisMobileClassArt img.cis-custom-art{position:absolute!important;top:0!important;bottom:auto!important;left:auto!important;right:0!important;width:100%!important;height:100%!important;max-width:100%!important;object-fit:contain!important;object-position:center top!important;transform:none!important}
 }
-</style></head><body><header><h1>CARVED IN SMOKE</h1><button id="openProfile" class="secondary hidden profile-trigger" type="button" aria-label="Open settings" title="Settings"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2.5h4l.6 2.3a7.5 7.5 0 0 1 1.7 1l2.3-.7 2 3.5-1.7 1.6a8 8 0 0 1 0 2l1.7 1.6-2 3.5-2.3-.7a7.5 7.5 0 0 1-1.7 1L14 20h-4l-.6-2.4a7.5 7.5 0 0 1-1.7-1l-2.3.7-2-3.5 1.7-1.6a8 8 0 0 1 0-2L3.4 8.6l2-3.5 2.3.7a7.5 7.5 0 0 1 1.7-1L10 2.5Z" transform="translate(0 0.75)"/><circle cx="12" cy="11.75" r="3"/></svg></button></header><main>
+
+/* Custom art import dialog, separate from sheet editing */
+#cisArtDialog[hidden]{display:none!important}
+#cisArtDialog{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.72)}
+#cisArtDialog .cis-art-panel{position:relative;background:#252c30;color:#f4f3ee;border:1px solid #647078;border-radius:12px;box-shadow:0 15px 60px #000a;width:min(100%,520px);max-height:92dvh;overflow-y:auto;padding:22px}
+#cisArtDialog h2{font-size:20px;margin:0 30px 8px 0}
+#cisArtDialog .cis-art-help{font-size:13px;color:#c4ccd0;margin:0 0 14px}
+#cisArtDialog .cis-art-drop{border:2px dashed #78858b;border-radius:10px;background:#1b2226;padding:27px 15px;text-align:center;cursor:pointer}
+#cisArtDialog .cis-art-drop.drag-over{border-color:#e7ae7e;background:#35332e}
+#cisArtDialog .cis-art-drop strong{display:block;margin-bottom:5px}
+#cisArtDialog .cis-art-import-choices{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+#cisArtDialog button{width:auto;min-width:0}
+#cisArtDialog .cis-art-preview{display:block;max-width:100%;max-height:245px;object-fit:contain;margin:12px auto;border-radius:7px}
+#cisArtDialog .cis-art-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}
+#cisArtDialog .cis-art-close{position:absolute;right:10px;top:10px;padding:1px 7px}
+#cisArtDialog .cis-art-status{min-height:18px;font-size:13px;color:#ffd1b1;margin-top:10px}
+#cisArtDialog .cis-art-paste-area{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+#cisArtDialog .cis-art-save[disabled]{opacity:.45}
+@media(max-width:750px){
+ #cisArtDialog .cis-art-panel{padding:18px}
+ #cisArtDialog .cis-art-drop{display:none}
+ #cisArtDialog .cis-art-import-choices{display:grid;grid-template-columns:1fr}
+ #cisArtDialog .cis-art-import-choices button{width:100%;min-height:44px}
+}</style></head><body>
+<div id="cisArtDialog" hidden role="dialog" aria-modal="true" aria-labelledby="cisArtDialogTitle">
+ <div class="cis-art-panel">
+  <button type="button" class="secondary cis-art-close" id="cisArtClose" aria-label="Close upload dialog">×</button>
+  <h2 id="cisArtDialogTitle">Character artwork</h2>
+  <p class="cis-art-help">Add art for this character only. Your image will replace the class artwork on desktop and mobile.</p>
+  <div id="cisArtDrop" class="cis-art-drop" tabindex="0" role="button" aria-label="Drop an image here or choose a file">
+   <strong>Drag and drop an image here</strong>
+   <span>or select an image below</span>
+  </div>
+  <div class="cis-art-import-choices">
+   <button type="button" class="secondary" id="cisArtFiles">Choose file</button>
+   <button type="button" class="secondary" id="cisArtPhotos">Photo album</button>
+   <button type="button" class="secondary" id="cisArtPaste">Paste image</button>
+  </div>
+  <div id="cisArtPasteArea" class="cis-art-paste-area" contenteditable="true" aria-label="Paste image here"></div>
+  <img id="cisArtPreview" class="cis-art-preview" alt="New artwork preview" hidden>
+  <p id="cisArtStatus" class="cis-art-status" role="status" aria-live="polite"></p>
+  <div class="cis-art-actions">
+   <button type="button" class="secondary" id="cisArtCancel">Cancel</button>
+   <button type="button" class="cis-art-save" id="cisArtApply" disabled>Use this art</button>
+  </div>
+ </div>
+</div><header><h1>CARVED IN SMOKE</h1><button id="openProfile" class="secondary hidden profile-trigger" type="button" aria-label="Open settings" title="Settings"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2.5h4l.6 2.3a7.5 7.5 0 0 1 1.7 1l2.3-.7 2 3.5-1.7 1.6a8 8 0 0 1 0 2l1.7 1.6-2 3.5-2.3-.7a7.5 7.5 0 0 1-1.7 1L14 20h-4l-.6-2.4a7.5 7.5 0 0 1-1.7-1l-2.3.7-2-3.5 1.7-1.6a8 8 0 0 1 0-2L3.4 8.6l2-3.5 2.3.7a7.5 7.5 0 0 1 1.7-1L10 2.5Z" transform="translate(0 0.75)"/><circle cx="12" cy="11.75" r="3"/></svg></button></header><main>
 <section id="login" class="card"><h2>Character Records</h2><p class="note">Sign in to create and save your characters. The same Supabase account can be used for both websites.</p><label>Email</label><input id="email" type="email" autocomplete="email"><label>Password</label><span class="password-wrap"><input id="password" type="password" autocomplete="current-password"><button type="button" class="password-eye" data-password-toggle="password" aria-label="Show password" aria-pressed="false" title="Show password"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></span><div class="auth-actions"><button id="signin">Sign in</button><button id="signup" class="secondary">Create account</button><button id="forgotPassword" type="button" class="secondary">Forgot password?</button></div><p id="authmsg" class="note" aria-live="polite"></p></section>
 <div id="sheet"><div class="card character-details"><h2>Character</h2><div class="character-toolbar"><div class="character-picker"><label for="characters">Character</label><select id="characters" aria-label="Choose character"><option value="">Select character</option></select></div><div class="character-toolbar-buttons"><span id="saveStatus" class="note" aria-live="polite"></span></div><p id="message"></p><p id="cisSharedBanner" role="status" hidden></p></div><div class="fields character-fields"><div class="character-stat-row"><div class="character-class"><label>Class</label><select data-field="class"><option value="">Choose class</option><option>Knight</option><option>Huntsman</option><option>Magister</option><option>Noble</option><option>Merchant</option><option>Rogue</option><option>Pirate</option></select></div><div class="character-level"><label>Level</label><input data-field="level" type="number" min="1" value="1"></div><div class="character-coin"><label>Coins</label><input data-field="coin" type="number" min="0" step="1" inputmode="numeric" value="0"></div></div></div></div>
 <div class="cols"><div><section class="card"><div id="cisMobileClassArt" aria-hidden="true"></div><button type="button" class="cis-art-upload cis-art-upload-mobile" title="Upload character art" aria-label="Upload character art">✎</button><button type="button" class="cis-art-remove cis-art-remove-mobile" title="Restore class artwork" aria-label="Remove custom character art" hidden>×</button><h2>Skills</h2><div class="stat stat-head"><span>Skill</span><span>Base</span><span>Temp.</span><span>Total</span></div><div id="skills"></div><p class="note">A Skill roll uses that many d12s; keep the highest. At zero Skill, roll 2d12 and keep the lower. Bonuses and penalties change the number of dice, not the result.</p></section><section class="card"><h2>Vitals</h2><div class="vitals"><div class="vital"><small>Max Health</small><strong id="maxhealth">12</strong></div><div class="vital"><small>Evasion</small><strong id="evasion">2</strong></div><div class="vital vital-ap"><small>Action Points</small><input data-field="actionPoints" type="number" min="0" step="1" value="2" aria-label="Action Points"></div></div><div class="fields vitals-fields" style="margin-top:14px"><div><label>Health adjustment</label><input data-field="healthAdjust" type="number" value="0"></div><div><label>Evasion adjustment</label><input data-field="evasionAdjust" type="number" value="0"></div><div class="wide"><label>Current Health</label><div class="health-control"><button type="button" data-health-delta="-1" aria-label="Take 1 damage"><span>−1</span><span class="health-arrow">‹</span></button><input data-field="currentHealth" type="number" min="0" inputmode="numeric" aria-label="Current Health"><button type="button" data-health-delta="1" aria-label="Heal 1 health"><span>+1</span><span class="health-arrow">›</span></button></div></div></div><div class="condition-launch"><button type="button" id="openConditions" class="secondary">Conditions</button><div id="activeConditions" aria-live="polite"></div></div><div class="rest-rewards"><h3>Desire / Impulse Rewards</h3><div class="rest-reward-row"><div class="rest-reward-item"><button type="button" class="rest-reward-button" data-rest-reward="reroll" aria-pressed="false">Reroll <span class="rest-reward-dots" aria-hidden="true"><span class="rest-reward-dot"></span><span class="rest-reward-dot"></span></span></button><button type="button" class="rest-reward-info" data-rest-info="reroll" aria-label="About Reroll">i</button></div><div class="rest-reward-item"><button type="button" class="rest-reward-button" data-rest-reward="healing" aria-pressed="false">Extra Healing <span class="rest-reward-dots" aria-hidden="true"><span class="rest-reward-dot"></span><span class="rest-reward-dot"></span></span></button><button type="button" class="rest-reward-info" data-rest-info="healing" aria-label="About Extra Healing">i</button></div><div class="rest-reward-item"><button type="button" class="rest-reward-button" data-rest-reward="ap" aria-pressed="false">Extra AP <span class="rest-reward-dots" aria-hidden="true"><span class="rest-reward-dot"></span><span class="rest-reward-dot"></span></span></button><button type="button" class="rest-reward-info" data-rest-info="ap" aria-label="About Extra AP">i</button></div></div><p id="restRewardInfo" hidden></p></div></section></div>
@@ -445,37 +491,97 @@ function positionClassArtForViewport(){
 }
 window.addEventListener('resize',positionClassArtForViewport);
 
-// Portraits are compressed and saved inside each character's existing sheet data.
-const cisArtFileInput=document.createElement('input');
-cisArtFileInput.type='file';cisArtFileInput.accept='image/*';cisArtFileInput.hidden=true;document.body.appendChild(cisArtFileInput);
-document.querySelectorAll('.cis-art-upload').forEach(btn=>btn.addEventListener('click',()=>{if(!user||!active||sharedMode||!isOwn(active))return;cisArtFileInput.click()}));
-document.querySelectorAll('.cis-art-remove').forEach(btn=>btn.addEventListener('click',()=>{
+// Character art is selected in an in-app dialog; only the confirmed image is saved.
+const cisArtDialog=$('cisArtDialog'),cisArtStatus=$('cisArtStatus'),cisArtPreview=$('cisArtPreview');
+const cisArtFileInput=document.createElement('input'),cisArtPhotoInput=document.createElement('input');
+for(const input of [cisArtFileInput,cisArtPhotoInput]){input.type='file';input.hidden=true;document.body.appendChild(input)}
+cisArtFileInput.accept='image/*';cisArtPhotoInput.accept='image/*';
+// Mobile browsers may offer their native photo library / files choices within the picker.
+let cisArtDraft=null,cisArtCharacter=null,cisArtWorking=false;
+function cisArtSetStatus(value){cisArtStatus.textContent=value}
+function cisArtOpen(){
  if(!user||!active||sharedMode||!isOwn(active))return;
- customArt=null;updateClassBackground(true);scheduleSave();msg('Default class art restored.');
-}));
-cisArtFileInput.addEventListener('change',async()=>{
- const file=cisArtFileInput.files?.[0];cisArtFileInput.value='';
- if(!file)return;
- if(!user||!active||sharedMode||!isOwn(active))return;
- if(!file.type.startsWith('image/')){msg('Choose an image file.');return}
- if(file.size>12*1024*1024){msg('Image too large. Choose one under 12 MB.');return}
- const characterId=active;
- const objectURL=URL.createObjectURL(file);
+ cisArtCharacter=String(active);cisArtDraft=null;cisArtWorking=false;
+ cisArtPreview.hidden=true;cisArtPreview.removeAttribute('src');
+ $('cisArtApply').disabled=true;cisArtSetStatus('');
+ cisArtDialog.hidden=false;document.body.style.overflow='hidden';$('cisArtFiles').focus();
+}
+function cisArtClose(){
+ cisArtDialog.hidden=true;cisArtCharacter=null;cisArtDraft=null;cisArtPreview.removeAttribute('src');
+ document.body.style.overflow='';
+}
+document.querySelectorAll('.cis-art-upload').forEach(btn=>btn.addEventListener('click',cisArtOpen));
+$('cisArtClose').addEventListener('click',cisArtClose);
+$('cisArtCancel').addEventListener('click',cisArtClose);
+cisArtDialog.addEventListener('click',e=>{if(e.target===cisArtDialog)cisArtClose()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!cisArtDialog.hidden)cisArtClose()});
+$('cisArtFiles').addEventListener('click',()=>cisArtFileInput.click());
+$('cisArtPhotos').addEventListener('click',()=>cisArtPhotoInput.click());
+async function cisArtPrepare(file){
+ if(!file||cisArtDialog.hidden||cisArtWorking)return;
+ if(!file.type.startsWith('image/')){cisArtSetStatus('Choose an image file.');return}
+ if(file.size>12*1024*1024){cisArtSetStatus('Image too large. Choose one under 12 MB.');return}
+ cisArtWorking=true;cisArtSetStatus('Preparing image…');$('cisArtApply').disabled=true;
+ const selectedFor=cisArtCharacter,objectURL=URL.createObjectURL(file);
  try{
   const img=new Image();img.src=objectURL;await img.decode();
-  if(characterId!==active||sharedMode)return;
+  if(cisArtDialog.hidden||cisArtCharacter!==selectedFor||String(active)!==selectedFor)return;
   const scale=Math.min(1,900/Math.max(img.naturalWidth,img.naturalHeight));
-  const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));
+  const canvas=document.createElement('canvas');
+  canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));
+  canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));
   const ctx=canvas.getContext('2d');if(!ctx)throw Error('Canvas unavailable');
   ctx.drawImage(img,0,0,canvas.width,canvas.height);
   let encoded=canvas.toDataURL('image/webp',0.78);
   if(!encoded.startsWith('data:image/webp'))encoded=canvas.toDataURL('image/jpeg',0.72);
-  if(encoded.length>900000){msg('Image cannot be compressed enough. Try a smaller image.');return}
-  customArt=encoded;updateClassBackground(true);scheduleSave();msg('Character art added. Saving automatically.');
- }catch(e){msg('Could not load image: '+e.message)}
- finally{URL.revokeObjectURL(objectURL)}
+  if(encoded.length>900000){cisArtSetStatus('Image is too complex to save. Try a smaller image.');return}
+  cisArtDraft=encoded;cisArtPreview.src=encoded;cisArtPreview.hidden=false;
+  $('cisArtApply').disabled=false;cisArtSetStatus('Preview ready. Select “Use this art” to save.');
+ }catch(e){cisArtSetStatus('Could not load image: '+e.message)}
+ finally{URL.revokeObjectURL(objectURL);cisArtWorking=false}
+}
+for(const input of [cisArtFileInput,cisArtPhotoInput])input.addEventListener('change',()=>{
+ const file=input.files?.[0];input.value='';if(file)cisArtPrepare(file);
 });
-
+const cisArtDrop=$('cisArtDrop');
+for(const eventName of ['dragenter','dragover'])cisArtDrop.addEventListener(eventName,e=>{
+ e.preventDefault();cisArtDrop.classList.add('drag-over');
+});
+for(const eventName of ['dragleave','drop'])cisArtDrop.addEventListener(eventName,e=>{
+ e.preventDefault();cisArtDrop.classList.remove('drag-over');
+});
+cisArtDrop.addEventListener('drop',e=>cisArtPrepare(e.dataTransfer?.files?.[0]));
+cisArtDrop.addEventListener('click',()=>cisArtFileInput.click());
+cisArtDrop.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();cisArtFileInput.click()}});
+async function cisArtPasteFromClipboard(){
+ if(navigator.clipboard?.read){
+  try{
+   const items=await navigator.clipboard.read();
+   for(const item of items){
+    const type=item.types.find(t=>t.startsWith('image/'));
+    if(type){await cisArtPrepare(await item.getType(type));return}
+   }
+   cisArtSetStatus('No image found in clipboard.');
+   return;
+  }catch(e){cisArtSetStatus('Clipboard access unavailable. Use your device’s paste command in this dialog.')}
+ }else cisArtSetStatus('Tap and hold in the paste area, then choose Paste.');
+ $('cisArtPasteArea').focus();
+}
+$('cisArtPaste').addEventListener('click',cisArtPasteFromClipboard);
+cisArtDialog.addEventListener('paste',e=>{
+ const items=[...(e.clipboardData?.items||[])];const item=items.find(x=>x.type.startsWith('image/'));
+ if(!item){cisArtSetStatus('Clipboard does not contain an image.');return}
+ e.preventDefault();const blob=item.getAsFile();if(blob)cisArtPrepare(blob);
+});
+$('cisArtApply').addEventListener('click',()=>{
+ if(!cisArtDraft||cisArtCharacter!==String(active)||sharedMode||!isOwn(active)){cisArtSetStatus('Character changed. Reopen the upload dialog.');return}
+ customArt=cisArtDraft;updateClassBackground(true);scheduleSave();
+ cisArtClose();msg('Character art added. Saving automatically.');
+});
+document.querySelectorAll('.cis-art-remove').forEach(btn=>btn.addEventListener('click',()=>{
+ if(!user||!active||sharedMode||!isOwn(active))return;
+ customArt=null;updateClassBackground(true);scheduleSave();msg('Default class art restored.');
+}));
 
 function load(d={}){customArt=typeof d.customArt==='string'&&d.customArt.startsWith('data:image/')?d.customArt:null;document.querySelectorAll('[data-field]').forEach(e=>e.value=d[e.dataset.field]??(e.dataset.field==='level'?'1':e.dataset.field==='actionPoints'?'2':e.dataset.field.endsWith('Adjust')?'0':''));for(const s of skills)for(const k of ['base','temp'])document.querySelector('[data-skill="'+s+'"][data-kind="'+k+'"]').value=(k==='base'?Math.min(4,Math.max(0,Number(d.skills?.[s]?.[k]??0))):d.skills?.[s]?.[k]??0);for(const s of statuses)document.querySelector('[data-status="'+s+'"]').checked=(d.statuses||[]).includes(s);$('drunkModifier').value=d.drunkModifier??'0';document.querySelectorAll('.rest-reward-button').forEach(b=>{const n=Math.max(0,Math.min(2,Number(d.restRewards?.[b.dataset.restReward]??(d.restReward===b.dataset.restReward?1:0))||0));b.dataset.count=String(n);b.setAttribute('aria-pressed',String(n>0));b.querySelectorAll('.rest-reward-dot').forEach((dot,i)=>dot.classList.toggle('filled',i<n))});document.getElementById('restRewardInfo').hidden=true;loadItemLists();renderScars();calc();updateClassBackground(true)}
 let messageDismissTimer=null;
