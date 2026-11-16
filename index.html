@@ -268,6 +268,7 @@ textarea[data-field="edge"]::placeholder,textarea[data-field="burden"]::placehol
 #cisArtDialog .cis-art-close{position:absolute;right:10px;top:10px;padding:1px 7px}
 #cisArtDialog .cis-art-status{min-height:18px;font-size:13px;color:#ffd1b1;margin-top:10px}
 #cisArtDialog .cis-art-paste-area{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+#cisArtDialog .cis-art-paste-area.is-paste-active{position:static;width:100%;height:62px;opacity:1;overflow:auto;margin-top:12px;padding:12px;border:1px dashed #8a979c;border-radius:6px;background:#161c20;color:#f4f3ee}
 #cisArtDialog .cis-art-save[disabled]{opacity:.45}
 @media(max-width:750px){
  #cisArtDialog .cis-art-panel{padding:18px}
@@ -503,6 +504,7 @@ function cisArtOpen(){
  if(!user||!active||sharedMode||!isOwn(active))return;
  cisArtCharacter=String(active);cisArtDraft=null;cisArtWorking=false;
  cisArtPreview.hidden=true;cisArtPreview.removeAttribute('src');
+ $('cisArtPasteArea').classList.remove('is-paste-active');$('cisArtPasteArea').replaceChildren();
  $('cisArtApply').disabled=true;cisArtSetStatus('');
  cisArtDialog.hidden=false;document.body.style.overflow='hidden';$('cisArtFiles').focus();
 }
@@ -565,6 +567,7 @@ async function cisArtPasteFromClipboard(){
    return;
   }catch(e){cisArtSetStatus('Clipboard access unavailable. Use your device’s paste command in this dialog.')}
  }else cisArtSetStatus('Tap and hold in the paste area, then choose Paste.');
+ $('cisArtPasteArea').classList.add('is-paste-active');
  $('cisArtPasteArea').focus();
 }
 $('cisArtPaste').addEventListener('click',cisArtPasteFromClipboard);
